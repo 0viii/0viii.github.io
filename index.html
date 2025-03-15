@@ -32,126 +32,104 @@
             padding: 15px;
         }
 
-        /* Sistema de Registro */
-        .registro-flotante {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            transition: all 0.3s;
-        }
-
-        .btn-registro {
-            background: var(--color-primario);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 30px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
-            border: none;
-            transition: transform 0.2s;
-        }
-
-        .btn-registro:hover {
-            transform: translateY(-2px);
-            background: #27ae60;
-        }
-
-        .formulario-registro {
-            display: none;
-            background: var(--fondo-tarjeta);
-            padding: 20px;
-            border-radius: 15px;
-            width: 300px;
-            margin-top: 15px;
-            border: 2px solid var(--color-primario);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-        }
-
-        .formulario-registro.mostrar {
-            display: block;
-            animation: aparecer 0.3s ease-out;
-        }
-
-        @keyframes aparecer {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .form-registro-group input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 2px solid var(--color-secundario);
-            background: rgba(0,0,0,0.3);
-            color: white;
-            font-size: 14px;
-            margin: 8px 0;
-        }
-
-        .registrados-mini {
-            margin-top: 15px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 15px;
-        }
-
-        .registrados-grid {
+/* ========== CONTADORES MEJORADOS ========== */
+        .status-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-            gap: 10px;
-        }
-
-        .jugador-card {
-            text-align: center;
-            transition: transform 0.3s;
-        }
-
-        .skin-preview {
-            width: 50px;
-            height: 50px;
-            background-size: cover;
-            image-rendering: pixelated;
-            border-radius: 5px;
-            margin: 0 auto;
-            border: 2px solid var(--color-primario);
-        }
-
-        /* Sistema de Notificaciones */
-        .notificaciones {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            display: flex;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
-            z-index: 1000;
-            flex-direction: column;
-            align-items: flex-start;
+            margin: 20px 0;
         }
 
-        .notificacion-badge, .cart-btn {
-            background: var(--color-secundario);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            backdrop-filter: blur(5px);
-            cursor: pointer;
-            transition: transform 0.2s;
+        .status-card {
+            background: linear-gradient(145deg, rgba(46, 204, 113, 0.15), rgba(41, 128, 185, 0.15));
+            border-radius: 12px;
+            padding: 15px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            border: none;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            cursor: default;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            min-height: 80px;
+            position: relative;
         }
 
-        .cart-btn {
-            background: var(--color-primario) !important;
-            order: -1;
-            margin-bottom: 15px;
+        .status-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.25);
         }
 
-        /* Estado del Servidor */
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            padding: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
+            object-fit: contain;
+        }
+
+        .status-content h3 {
+            color: #ddd;
+            margin-bottom: 2px;
+            font-size: 0.9em;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .status-number {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-number::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #2ecc71;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #2ecc71;
+            margin-left: 5px;
+        }
+
+        .discord-card .status-number::after {
+            background: #5865F2;
+            box-shadow: 0 0 8px #5865F2;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            padding: 2px;
+            background: linear-gradient(45deg, 
+                var(--color-primario) 0%, 
+                rgba(46, 204, 113, 0) 50%, 
+                var(--color-secundario) 100%);
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .status-card:hover::before {
+            opacity: 1;
+        }
+
+        /* ========== TUS ESTILOS ORIGINALES ========== */
         .server-info {
             background: var(--fondo-tarjeta);
             padding: 25px;
@@ -186,7 +164,6 @@
             gap: 10px;
         }
 
-        /* Sistema de Votación Mejorado */
         .votacion-container {
             background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(41, 128, 185, 0.15));
             border: 2px solid var(--color-primario);
@@ -244,40 +221,6 @@
             transform: rotate(360deg) scale(1.2);
         }
 
-        .voto-card h3 {
-            font-size: 1.4em;
-            margin: 15px 0;
-            color: var(--color-primario);
-        }
-
-        .voto-card p {
-            font-size: 1.1em;
-            color: #ecf0f1;
-        }
-
-        .voto-card small {
-            display: block;
-            margin-top: 15px;
-            color: #95a5a6;
-            font-size: 0.9em;
-        }
-
-        .progress-bar {
-            height: 4px;
-            background: rgba(46, 204, 113, 0.3);
-            margin: 15px 0;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 60%;
-            background: var(--color-primario);
-            transition: width 0.3s;
-        }
-
-        /* Tienda Oficial Mejorada */
         .tienda-container {
             background: linear-gradient(45deg, rgba(52, 73, 94, 0.95), rgba(44, 62, 80, 0.95));
             border-radius: 20px;
@@ -303,7 +246,7 @@
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
-            border: 1px solid rgba(41, 128, 185, 0.3);
+            border: 1px solid rgba(65, 185, 41, 0.3);
         }
 
         .producto:hover {
@@ -322,45 +265,81 @@
             animation: bgAnimacion 6s linear infinite;
         }
 
-        .etiqueta-oferta {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: linear-gradient(45deg, #e67e22, #d35400);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-size: 0.9em;
-            font-weight: bold;
-            z-index: 2;
-            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+        .carrito-sidebar {
+            position: fixed;
+            right: -320px;
+            top: 0;
+            width: 320px;
+            height: 100%;
+            background: rgba(30, 39, 46, 0.98);
+            padding: 20px;
+            transition: right 0.3s;
+            overflow-y: auto;
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
         }
 
-        .precio {
-            font-size: 1.8em;
-            color: var(--color-primario);
-            margin: 20px 0;
-            font-weight: bold;
-            position: relative;
+        .carrito-abierto {
+            right: 0 !important;
         }
 
-        .precio span {
-            font-size: 0.7em;
-            color: #95a5a6;
-            display: block;
-        }
-
-        .producto button.discord-btn {
-            width: 100%;
-            margin-top: 15px;
-            background: linear-gradient(45deg, var(--color-primario), #27ae60);
-            border: none;
+        .carrito-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            margin: 15px 0;
+            background: rgba(44, 62, 80, 0.95);
+            border-radius: 8px;
+            border: 1px solid rgba(41, 128, 185, 0.3);
             transition: all 0.3s;
         }
 
-        .producto button.discord-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .quantity-btn {
+            background: var(--color-secundario);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .cart-total {
+            font-size: 1.4em;
+            color: var(--color-primario);
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .btn-clear-cart {
+            background: #e74c3c;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .cart-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--color-primario);
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+            z-index: 1000;
         }
 
         @keyframes bgAnimacion {
@@ -390,59 +369,9 @@
             transform: perspective(1000px) rotateX(var(--rotate-x)) rotateY(var(--rotate-y)) translateZ(20px);
         }
 
-        /* Carrito de compras corregido */
-        .carrito-sidebar {
-            position: fixed;
-            right: -320px;
-            top: 0;
-            width: 320px;
-            height: 100%;
-            background: var(--fondo-tarjeta);
-            padding: 20px;
-            transition: right 0.3s;
-            overflow-y: auto;
-            z-index: 1000;
-            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
-        }
-
-        .carrito-abierto {
-            right: 0 !important;
-        }
-
-        .carrito-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            margin: 10px 0;
-            background: rgba(44, 62, 80, 0.9);
-            border-radius: 8px;
-            border: 1px solid var(--color-secundario);
-        }
-
-        .cerrar-carrito {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 1.2em;
-            cursor: pointer;
-        }
-
-        /* Otros Estilos */
         header {
             text-align: center;
             margin: 80px 0 20px;
-        }
-
-        .botones-conexion {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
-            flex-wrap: wrap;
         }
 
         .discord-btn {
@@ -456,115 +385,64 @@
             gap: 12px;
             transition: all 0.3s;
             font-size: 1.1em;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-
-        .discord-btn:hover {
-            transform: translateY(-2px);
-            background: #4752c4;
-            box-shadow: 0 6px 8px rgba(0,0,0,0.4);
-        }
-
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 8px;
-            background: #2ecc71;
-            color: white;
-            z-index: 9999;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        .toast.error {
-            background: #e74c3c;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
         }
 
         @media (max-width: 768px) {
             .productos-grid, .votacion-grid { grid-template-columns: 1fr; }
             .carrito-sidebar { width: 100%; right: -100%; }
             .server-info { margin: 20px 0; }
-            .botones-conexion { flex-direction: column; }
-            .registro-flotante { top: 15px; right: 10px; }
-            .btn-registro { padding: 10px 20px; }
-            .notificaciones { left: 10px; top: 15px; }
         }
     </style>
 </head>
 <body>
-    <!-- Sistema de Notificaciones y Carrito -->
-    <div class="notificaciones">
-        <div class="cart-btn" onclick="toggleCarrito()">
-            <i class="fas fa-shopping-cart"></i>
-            <span id="cart-counter">0</span>
-        </div>
-        <div class="notificacion-badge">
-            <i class="fas fa-bell"></i> 0
-        </div>
-    </div>
+    <!-- Botón del carrito -->
+    <button class="cart-btn" onclick="toggleCarrito()">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cart-counter">0</span>
+    </button>
 
-    <!-- Sistema de Registro -->
-    <div class="registro-flotante">
-        <button class="btn-registro" onclick="toggleFormulario()">
-            <i class="fas fa-user-plus"></i>
-            Registrar Nick
-        </button>
-        <div class="formulario-registro" id="formRegistro">
-            <div class="form-registro-group">
-                <input type="text" id="minecraftNick" 
-                       placeholder="Tu nick de Minecraft" 
-                       maxlength="16">
-            </div>
-            <button class="discord-btn" onclick="registrarNick()" 
-                    style="width: 100%; justify-content: center;">
-                <i class="fas fa-check"></i> Confirmar
-            </button>
-            
-            <div class="registrados-mini">
-                <h4 style="margin: 15px 0 10px; color: var(--color-primario);">
-                    <i class="fas fa-users"></i> Últimos registros
-                </h4>
-                <div id="registrados-container" class="registrados-grid"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Contenido Principal -->
+    <!-- Contenido principal -->
     <header>
         <h1>BIENVENIDO A TOTTALAND</h1>
-        <p>¡El mejor servidor de Minecraft Java Y Bedrock!</p>
+        <p>¡El mejor servidor de Minecraft para Java y Bedrock, donde la diversión nunca termina!</p>
     </header>
 
-    <!-- Estado del Servidor -->
+    <!-- Sección de estado actualizada -->
     <div class="server-info">
         <h2>🛡️ ESTADO DEL SERVIDOR</h2>
-        <div class="status-indicator" id="serverStatus">
-            <i class="fas fa-circle"></i>
-            <span>Cargando estado...</span>
+        <div class="status-grid">
+            <div class="status-card minecraft-card">
+                <img src="https://media.discordapp.net/attachments/1274265485378195482/1350571432031289466/dbd8d820-d1da-4991-aa88-6be6383a6735.jpg?ex=67d73929&is=67d5e7a9&hm=c9548a20f12e06621c435a12ce5c2d3b46bd89c6c0014df3ccb55e05ca11c5b5&=&format=webp&width=648&height=648" 
+                     alt="Minecraft" class="status-icon">
+                <div class="status-content">
+                    <h3>Jugadores Conectados</h3>
+                    <div class="status-number" id="playersOnline">0</div>
+                </div>
+            </div>
+
+            <div class="status-card discord-card">
+                <img src="https://cdn-icons-png.flaticon.com/512/906/906361.png" 
+                     alt="Discord" class="status-icon">
+                <div class="status-content">
+                    <h3> Personas en Discord</h3>
+                    <div class="status-number" id="discordOnline">0</div>
+                </div>
+            </div>
         </div>
-        <div class="players-online">
-            <i class="fas fa-users"></i>
-            <span>Jugadores conectados: <strong id="playersOnline">0</strong>/100</span>
-        </div>
+
         <div class="botones-conexion">
             <button class="discord-btn" onclick="conectarServidor()">
-                <i class="fas fa-copy"></i> Copiar IP
+                <i class="fas fa-copy"></i> Conectar
             </button>
-            <a href="https://discord.gg/MJ5QfTc2KQ" class="discord-btn" target="_blank" rel="noopener">
+            <a href="https://discord.gg/MJ5QfTc2KQ" class="discord-btn" target="_blank">
                 <i class="fab fa-discord"></i> Unirse a Discord
             </a>
         </div>
     </div>
 
-    <!-- Sistema de Votación Mejorado -->
+    <!-- Sistema de votación -->
     <div class="votacion-container">
-        <h2 style="font-size: 2em; text-align: center; margin-bottom: 30px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+        <h2 style="font-size: 2em; text-align: center; margin-bottom: 30px;">
             <i class="fas fa-vote-yea"></i> VOTAR POR EL SERVIDOR
         </h2>
         <div class="votacion-grid">
@@ -575,11 +453,6 @@
                 <i class="fas fa-medal fa-beat"></i>
                 <h3>Minecraft-Servers.org</h3>
                 <p>+500 Monedas</p>
-                <div style="margin: 15px 0;">
-                    <div class="estrella-calificacion">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    </div>
-                </div>
                 <small>Recompensa disponible en: 2h 15m</small>
             </div>
             <div class="voto-card" onclick="votar(2)">
@@ -589,24 +462,19 @@
                 <i class="fas fa-trophy fa-bounce"></i>
                 <h3>TopG.org</h3>
                 <p>+300 Monedas</p>
-                <div style="margin: 15px 0;">
-                    <div class="estrella-calificacion">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                </div>
                 <small>Recompensa disponible ahora</small>
             </div>
         </div>
     </div>
 
-    <!-- Tienda Oficial Mejorada -->
+    <!-- Tienda -->
     <div class="tienda-container">
-        <h2 style="font-size: 2em; text-align: center; margin-bottom: 30px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+        <h2 style="font-size: 2em; text-align: center; margin-bottom: 30px;">
             <i class="fas fa-gem"></i> TIENDA DE RANGOS
         </h2>
         <div class="productos-grid">
             <div class="producto" onclick="agregarAlCarrito('MVP', 12.99)">
-                <div class="etiqueta-oferta">🔥 MÁS POPULAR</div>
+               <div class="etiqueta-oferta" style="background: linear-gradient(45deg, #ff8800, #e5ff00);">⚡ Mas popular</div>
                 <h3 style="font-size: 1.6em;">Rango MVP</h3>
                 <div class="precio">
                     $12.99
@@ -622,7 +490,7 @@
                 </button>
             </div>
             <div class="producto" onclick="agregarAlCarrito('VIP', 6.99)">
-                <div class="etiqueta-oferta" style="background: linear-gradient(45deg, #3498db, #2980b9);">⚡ MEJOR VALOR</div>
+                <div class="etiqueta-oferta" style="background: linear-gradient(45deg, #f300df, #2980b9);">⚡ MEJOR VALOR</div>
                 <h3 style="font-size: 1.6em;">Rango VIP</h3>
                 <div class="precio">
                     $6.99
@@ -647,114 +515,58 @@
         </button>
         <h3><i class="fas fa-shopping-cart"></i> Carrito</h3>
         <div id="carrito-items"></div>
-        <div id="carrito-total" style="margin: 20px 0; font-size: 1.2em;"></div>
+        <div class="cart-total" id="carrito-total"></div>
         <div class="botones-pago">
             <button class="discord-btn" onclick="procesarPagoManual()">
                 <i class="fas fa-credit-card"></i> Pagar Manualmente
             </button>
             <div id="paypal-button-container"></div>
         </div>
+        <button class="discord-btn btn-clear-cart" onclick="clearCart()">
+            <i class="fas fa-trash"></i> Vaciar Carrito
+        </button>
     </div>
 
     <script>
-        // Variables Globales
         let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
         let paypalButtons = null;
-        let jugadoresRegistrados = JSON.parse(localStorage.getItem('jugadores')) || [];
 
-        // Sistema de Registro
-        function toggleFormulario() {
-            const form = document.getElementById('formRegistro');
-            form.classList.toggle('mostrar');
+        // ========== FUNCIONES NUEVAS ==========
+        async function actualizarDiscord() {
+            try {
+                const GUILD_ID = '1321256867737112597'; // 🔄 REEMPLAZAR CON TU ID
+                const response = await fetch(`https://discord.com/api/guilds/${GUILD_ID}/widget.json`);
+                const data = await response.json();
+                document.getElementById('discordOnline').textContent = data.presence_count || '0';
+            } catch (error) {
+                console.error('Error al obtener estado de Discord:', error);
+                document.getElementById('discordOnline').textContent = '?';
+            }
         }
 
-        function registrarNick() {
-            const nickInput = document.getElementById('minecraftNick');
-            const nickname = nickInput.value.trim();
-            
-            if (!nickname) {
-                mostrarNotificacion('❌ Ingresa un nick', 'error');
-                return;
+        // ========== FUNCIONES MODIFICADAS ==========
+        async function actualizarEstado() {
+            try {
+                const response = await fetch('https://api.mcsrvstat.us/3/ny2.holy.gg:26442');
+                const data = await response.json();
+                document.getElementById('playersOnline').textContent = data.players?.online || 0;
+            } catch (error) {
+                console.error('Error al obtener estado de Minecraft:', error);
             }
-
-            if (!/^[a-zA-Z0-9_]{3,16}$/.test(nickname)) {
-                mostrarNotificacion('❌ Nick inválido (3-16 caracteres alfanuméricos)', 'error');
-                return;
-            }
-
-            if (jugadoresRegistrados.some(j => j.nick.toLowerCase() === nickname.toLowerCase())) {
-                mostrarNotificacion('❌ Nick ya registrado', 'error');
-                return;
-            }
-
-            jugadoresRegistrados.unshift({
-                nick: nickname,
-                fechaRegistro: new Date().toISOString()
-            });
-            
-            localStorage.setItem('jugadores', JSON.stringify(jugadoresRegistrados));
-            actualizarListaRegistrados();
-            nickInput.value = '';
-            mostrarNotificacion('✅ Nick registrado correctamente');
-            toggleFormulario();
         }
 
-        function actualizarListaRegistrados() {
-            const container = document.getElementById('registrados-container');
-            container.innerHTML = jugadoresRegistrados.slice(0, 6).map(jugador => `
-                <div class="jugador-card">
-                    <div class="skin-preview" 
-                         style="background-image: url('https://minotar.net/helm/${encodeURIComponent(jugador.nick)}/50.png')"
-                         onerror="this.style.backgroundImage='url(https://minotar.net/helm/MHF_Steve/50.png)'">
-                    </div>
-                    <h5 style="margin:5px 0;font-size:0.8em">${jugador.nick}</h5>
-                </div>
-            `).join('');
-        }
-
-        document.addEventListener('click', (e) => {
-            const form = document.getElementById('formRegistro');
-            const btn = document.querySelector('.btn-registro');
+        document.addEventListener('DOMContentLoaded', () => {
+            actualizarEstado();
+            actualizarDiscord();
+            actualizarCarrito();
             
-            if (!form.contains(e.target) && !btn.contains(e.target)) {
-                form.classList.remove('mostrar');
-            }
+            setInterval(() => {
+                actualizarEstado();
+                actualizarDiscord();
+            }, 60000);
         });
 
-        // Estado del Servidor
-        async function actualizarEstado() {
-            const statusElement = document.getElementById('serverStatus');
-            try {
-                const response = await fetch('https://api.mcsrvstat.us/ny2.holy.gg:26442');
-                const data = await response.json();
-                document.getElementById('playersOnline').textContent = data.online ? data.players.online : 0;
-                statusElement.innerHTML = data.online ? 
-                    '<i class="fas fa-circle online"></i> SERVIDOR ONLINE' : 
-                    '<i class="fas fa-circle offline"></i> SERVIDOR OFFLINE';
-            } catch (error) {
-                statusElement.innerHTML = '<i class="fas fa-circle offline"></i> Error de conexión';
-            }
-        }
-
-        function conectarServidor() {
-            const ip = 'ny2.holy.gg:26442';
-            navigator.clipboard.writeText(ip);
-            mostrarNotificacion('✅ IP copiada al portapapeles');
-        }
-
-        // Sistema de Votación
-        function votar(sitio) {
-            const sitios = {
-                1: 'https://minecraft-servers.org/vote/tottaland',
-                2: 'https://topg.org/minecraft-servers/vote-tottaland'
-            };
-            if (sitios[sitio]) {
-                window.open(sitios[sitio], '_blank');
-                mostrarNotificacion('¡Voto registrado! Usa /claim en el juego');
-            }
-        }
-
-        // Sistema de Carrito Corregido
+        // ========== TUS FUNCIONES ORIGINALES ==========
         function toggleCarrito() {
             document.getElementById('carrito').classList.toggle('carrito-abierto');
         }
@@ -770,7 +582,16 @@
                     <div class="carrito-item">
                         <div>
                             <h4>${item.nombre}</h4>
-                            <small>Cantidad: ${item.cantidad}</small>
+                            <p>$${item.precio.toFixed(2)} c/u</p>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <span>${item.cantidad}</span>
+                                <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <p>$${(item.precio * item.cantidad).toFixed(2)}</p>
@@ -782,24 +603,12 @@
                 `;
             }).join('');
             
-            totalElement.innerHTML = `
-                <div class="total-container">
-                    <hr>
-                    <h4>Total: $${total.toFixed(2)}</h4>
-                </div>
-            `;
-            
-            document.getElementById('cart-counter').textContent = carrito.length;
+            totalElement.innerHTML = `Total: $${total.toFixed(2)}`;
+            document.getElementById('cart-counter').textContent = carrito.reduce((sum, item) => sum + item.cantidad, 0);
             localStorage.setItem('carrito', JSON.stringify(carrito));
             
-            if (total > 0) {
-                renderPayPalButtons(total);
-            } else {
-                if (paypalButtons) {
-                    paypalButtons.close();
-                    document.getElementById('paypal-button-container').innerHTML = '';
-                }
-            }
+            if (total > 0) renderPayPalButtons(total);
+            else if (paypalButtons) paypalButtons.close();
         }
 
         function agregarAlCarrito(nombre, precio) {
@@ -811,14 +620,19 @@
                 carrito.push({
                     nombre: nombre,
                     precio: parseFloat(precio),
-                    cantidad: 1,
-                    fechaAgregado: new Date().toISOString()
+                    cantidad: 1
                 });
             }
             
             actualizarCarrito();
-            toggleCarrito();
             mostrarNotificacion(`✅ ${nombre} agregado al carrito`);
+        }
+
+        function updateQuantity(index, change) {
+            const newQuantity = carrito[index].cantidad + change;
+            if (newQuantity < 1) return eliminarItem(index);
+            carrito[index].cantidad = newQuantity;
+            actualizarCarrito();
         }
 
         function eliminarItem(index) {
@@ -829,7 +643,13 @@
             }
         }
 
-        // Sistema de Pagos
+        function clearCart() {
+            if (confirm('¿Estás seguro de vaciar el carrito?')) {
+                carrito = [];
+                actualizarCarrito();
+            }
+        }
+
         function procesarPagoManual() {
             if (carrito.length === 0) {
                 mostrarNotificacion('El carrito está vacío', 'error');
@@ -886,7 +706,23 @@
             }).render('#paypal-button-container');
         }
 
-        // Sistema de Notificaciones
+        function conectarServidor() {
+            const ip = 'ny2.holy.gg:26442';
+            navigator.clipboard.writeText(ip);
+            mostrarNotificacion('✅ IP copiada al portapapeles');
+        }
+
+        function votar(sitio) {
+            const sitios = {
+                1: 'https://minecraft-servers.org/vote/tottaland',
+                2: 'https://topg.org/minecraft-servers/vote-tottaland'
+            };
+            if (sitios[sitio]) {
+                window.open(sitios[sitio], '_blank');
+                mostrarNotificacion('¡Voto registrado! Usa /claim en el juego');
+            }
+        }
+
         function mostrarNotificacion(mensaje, tipo = 'exito') {
             const toast = document.createElement('div');
             toast.className = `toast ${tipo === 'error' ? 'error' : ''}`;
@@ -895,7 +731,6 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Efectos Parallax
         document.querySelectorAll('.producto, .voto-card').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
@@ -917,25 +752,16 @@
                 card.style.setProperty('--rotate-y', '0deg');
             });
         });
-
-        // Inicialización
-        document.addEventListener('DOMContentLoaded', () => {
-            actualizarEstado();
-            actualizarCarrito();
-            actualizarListaRegistrados();
-            setInterval(actualizarEstado, 30000);
-        });
     </script>
-        <!-- Pie de página con información sobre el servidor y descargo de responsabilidad -->
+
+    <!-- Footer -->
     <footer style="background: rgba(0, 0, 0, 0.8); padding: 20px; text-align: center; margin-top: 40px; border-top: 2px solid var(--color-primario);">
         <div style="max-width: 800px; margin: 0 auto;">
             <h3 style="color: var(--color-primario); margin-bottom: 15px;">Sobre Nuestro Servidor</h3>
             <p style="color: #ccc; line-height: 1.6;">
                 ¡Bienvenido a <strong>Tottaland</strong>! Somos un servidor de Minecraft Java y Bedrock dedicado a ofrecer una experiencia única y divertida para todos los jugadores. Nuestro servidor cuenta con una comunidad activa, eventos emocionantes, y un equipo de moderadores comprometidos a garantizar un ambiente seguro y amigable. Ya sea que estés buscando aventuras, construcción creativa, o simplemente pasar un buen rato con amigos, ¡Tottaland es el lugar perfecto para ti!
             </p>
-            <!-- Aviso Legal Mejorado -->
-            <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px solid rgba(255, 255, 255, 0.1);">
-                <h4 style="color: var(--color-primario); margin-bottom: 10px;"></h4>
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; margin-top: 20px;">
                 <p style="color: #ccc; line-height: 1.6; font-size: 0.9em;">
                     <strong>Copyright © Tottaland 2025. Todos los derechos reservados.</strong><br>
                     No estamos afiliados con Mojang AB.
@@ -943,7 +769,5 @@
             </div>
         </div>
     </footer>
-</body>
-</html>
 </body>
 </html>
