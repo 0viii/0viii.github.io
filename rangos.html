@@ -3,209 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tottaland - Rangos Premium</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        :root {
-            --main-color: #2ecc71;
-            --dark-bg: #1a1a1a;
-            --card-bg: #2d2d2d;
-            --text-color: #ffffff;
-        }
-      
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        body {
-            background: var(--dark-bg);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 2rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 3rem;
-            color: var(--main-color);
-        }
-
-        .rank-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .rank-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 2rem;
-            border: 2px solid var(--main-color);
-            transition: transform 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .rank-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .rank-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .rank-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--main-color);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .rank-price {
-            font-size: 2rem;
-            color: var(--main-color);
-            margin: 1.5rem 0;
-            text-align: center;
-        }
-
-        .rank-benefits {
-            list-style: none;
-            margin-bottom: 2rem;
-        }
-
-        .rank-benefits li {
-            margin-bottom: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-buy {
-            width: 100%;
-            padding: 1rem;
-            background: var(--main-color);
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn-buy:hover {
-            background: #27ae60;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-            
-            .rank-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-    
+    <title>Tienda Minecraft - Cupones y Tebex</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <h1>Adquiere tu Rango Premium</h1>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Icono del Carrito -->
+    <div class="fixed right-4 top-4 z-50">
+        <button onclick="toggleCart()" class="relative bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition">
+            🛒
+            <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-2 text-sm">
+                0
+            </span>
+        </button>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="container mx-auto p-4 pt-20">
+        <h1 class="text-4xl font-bold mb-8 text-center">🔑 Tienda de rangos</h1>
         
-        <div class="rank-grid">
-            <!-- Rango Novato -->
-            <div class="rank-card">
-                <div class="rank-header">
-                    <div class="rank-icon"><i class="fas fa-user"></i></div>
-                    <div>
-                        <h2>Novato</h2>
-                        <p>Perfecto para comenzar</p>
-                    </div>
-                </div>
-                
-                <ul class="rank-benefits">
-                    <li><i class="fas fa-check"></i> Acceso completo al spawn</li>
-                    <li><i class="fas fa-check"></i> 3 homes disponibles</li>
-                    <li><i class="fas fa-check"></i> Kit de inicio básico</li>
-                </ul>
-                
-                <div class="rank-price">$5.00</div>
-                <button class="btn-buy"><i class="fas fa-shopping-cart"></i> Comprar Ahora</button>
+        <!-- Listado de Productos -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="products-container">
+            <!-- Productos se cargarán dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Carrito de Compras -->
+    <div id="cart-sidebar" class="fixed right-0 top-0 h-full w-96 bg-gray-800 shadow-xl transform transition-transform duration-300 translate-x-full">
+        <div class="p-6 h-full flex flex-col">
+            <!-- Encabezado del Carrito -->
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">🛒 Tu Carrito</h2>
+                <button onclick="toggleCart()" class="text-gray-400 hover:text-white">
+                    ✕
+                </button>
+            </div>
+            
+            <!-- Items del Carrito -->
+            <div id="cart-items" class="flex-1 overflow-y-auto mb-4">
+                <!-- Items se mostrarán aquí -->
             </div>
 
-            <!-- Rango VIP -->
-            <div class="rank-card">
-                <div class="rank-header">
-                    <div class="rank-icon" style="background: #f1c40f;"><i class="fas fa-shield-alt"></i></div>
-                    <div>
-                        <h2>VIP</h2>
-                        <p>Experiencia mejorada</p>
+            <!-- Total y Acciones -->
+            <div class="border-t pt-4">
+                <div class="mb-4">
+                    <input type="text" id="coupon-code" placeholder="Código de descuento" 
+                           class="w-full p-2 bg-gray-700 rounded mb-2">
+                    <button onclick="applyCoupon()" 
+                            class="w-full bg-purple-600 hover:bg-purple-700 text-white p-2 rounded">
+                        Aplicar Cupón
+                    </button>
+                </div>
+                
+                <div class="mb-4">
+                    <p class="text-gray-400 text-sm">Descuento aplicado: <span id="discount-amount">$0</span></p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xl font-bold">Total:</span>
+                        <span id="cart-total" class="text-xl font-bold text-green-400">$0</span>
                     </div>
                 </div>
                 
-                <ul class="rank-benefits">
-                    <li><i class="fas fa-check"></i> Comandos especiales</li>
-                    <li><i class="fas fa-check"></i> Fly permanente</li>
-                    <li><i class="fas fa-check"></i> 10 homes disponibles</li>
-                </ul>
-                
-                <div class="rank-price">$15.00</div>
-                <button class="btn-buy"><i class="fas fa-shopping-cart"></i> Comprar Ahora</button>
-            </div>
-
-            <!-- Rango Élite -->
-            <div class="rank-card">
-                <div class="rank-header">
-                    <div class="rank-icon" style="background: #e74c3c;"><i class="fas fa-crown"></i></div>
-                    <div>
-                        <h2>Élite</h2>
-                        <p>Máximo nivel</p>
-                    </div>
-                </div>
-                
-                <ul class="rank-benefits">
-                    <li><i class="fas fa-check"></i> Todos los beneficios VIP</li>
-                    <li><i class="fas fa-check"></i> Acceso exclusivo a áreas</li>
-                    <li><i class="fas fa-check"></i> Homes ilimitados</li>
-                </ul>
-                
-                <div class="rank-price">$30.00</div>
-                <button class="btn-buy"><i class="fas fa-shopping-cart"></i> Comprar Ahora</button>
+                <button onclick="processCheckout()" 
+                        class="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg">
+                    Pagar con Tebex ✅
+                </button>
             </div>
         </div>
     </div>
 
     <script>
-        document.querySelectorAll('.btn-buy').forEach(button => {
-            button.addEventListener('click', function() {
-                const rankCard = this.closest('.rank-card');
-                const rankName = rankCard.querySelector('h2').textContent;
-                const rankPrice = rankCard.querySelector('.rank-price').textContent;
-                
-                // Aquí puedes agregar la lógica de compra
-                alert(`Has seleccionado el rango: ${rankName}\nPrecio: ${rankPrice}`);
+        // Configuración
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let activeCoupon = JSON.parse(localStorage.getItem('coupon')) || null;
+        
+        // Productos de ejemplo
+        const products = [
+            { id: 1, name: "llave mitica", price: 9.99, description: "llave test1" },
+            { id: 2, name: "llave legendaria", price: 19.99, description: "llave test2" }
+        ];
+
+        // Cupones (debes reemplazar con tu lógica de Tebex)
+        const coupons = {
+            'DESCUENTO10': { type: 'percent', value: 10 },
+            '5DOLARES': { type: 'fixed', value: 5 },
+            'TIENDA20': { type: 'percent', value: 20 }
+        };
+
+        // Inicializar tienda
+        function init() {
+            renderProducts();
+            updateCartUI();
+            loadCoupon();
+        }
+
+        // Mostrar/ocultar carrito
+        function toggleCart() {
+            const sidebar = document.getElementById('cart-sidebar');
+            sidebar.classList.toggle('translate-x-full');
+        }
+
+        // Renderizar productos
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = products.map(product => `
+                <div class="bg-gray-700 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-2">${product.name}</h3>
+                    <p class="text-gray-400 mb-4">${product.description}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl text-green-400">$${product.price}</span>
+                        <button onclick="addToCart(${product.id})" 
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                            Añadir al Carrito
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Funciones del Carrito
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCartUI();
+            saveCart();
+        }
+
+        function calculateTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let discount = 0;
+
+            if (activeCoupon) {
+                if (activeCoupon.type === 'percent') {
+                    discount = subtotal * (activeCoupon.value / 100);
+                } else if (activeCoupon.type === 'fixed') {
+                    discount = activeCoupon.value;
+                }
+            }
+
+            return {
+                subtotal: subtotal,
+                discount: Math.min(discount, subtotal),
+                total: subtotal - discount
+            };
+        }
+
+        function updateCartUI() {
+            const cartItems = document.getElementById('cart-items');
+            const totals = calculateTotals();
+            
+            // Actualizar items
+            cartItems.innerHTML = cart.map(item => `
+                <div class="bg-gray-900 rounded p-4 mb-3">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold">${item.name}</h4>
+                            <p class="text-sm text-gray-400">$${item.price} x ${item.quantity}</p>
+                        </div>
+                        <span class="text-green-400">$${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Actualizar totales
+            document.getElementById('cart-total').textContent = `$${totals.total.toFixed(2)}`;
+            document.getElementById('discount-amount').textContent = `-$${totals.discount.toFixed(2)}`;
+            document.getElementById('cart-count').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+        }
+
+        function applyCoupon() {
+            const couponCode = document.getElementById('coupon-code').value.toUpperCase();
+            
+            if (coupons[couponCode]) {
+                activeCoupon = coupons[couponCode];
+                localStorage.setItem('coupon', JSON.stringify(activeCoupon));
+                updateCartUI();
+                alert('🎉 Cupón aplicado correctamente');
+            } else {
+                alert('❌ Cupón no válido');
+            }
+        }
+
+        function loadCoupon() {
+            if (activeCoupon) {
+                document.getElementById('coupon-code').value = Object.keys(coupons).find(key => coupons[key] === activeCoupon);
+            }
+        }
+
+        function processCheckout() {
+            if (cart.length === 0) return alert('¡Tu carrito está vacío!');
+            
+            // Construir parámetros para Tebex
+            const tebexParams = new URLSearchParams({
+                embed: 'widget',
+                items: JSON.stringify(cart.map(item => ({
+                    id: item.id,
+                    quantity: item.quantity
+                })))
             });
-        });
+
+            // Agregar cupón si existe
+            if (activeCoupon) {
+                tebexParams.append('coupon', document.getElementById('coupon-code').value);
+            }
+
+            // Redirigir a Tebex
+            window.location.href = `https://checkout.tebex.io/basket?${tebexParams.toString()}`;
+        }
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        // Iniciar al cargar
+        window.onload = init;
     </script>
 </body>
 </html>
