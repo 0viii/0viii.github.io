@@ -11,7 +11,7 @@
             --main-color: #2ecc71;
             --dark-bg: #0f1721;
             --text: #ecf0f1;
-            --header-gradient: linear-gradient(135deg, rgba(16, 36, 55, 0.98), rgba(11, 25, 39, 0.98));
+            --header-gradient: linear-gradient(135deg, rgba(0, 225, 255, 0.98), rgba(225, 0, 255, 0.98));
         }
 
         * {
@@ -48,12 +48,9 @@
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--main-color), #d400ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+           font-size: 1.8rem;
+           font-weight: 800;
+           color: #ffffff; /* Color fijo */
         }
 
         /* Menú Hamburguesa */
@@ -163,13 +160,14 @@
             }
 
             .menu-close {
-                position: absolute;
-                top: 1.5rem;
-                right: 1.5rem;
-                font-size: 1.5rem;
-                color: var(--main-color);
-                cursor: pointer;
-            }
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            color: #ff5733; /* Color fijo */
+            cursor: pointer;
+}
+
         }
 
         /* Hero Section con Imagen */
@@ -200,7 +198,7 @@
         .highlight {
             color: var(--main-color);
             font-weight: bold;
-            text-shadow: 0 0 15px rgba(120, 46, 204, 0.3);
+            text-shadow: 0 0 15px rgba(159, 46, 204, 0.3);
         }
 
         /* Botones */
