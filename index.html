@@ -172,7 +172,7 @@
             }
         }
 
-        /* Hero Section */
+        /* Hero Section con Imagen */
         .hero {
             padding: 8rem 1rem 2rem;
             min-height: 100vh;
@@ -180,6 +180,8 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                        url('https://images5.alphacoders.com/118/thumb-1920-1183450.jpg') center/cover fixed;
         }
 
         .hero h1 {
@@ -232,6 +234,11 @@
         .discord-btn {
             background: #5865F2;
             color: white;
+        }
+
+        .soporte-btn {
+            background: #ffaa00;
+            color: #1a1a1a;
         }
 
         .btn-copied {
@@ -328,6 +335,13 @@
             45% { transform: scale(1.15); }
             60% { transform: scale(1); }
         }
+
+        @media (max-width: 768px) {
+            .hero {
+                background-attachment: scroll;
+                background-position: center 60%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -342,16 +356,14 @@
             </div>
             
             <ul class="nav-menu">
-                <div class="menu-close">×</div>
+                <div class="menu-close"></div>
                 
                 <li class="nav-item" id="categories">
                     <span>Categorías ▼</span>
                     <div class="dropdown-menu">
                         <a href="#"><i class="fas fa-key"></i> Llaves</a>
                         <a href="rangos.html"><i class="fas fa-shield-alt"></i> Rangos</a>
-                        <a href="#"><i class="fas fa-store"></i> Tienda</a>
-                        <a href="#"><i class="fas fa-trophy"></i> Torneos</a>
-                        <a href="#"><i class="fas fa-gift"></i> Recompensas</a>
+                        <a href="#"><i class="fas fa-gift"></i> votar</a>
                     </div>
                 </li>
                 
@@ -359,7 +371,7 @@
                     <a href="reglas.html" style="color: inherit; text-decoration: none;">Reglas</a>
                 </li>
                 <li class="nav-item">
-                    <a href="https://discord.com/channels/ID-SERVIDOR/ID-CANAL-SOPORTE" 
+                    <a href="https://discord.com/channels/1321256867737112597/1324513617193992232" 
                        target="_blank" 
                        rel="noopener noreferrer"
                        style="color: inherit; text-decoration: none;">
@@ -374,23 +386,23 @@
         <div class="hero-content">
             <h1>🎮 Bienvenido a Tottaland</h1>
             <p class="hero-subtitle">
-                <span class="highlight">Servidor Minecraft #1 en Español</span><br>
-                ✅ Protección Anti-Cheat de Última Generación<br>
-                ✨ Eventos Semanales con Grandes Premios<br>
+                <span class="highlight">Servidor de Minecraft Java y Bedrock con una experiencia única.</span><br>
+                ✅ Staff disponible 24/7 para ayudarte.<br>
+                ✨ Eventos mensuales con grandes premios.<br>
                 🏆 Comunidad Activa y Amigable
             </p>
             
             <div class="hero-buttons">
                 <button class="cta-button server-ip-btn" id="copyIpBtn">
-                    <i class="fas fa-link"></i> Conectar al Servidor
+                    <i class="fas fa-link"></i> Conectar
                     <span class="btn-copied">¡IP Copiada!</span>
                 </button>
                 
-                <a href="https://discord.gg/TU-INVITACION" 
+                <a href="https://discord.gg/MJ5QfTc2KQ" 
                    class="cta-button discord-btn"
                    target="_blank"
                    rel="noopener noreferrer">
-                    <i class="fab fa-discord"></i> Unirse a Discord
+                    <i class="fab fa-discord"></i> Discord
                 </a>
             </div>
         </div>
@@ -406,27 +418,24 @@
             <div class="feature-card">
                 <i class="fas fa-users fa-3x"></i>
                 <h3>Comunidad Activa</h3>
-                <p>+10,000 jugadores registrados</p>
+                <p>+20 jugadores registrados</p>
             </div>
             <div class="feature-card">
                 <i class="fas fa-sync fa-3x"></i>
                 <h3>Actualizaciones Constantes</h3>
-                <p>Nuevo contenido cada semana</p>
+                <p>Nuevo contenido cada mes</p>
             </div>
         </div>
     </section>
 
     <footer>
         <div class="footer-content">
-
         <div class="legal-notice">
             <div class="minecraft-heart">♡</div>
             <p>
-              🌿🏰 ¡Bienvenido a Tottaland! 🏹<br>
-⛏️Un mundo donde la aventura nunca termina y la comunidad lo es todo. Sobrevive, construye y explora junto a otros jugadores en un entorno seguro y amigable. Ya sea que busques crear tu imperio, hacer nuevos amigos o desafiar los límites de tu creatividad, aquí encontrarás tu hogar. ¡Forja tu historia y haz de Tottaland un lugar legendario! 🌍🔥<br>
+                Tottaland no está asociado con Mojang Studios o Microsoft.<br>
+                Minecraft es una marca registrada de Mojang AB.<br>
                 ¡Gracias por ser parte de nuestra comunidad de jugadores!
-                <p>Copyright © Tottaland 2025. Todos los derechos reservados.
-No estamos afiliados con Mojang AB.
             </p>
         </div>
     </footer>
