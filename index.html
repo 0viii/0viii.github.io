@@ -98,6 +98,7 @@
             background: var(--dark-bg);
             padding: 5rem 1.5rem;
             box-shadow: -10px 0 30px rgba(0,0,0,0.3);
+            z-index: 999;
         }
 
         .menu-close {
@@ -129,7 +130,7 @@
             border: 1px solid rgba(46, 204, 113, 0.15);
             border-radius: 0.5rem;
             box-shadow: var(--shadow-lg);
-            animation: slideDown 0.3s ease;
+            z-index: 1000;
         }
 
         .dropdown-menu a {
@@ -218,9 +219,11 @@
                 width: 100%;
                 left: 0 !important;
                 background: rgba(0, 0, 0, 0.3) !important;
-                display: none;
+                display: none !important;
                 margin-top: 0.5rem;
-                animation: none;
+                border: none !important;
+                box-shadow: none !important;
+                animation: none !important;
             }
 
             .dropdown-menu.show {
@@ -248,6 +251,13 @@
             }
         }
 
+        @media (min-width: 769px) {
+            .nav-item:hover .dropdown-menu {
+                display: block;
+                animation: slideDown 0.3s ease;
+            }
+        }
+
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -268,7 +278,6 @@
             <ul class="nav-menu">
                 <div class="menu-close">×</div>
                 
-                <!-- Menú simplificado -->
                 <li class="nav-item" id="categories">
                     Categorías
                     <div class="dropdown-menu">
@@ -336,6 +345,7 @@
         const navMenu = document.querySelector('.nav-menu');
         const menuClose = document.querySelector('.menu-close');
         const categories = document.getElementById('categories');
+        let isMobile = window.matchMedia("(max-width: 768px)").matches;
 
         // Hamburguesa
         hamburger.addEventListener('click', (e) => {
@@ -350,16 +360,8 @@
             document.body.style.overflow = 'auto';
         });
 
-        // Cerrar al tocar fuera
-        document.addEventListener('click', (e) => {
-            if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
-                navMenu.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-        });
-
-        // Dropdown móvil
-        if (window.matchMedia("(max-width: 768px)").matches) {
+        // Control dropdown
+        if (isMobile) {
             categories.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const dropdown = categories.querySelector('.dropdown-menu');
@@ -374,14 +376,17 @@
             });
         }
 
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
+        // Cerrar menú al tocar fuera
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+                navMenu.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Actualizar en resize
+        window.addEventListener('resize', () => {
+            isMobile = window.matchMedia("(max-width: 768px)").matches;
         });
     </script>
 </body>
