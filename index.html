@@ -3,771 +3,489 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tottaland - Tienda Oficial</title>
-    <meta name="description" content="Servidor oficial de Minecraft Bedrock Tottaland">
-    <link rel="icon" type="image/png" href="https://static.vecteezy.com/system/resources/previews/022/636/367/non_2x/minecraft-logo-transparent-free-png.png">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://www.paypal.com/sdk/js?client-id=TU_CLIENT_ID_REAL&currency=USD"></script>
-
+    <title>Tottaland - Minecraft Server</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        :root {
-            --color-primario: #2ecc71;
-            --color-secundario: #3498db;
-            --fondo-oscuro: #1a1a1a;
-            --fondo-tarjeta: rgba(45, 45, 45, 0.9);
-        }
-
+        /* ESTILOS ORIGINALES */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
         }
 
         body {
-            color: white;
-            min-height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-                        url('https://images2.alphacoders.com/135/1353836.png') center/cover fixed;
-            padding: 15px;
-        }
-
-/* ========== CONTADORES MEJORADOS ========== */
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .status-card {
-            background: linear-gradient(145deg, rgba(46, 204, 113, 0.15), rgba(41, 128, 185, 0.15));
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: none;
-            backdrop-filter: blur(8px);
-            transition: all 0.3s ease;
-            cursor: default;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            min-height: 80px;
-            position: relative;
-        }
-
-        .status-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.25);
-        }
-
-        .status-icon {
-            width: 40px;
-            height: 40px;
-            padding: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
-            object-fit: contain;
-        }
-
-        .status-content h3 {
-            color: #ddd;
-            margin-bottom: 2px;
-            font-size: 0.9em;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
-        .status-number {
-            font-size: 1.4em;
-            font-weight: 700;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .status-number::after {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: #2ecc71;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #2ecc71;
-            margin-left: 5px;
-        }
-
-        .discord-card .status-number::after {
-            background: #5865F2;
-            box-shadow: 0 0 8px #5865F2;
-        }
-
-        .status-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 12px;
-            padding: 2px;
-            background: linear-gradient(45deg, 
-                var(--color-primario) 0%, 
-                rgba(46, 204, 113, 0) 50%, 
-                var(--color-secundario) 100%);
-            -webkit-mask: 
-                linear-gradient(#fff 0 0) content-box, 
-                linear-gradient(#fff 0 0);
-            mask: 
-                linear-gradient(#fff 0 0) content-box, 
-                linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-        }
-
-        .status-card:hover::before {
-            opacity: 1;
-        }
-
-        /* ========== TUS ESTILOS ORIGINALES ========== */
-        .server-info {
-            background: var(--fondo-tarjeta);
-            padding: 25px;
-            border-radius: 15px;
-            margin: 20px auto;
-            max-width: 600px;
-            backdrop-filter: blur(10px);
-            border: 2px solid var(--color-primario);
-            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
-            text-align: center;
-        }
-
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            padding: 15px;
-            margin: 20px 0;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            font-size: 1.2em;
-        }
-
-        .players-online {
-            font-size: 1.3em;
-            color: var(--color-primario);
-            margin: 15px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .votacion-container {
-            background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(41, 128, 185, 0.15));
-            border: 2px solid var(--color-primario);
-            border-radius: 20px;
-            margin: 30px 0;
-            padding: 25px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .votacion-container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent 20%, rgba(46, 204, 113, 0.1) 50%, transparent 80%);
-            animation: bgAnimacion 8s linear infinite;
-        }
-
-        .votacion-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            position: relative;
-        }
-
-        .voto-card {
-            background: rgba(40, 55, 71, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(46, 204, 113, 0.3);
-        }
-
-        .voto-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.2);
-        }
-
-        .voto-card i {
-            font-size: 2.5em;
-            color: var(--color-primario);
-            margin-bottom: 15px;
-            transition: transform 0.3s;
-        }
-
-        .voto-card:hover i {
-            transform: rotate(360deg) scale(1.2);
-        }
-
-        .tienda-container {
-            background: linear-gradient(45deg, rgba(52, 73, 94, 0.95), rgba(44, 62, 80, 0.95));
-            border-radius: 20px;
-            margin: 30px 0;
-            padding: 25px;
-            position: relative;
-            border: 2px solid var(--color-secundario);
-            box-shadow: 0 10px 30px rgba(41, 128, 185, 0.2);
-        }
-
-        .productos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 25px 0;
-        }
-
-        .producto {
-            background: rgba(30, 39, 46, 0.95);
-            border-radius: 15px;
-            padding: 25px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            border: 1px solid rgba(65, 185, 41, 0.3);
-        }
-
-        .producto:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 15px 35px rgba(41, 128, 185, 0.3);
-        }
-
-        .producto::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent 20%, rgba(255,255,255,0.1) 50%, transparent 80%);
-            animation: bgAnimacion 6s linear infinite;
-        }
-
-        .carrito-sidebar {
-            position: fixed;
-            right: -320px;
-            top: 0;
-            width: 320px;
-            height: 100%;
-            background: rgba(30, 39, 46, 0.98);
-            padding: 20px;
-            transition: right 0.3s;
-            overflow-y: auto;
-            z-index: 1000;
-            backdrop-filter: blur(15px);
-            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
-        }
-
-        .carrito-abierto {
-            right: 0 !important;
-        }
-
-        .carrito-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            margin: 15px 0;
-            background: rgba(44, 62, 80, 0.95);
-            border-radius: 8px;
-            border: 1px solid rgba(41, 128, 185, 0.3);
-            transition: all 0.3s;
-        }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .quantity-btn {
-            background: var(--color-secundario);
-            border: none;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .cart-total {
-            font-size: 1.4em;
-            color: var(--color-primario);
-            padding: 15px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-
-        .btn-clear-cart {
-            background: #e74c3c;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .cart-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--color-primario);
-            padding: 12px 25px;
-            border-radius: 30px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
-            z-index: 1000;
-        }
-
-        @keyframes bgAnimacion {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .producto:hover::after,
-        .voto-card:hover::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at var(--x) var(--y), 
-                rgba(255,255,255,0.1) 0%, 
-                transparent 60%);
-            pointer-events: none;
-        }
-
-        .producto, .voto-card {
-            transform-style: preserve-3d;
-        }
-
-        .producto:hover, .voto-card:hover {
-            transform: perspective(1000px) rotateX(var(--rotate-x)) rotateY(var(--rotate-y)) translateZ(20px);
+            background-color: #1a1a1a;
+            color: #ffffff;
         }
 
         header {
-            text-align: center;
-            margin: 80px 0 20px;
+            background-color: #0d0d0d;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
         }
 
-        .discord-btn {
-            background: #5865F2;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 10px;
-            text-decoration: none;
-            display: inline-flex;
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            transition: all 0.3s;
-            font-size: 1.1em;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-item {
+            cursor: pointer;
+            position: relative;
+            padding: 10px;
+        }
+
+        /* MEJORAS DEL MENÚ (SOLO CAMBIOS) */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1a1a1a;
+            min-width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border: 1px solid #00ff88;
+            padding: 10px 0;
+            animation: slideDown 0.3s ease;
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            gap: 10px;
+        }
+
+        .dropdown-menu a:hover {
+            background: #00ff8820;
+            transform: translateX(5px);
+        }
+
+        .dropdown-menu i {
+            color: #00ff88;
+            width: 20px;
+            text-align: center;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* RESTO DE ESTILOS ORIGINALES */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                        url('https://ejemplo.com/tu-imagen.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 1rem;
+        }
+
+        .features {
+            padding: 4rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background-color: #262626;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #0d0d0d;
+            padding: 2rem 1rem;
+            margin-top: 4rem;
         }
 
         @media (max-width: 768px) {
-            .productos-grid, .votacion-grid { grid-template-columns: 1fr; }
-            .carrito-sidebar { width: 100%; right: -100%; }
-            .server-info { margin: 20px 0; }
+            .nav-menu {
+                display: none;
+            }
+            
+            .dropdown-menu {
+                position: static;
+                background-color: transparent;
+                box-shadow: none;
+                border: none;
+            }
         }
     </style>
+    <style>
+/* Variables CSS - Sistema de diseño unificado */
+:root {
+  --main-color: #2ecc71;
+  --dark-bg: #0f1721;
+  --accent: #1abc9c;
+  --text: #ecf0f1;
+  --header-gradient: linear-gradient(135deg, rgba(16, 36, 55, 0.98), rgba(11, 25, 39, 0.98));
+  --card-bg: rgba(255, 255, 255, 0.02);
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+/* Reset y estilos base optimizados */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Header mejorado con animaciones suaves */
+header {
+  background: var(--header-gradient) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(46, 204, 113, 0.1) !important;
+  transition: all var(--transition-fast);
+}
+
+.logo {
+  background: linear-gradient(45deg, var(--main-color), #27ae60);
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  text-shadow: 0 0 30px rgba(46, 204, 113, 0.3);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+}
+
+/* Navegación interactiva */
+.nav-item {
+  transition: all var(--transition-fast) !important;
+  position: relative;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.nav-item:hover {
+  background: rgba(46, 204, 113, 0.05);
+}
+
+.nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--main-color);
+  transition: width var(--transition-fast);
+}
+
+.nav-item:hover::after {
+  width: 60%;
+}
+
+/* Dropdown moderno */
+.dropdown-menu {
+  background: rgba(15, 23, 33, 0.98) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(46, 204, 113, 0.15) !important;
+  box-shadow: var(--shadow-lg);
+  margin-top: 0.5rem;
+}
+
+.dropdown-menu a {
+  padding: 0.75rem 1.5rem;
+  gap: 1rem;
+  border-radius: 0.5rem;
+  margin: 0.25rem;
+}
+
+.dropdown-menu a:hover {
+  background: linear-gradient(90deg, rgba(46, 204, 113, 0.05), transparent);
+  transform: translateX(8px);
+}
+
+/* Hero section con efecto parallax */
+.hero {
+  background-attachment: fixed !important;
+  background-position: center 25% !important;
+  padding: 6rem 1rem 2rem;
+}
+
+.hero-content h1 {
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+/* Tarjetas con efecto hover mejorado */
+.feature-card {
+  background: var(--card-bg) !important;
+  border: 1px solid rgba(46, 204, 113, 0.1) !important;
+  transition: all var(--transition-fast);
+  perspective: 1000px;
+  position: relative;
+  cursor: pointer;
+}
+
+.feature-card:hover {
+  transform: translateY(-0.5rem) rotateX(5deg) rotateY(-2deg);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(400px circle at var(--x) var(--y), 
+    rgba(46, 204, 113, 0.1), transparent 40%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.feature-card i {
+  transition: transform var(--transition-fast);
+}
+
+.feature-card:hover i {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Botón CTA animado */
+.cta-button {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem !important;
+  padding: 1rem 2.5rem !important;
+  font-weight: 600;
+  transition: all var(--transition-fast) !important;
+}
+
+.cta-button::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, 
+    transparent, rgba(255, 255, 255, 0.15), transparent);
+  transform: rotate(45deg);
+  transition: all 0.5s ease;
+}
+
+.cta-button:hover::before {
+  animation: buttonGlow 1.5s infinite;
+}
+
+@keyframes buttonGlow {
+  0% { transform: rotate(45deg) translateX(-50%); }
+  100% { transform: rotate(45deg) translateX(50%); }
+}
+
+/* Footer responsive */
+footer {
+  background: linear-gradient(180deg, #090f15, #0a1118) !important;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 2rem 1rem;
+}
+
+/* Optimizaciones responsive */
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 0.5rem;
+  }
+  
+  .dropdown-menu {
+    position: static;
+    background: transparent !important;
+    backdrop-filter: none;
+    border: none !important;
+    box-shadow: none;
+  }
+  
+  .feature-card {
+    margin: 0 1rem;
+  }
+}
+
+@media (hover: none) {
+  .feature-card:hover {
+    transform: none;
+  }
+}
+
+/* Animaciones clave */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mejoras de rendimiento */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+        </style>
 </head>
 <body>
-    <!-- Botón del carrito -->
-    <button class="cart-btn" onclick="toggleCarrito()">
-        <i class="fas fa-shopping-cart"></i>
-        <span id="cart-counter">0</span>
-    </button>
-
-    <!-- Contenido principal -->
     <header>
-        <h1>BIENVENIDO A TOTTALAND</h1>
-        <p>¡El mejor servidor de Minecraft para Java y Bedrock, donde la diversión nunca termina!</p>
+        <nav class="nav-container">
+            <div class="logo">TOTTALAND</div>
+            <ul class="nav-menu">
+                <li class="nav-item">Inicio</li>
+                
+                <!-- MENÚ MEJORADO -->
+                <li class="nav-item" id="categories">
+                    Categorías
+                    <div class="dropdown-menu">
+                        <a href="#"><i class="fas fa-key"></i> Llaves</a>
+                        <a href="rangos.html"><i class="fas fa-shield-alt"></i> Rangos</a>
+                        <a href="#"><i class="fas fa-store"></i> Tienda</a>
+                        <a href="#"><i class="fas fa-trophy"></i> Torneos</a>
+                        <a href="#"><i class="fas fa-gift"></i> Recompensas</a>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="reglas.html" target="_blank" rel="noopener noreferrer" 
+                       style="color: inherit; text-decoration: none;">Reglas</a>
+                </li>
+                <li class="nav-item">Staff</li>
+                <li class="nav-item">Contacto</li>
+            </ul>
+        </nav>
     </header>
 
-    <!-- Sección de estado actualizada -->
-    <div class="server-info">
-        <h2>🛡️ ESTADO DEL SERVIDOR</h2>
-        <div class="status-grid">
-            <div class="status-card minecraft-card">
-                <img src="https://media.discordapp.net/attachments/1274265485378195482/1350571432031289466/dbd8d820-d1da-4991-aa88-6be6383a6735.jpg?ex=67d73929&is=67d5e7a9&hm=c9548a20f12e06621c435a12ce5c2d3b46bd89c6c0014df3ccb55e05ca11c5b5&=&format=webp&width=648&height=648" 
-                     alt="Minecraft" class="status-icon">
-                <div class="status-content">
-                    <h3>Jugadores Conectados</h3>
-                    <div class="status-number" id="playersOnline">0</div>
-                </div>
-            </div>
-
-            <div class="status-card discord-card">
-                <img src="https://cdn-icons-png.flaticon.com/512/906/906361.png" 
-                     alt="Discord" class="status-icon">
-                <div class="status-content">
-                    <h3> Personas en Discord</h3>
-                    <div class="status-number" id="discordOnline">0</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="botones-conexion">
-            <button class="discord-btn" onclick="conectarServidor()">
-                <i class="fas fa-copy"></i> Conectar
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Bienvenido a Tottaland</h1>
+            <p>El mejor servidor de Minecraft en español</p>
+            <button style="margin-top: 1rem; padding: 1rem 2rem; background-color: #00ff88; border: none; border-radius: 5px; cursor: pointer;">
+                Únete ahora
             </button>
-            <a href="https://discord.gg/MJ5QfTc2KQ" class="discord-btn" target="_blank">
-                <i class="fab fa-discord"></i> Unirse a Discord
-            </a>
         </div>
-    </div>
+    </section>
 
-    <!-- Sistema de votación -->
-    <div class="votacion-container">
-        <h2 style="font-size: 2em; text-align: center; margin-bottom: 30px;">
-            <i class="fas fa-vote-yea"></i> VOTAR POR EL SERVIDOR
-        </h2>
-        <div class="votacion-grid">
-            <div class="voto-card" onclick="votar(1)">
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-                <i class="fas fa-medal fa-beat"></i>
-                <h3>Minecraft-Servers.org</h3>
-                <p>+500 Monedas</p>
-                <small>Recompensa disponible en: 2h 15m</small>
+    <section class="features">
+        <div class="grid-container">
+            <div class="feature-card">
+                <i class="fas fa-shield-alt fa-3x"></i>
+                <h3>Protección Anti-Cheat</h3>
+                <p>Sistema avanzado contra trampas</p>
             </div>
-            <div class="voto-card" onclick="votar(2)">
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-                <i class="fas fa-trophy fa-bounce"></i>
-                <h3>TopG.org</h3>
-                <p>+300 Monedas</p>
-                <small>Recompensa disponible ahora</small>
+            <div class="feature-card">
+                <i class="fas fa-users fa-3x"></i>
+                <h3>Comunidad Activa</h3>
+                <p>+10,000 jugadores registrados</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-sync fa-3x"></i>
+                <h3>Actualizaciones Constantes</h3>
+                <p>Nuevo contenido cada semana</p>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Tienda -->
-    <div class="tienda-container">
-        <h2 style="font-size: 2em; text-align: center; margin-bottom: 30px;">
-            <i class="fas fa-gem"></i> TIENDA DE RANGOS
-        </h2>
-        <div class="productos-grid">
-            <div class="producto" onclick="agregarAlCarrito('MVP', 12.99)">
-               <div class="etiqueta-oferta" style="background: linear-gradient(45deg, #ff8800, #e5ff00);">⚡ Mas popular</div>
-                <h3 style="font-size: 1.6em;">Rango MVP</h3>
-                <div class="precio">
-                    $12.99
-                    <span>Antes $15.99</span>
-                </div>
-                <ul style="text-align: left; margin: 15px 0; list-style: none;">
-                    <li><i class="fas fa-check" style="color: var(--color-primario);"></i> Acceso VIP</li>
-                    <li><i class="fas fa-check" style="color: var(--color-primario);"></i> Kit especial</li>
-                    <li><i class="fas fa-check" style="color: var(--color-primario);"></i> Acceso a eventos</li>
-                </ul>
-                <button class="discord-btn">
-                    <i class="fas fa-cart-plus"></i> Agregar al Carrito
-                </button>
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h4>Tottaland</h4>
+                <p>Servidor Minecraft desde 2023</p>
             </div>
-            <div class="producto" onclick="agregarAlCarrito('VIP', 6.99)">
-                <div class="etiqueta-oferta" style="background: linear-gradient(45deg, #f300df, #2980b9);">⚡ MEJOR VALOR</div>
-                <h3 style="font-size: 1.6em;">Rango VIP</h3>
-                <div class="precio">
-                    $6.99
-                    <span>Pago único</span>
-                </div>
-                <ul style="text-align: left; margin: 15px 0; list-style: none;">
-                    <li><i class="fas fa-check" style="color: var(--color-primario);"></i> Acceso prioritario</li>
-                    <li><i class="fas fa-check" style="color: var(--color-primario);"></i> Kit de inicio</li>
-                    <li><i class="fas fa-check" style="color: var(--color-primario);"></i> Beneficios exclusivos</li>
-                </ul>
-                <button class="discord-btn">
-                    <i class="fas fa-cart-plus"></i> Agregar al Carrito
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Carrito -->
-    <div class="carrito-sidebar" id="carrito">
-        <button class="cerrar-carrito" onclick="toggleCarrito()">
-            <i class="fas fa-times"></i>
-        </button>
-        <h3><i class="fas fa-shopping-cart"></i> Carrito</h3>
-        <div id="carrito-items"></div>
-        <div class="cart-total" id="carrito-total"></div>
-        <div class="botones-pago">
-            <button class="discord-btn" onclick="procesarPagoManual()">
-                <i class="fas fa-credit-card"></i> Pagar Manualmente
-            </button>
-            <div id="paypal-button-container"></div>
-        </div>
-        <button class="discord-btn btn-clear-cart" onclick="clearCart()">
-            <i class="fas fa-trash"></i> Vaciar Carrito
-        </button>
-    </div>
-
-    <script>
-        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-        let paypalButtons = null;
-
-        // ========== FUNCIONES NUEVAS ==========
-        async function actualizarDiscord() {
-            try {
-                const GUILD_ID = '1321256867737112597'; // 🔄 REEMPLAZAR CON TU ID
-                const response = await fetch(`https://discord.com/api/guilds/${GUILD_ID}/widget.json`);
-                const data = await response.json();
-                document.getElementById('discordOnline').textContent = data.presence_count || '0';
-            } catch (error) {
-                console.error('Error al obtener estado de Discord:', error);
-                document.getElementById('discordOnline').textContent = '?';
-            }
-        }
-
-        // ========== FUNCIONES MODIFICADAS ==========
-        async function actualizarEstado() {
-            try {
-                const response = await fetch('https://api.mcsrvstat.us/3/ny2.holy.gg:26442');
-                const data = await response.json();
-                document.getElementById('playersOnline').textContent = data.players?.online || 0;
-            } catch (error) {
-                console.error('Error al obtener estado de Minecraft:', error);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            actualizarEstado();
-            actualizarDiscord();
-            actualizarCarrito();
-            
-            setInterval(() => {
-                actualizarEstado();
-                actualizarDiscord();
-            }, 60000);
-        });
-
-        // ========== TUS FUNCIONES ORIGINALES ==========
-        function toggleCarrito() {
-            document.getElementById('carrito').classList.toggle('carrito-abierto');
-        }
-
-        function actualizarCarrito() {
-            const carritoItems = document.getElementById('carrito-items');
-            const totalElement = document.getElementById('carrito-total');
-            let total = 0;
-            
-            carritoItems.innerHTML = carrito.map((item, index) => {
-                total += item.precio * item.cantidad;
-                return `
-                    <div class="carrito-item">
-                        <div>
-                            <h4>${item.nombre}</h4>
-                            <p>$${item.precio.toFixed(2)} c/u</p>
-                            <div class="quantity-controls">
-                                <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <span>${item.cantidad}</span>
-                                <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div>
-                            <p>$${(item.precio * item.cantidad).toFixed(2)}</p>
-                            <button class="btn-eliminar" onclick="eliminarItem(${index})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            totalElement.innerHTML = `Total: $${total.toFixed(2)}`;
-            document.getElementById('cart-counter').textContent = carrito.reduce((sum, item) => sum + item.cantidad, 0);
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-            
-            if (total > 0) renderPayPalButtons(total);
-            else if (paypalButtons) paypalButtons.close();
-        }
-
-        function agregarAlCarrito(nombre, precio) {
-            const itemExistente = carrito.find(item => item.nombre === nombre);
-            
-            if (itemExistente) {
-                itemExistente.cantidad++;
-            } else {
-                carrito.push({
-                    nombre: nombre,
-                    precio: parseFloat(precio),
-                    cantidad: 1
-                });
-            }
-            
-            actualizarCarrito();
-            mostrarNotificacion(`✅ ${nombre} agregado al carrito`);
-        }
-
-        function updateQuantity(index, change) {
-            const newQuantity = carrito[index].cantidad + change;
-            if (newQuantity < 1) return eliminarItem(index);
-            carrito[index].cantidad = newQuantity;
-            actualizarCarrito();
-        }
-
-        function eliminarItem(index) {
-            if (confirm('¿Eliminar este artículo del carrito?')) {
-                carrito.splice(index, 1);
-                actualizarCarrito();
-                mostrarNotificacion('Artículo eliminado del carrito');
-            }
-        }
-
-        function clearCart() {
-            if (confirm('¿Estás seguro de vaciar el carrito?')) {
-                carrito = [];
-                actualizarCarrito();
-            }
-        }
-
-        function procesarPagoManual() {
-            if (carrito.length === 0) {
-                mostrarNotificacion('El carrito está vacío', 'error');
-                return;
-            }
-            
-            const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-            
-            if (confirm(`¿Confirmar pago de $${total.toFixed(2)}?`)) {
-                mostrarNotificacion('Procesando pago...');
-                const historial = JSON.parse(localStorage.getItem('historial')) || [];
-                historial.push({
-                    fecha: new Date().toISOString(),
-                    items: [...carrito],
-                    total: total
-                });
-                
-                localStorage.setItem('historial', JSON.stringify(historial));
-                carrito = [];
-                actualizarCarrito();
-                mostrarNotificacion('¡Pago exitoso! Los items se entregarán en breve.');
-            }
-        }
-
-        function renderPayPalButtons(total) {
-            if (paypalButtons) paypalButtons.close();
-            
-            paypalButtons = paypal.Buttons({
-                style: {
-                    color: 'gold',
-                    shape: 'rect',
-                    label: 'pay'
-                },
-                createOrder: (data, actions) => {
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                value: total.toFixed(2)
-                            }
-                        }]
-                    });
-                },
-                onApprove: (data, actions) => {
-                    return actions.order.capture().then(() => {
-                        carrito = [];
-                        localStorage.removeItem('carrito');
-                        actualizarCarrito();
-                        mostrarNotificacion('¡Pago completado con éxito!');
-                    });
-                },
-                onError: (err) => {
-                    mostrarNotificacion(`Error PayPal: ${err.message}`, 'error');
-                }
-            }).render('#paypal-button-container');
-        }
-
-        function conectarServidor() {
-            const ip = 'ny2.holy.gg:26442';
-            navigator.clipboard.writeText(ip);
-            mostrarNotificacion('✅ IP copiada al portapapeles');
-        }
-
-        function votar(sitio) {
-            const sitios = {
-                1: 'https://minecraft-servers.org/vote/tottaland',
-                2: 'https://topg.org/minecraft-servers/vote-tottaland'
-            };
-            if (sitios[sitio]) {
-                window.open(sitios[sitio], '_blank');
-                mostrarNotificacion('¡Voto registrado! Usa /claim en el juego');
-            }
-        }
-
-        function mostrarNotificacion(mensaje, tipo = 'exito') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${tipo === 'error' ? 'error' : ''}`;
-            toast.textContent = mensaje;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        document.querySelectorAll('.producto, .voto-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                card.style.setProperty('--x', `${x}px`);
-                card.style.setProperty('--y', `${y}px`);
-                
-                const rotateY = (x - rect.width/2) / 15;
-                const rotateX = -(y - rect.height/2) / 15;
-                
-                card.style.setProperty('--rotate-x', `${rotateX}deg`);
-                card.style.setProperty('--rotate-y', `${rotateY}deg`);
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                card.style.setProperty('--rotate-x', '0deg');
-                card.style.setProperty('--rotate-y', '0deg');
-            });
-        });
-    </script>
-
-    <!-- Footer -->
-    <footer style="background: rgba(0, 0, 0, 0.8); padding: 20px; text-align: center; margin-top: 40px; border-top: 2px solid var(--color-primario);">
-        <div style="max-width: 800px; margin: 0 auto;">
-            <h3 style="color: var(--color-primario); margin-bottom: 15px;">Sobre Nuestro Servidor</h3>
-            <p style="color: #ccc; line-height: 1.6;">
-                ¡Bienvenido a <strong>Tottaland</strong>! Somos un servidor de Minecraft Java y Bedrock dedicado a ofrecer una experiencia única y divertida para todos los jugadores. Nuestro servidor cuenta con una comunidad activa, eventos emocionantes, y un equipo de moderadores comprometidos a garantizar un ambiente seguro y amigable. Ya sea que estés buscando aventuras, construcción creativa, o simplemente pasar un buen rato con amigos, ¡Tottaland es el lugar perfecto para ti!
-            </p>
-            <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; margin-top: 20px;">
-                <p style="color: #ccc; line-height: 1.6; font-size: 0.9em;">
-                    <strong>Copyright © Tottaland 2025. Todos los derechos reservados.</strong><br>
-                    No estamos afiliados con Mojang AB.
-                </p>
+            <div>
+                <h4>Redes Sociales</h4>
+                <a href="#"><i class="fab fa-discord"></i> Discord</a><br>
+                <a href="#"><i class="fab fa-youtube"></i> YouTube</a>
             </div>
         </div>
     </footer>
+
+    <script>
+        // CÓDIGO DEL MENÚ MEJORADO
+        const categories = document.getElementById('categories');
+        const dropdown = document.querySelector('.dropdown-menu');
+        
+        // Versión escritorio
+        categories.addEventListener('mouseenter', () => {
+            dropdown.style.display = 'block';
+        });
+        
+        categories.addEventListener('mouseleave', () => {
+            dropdown.style.display = 'none';
+        });
+
+        // Versión móvil
+        if (window.innerWidth <= 768) {
+            categories.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!categories.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        }
+
+        // Código original restante
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 </html>
