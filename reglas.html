@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tottaland - Reglas Oficiales</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --main-color: #2ecc71;
+            --dark-bg: #0f1721;
+            --accent: #1abc9c;
+            --text: #ecf0f1;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .rules-container {
+            max-width: 1200px;
+            margin: 100px auto 50px;
+            padding: 0 20px;
+        }
+
+        .rules-title {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 40px;
+            color: var(--main-color);
+            text-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .rule-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(46, 204, 113, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .rule-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .rule-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .rule-emoji {
+            font-size: 2rem;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .rule-content {
+            border-left: 3px solid var(--main-color);
+            padding-left: 25px;
+            margin-left: 35px;
+        }
+
+        .highlight {
+            color: var(--main-color);
+            font-weight: bold;
+        }
+
+        .final-notice {
+            text-align: center;
+            margin: 50px 0;
+            padding: 30px;
+            background: rgba(46, 204, 113, 0.05);
+            border-radius: 15px;
+            border: 2px dashed var(--main-color);
+        }
+    </style>
+</head>
+<body>
+    <header><!-- Tu header original aquí --></header>
+
+    <div class="rules-container">
+        <h1 class="rules-title">📜 Reglas de Tottaland 🏰</h1>
+
+        <!-- Todas las reglas con sus emojis -->
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">⚠️</div>
+                <h2>Respeto ante todo</h2>
+            </div>
+            <div class="rule-content">
+                <p>Todos los jugadores deben tratarse con respeto. <span class="highlight">No se tolerarán insultos, amenazas ni actitudes tóxicas.</span></p>
+            </div>
+        </div>
+
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">🗣️</div>
+                <h2>No al lenguaje inapropiado</h2>
+            </div>
+            <div class="rule-content">
+                <p>Evita lenguaje ofensivo, racista, homofóbico o discriminatorio. <span class="highlight">El spam de insultos o el acoso serán sancionados.</span></p>
+            </div>
+        </div>
+
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">📨</div>
+                <h2>No spam ni flood</h2>
+            </div>
+            <div class="rule-content">
+                <p>No envíes mensajes repetitivos o innecesarios en el chat, ya sea en el juego o en Discord.</p>
+            </div>
+        </div>
+
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">🚫</div>
+                <h2>No publicidad ni autopromoción</h2>
+            </div>
+            <div class="rule-content">
+                <p>Está prohibido promocionar otros servidores, redes sociales o contenido personal sin autorización.</p>
+            </div>
+        </div>
+
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">🛑</div>
+                <h2>No al uso de hacks</h2>
+            </div>
+            <div class="rule-content">
+                <p>No se permite el uso de hacks, mods o cualquier herramienta que otorgue ventaja desleal <span class="highlight">(X-ray, Fly, KillAura, AutoClick, etc.)</span></p>
+            </div>
+        </div>
+
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">🏠</div>
+                <h2>Prohibido el griefing y robo</h2>
+            </div>
+            <div class="rule-content">
+                <p>Respeta las construcciones y pertenencias de otros jugadores. <span class="highlight">No destruyas, robes o modifiques estructuras ajenas sin permiso.</span></p>
+            </div>
+        </div>
+
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">🔒</div>
+                <h2>Protege tus construcciones</h2>
+            </div>
+            <div class="rule-content">
+                <p>Usa el sistema de protecciones para evitar conflictos. <span class="highlight">Si alguien invade tu espacio sin permiso, repórtalo con pruebas.</span></p>
+            </div>
+        </div>
+
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">💸</div>
+                <h2>No abusar del comercio</h2>
+            </div>
+            <div class="rule-content">
+                <p>Usa el sistema de economía de manera justa. <span class="highlight">Evita fraudes, estafas o explotación de errores en la tienda, subastas o intercambios.</span></p>
+            </div>
+        </div>
+
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">⚔️</div>
+                <h2>No al PvP sin consentimiento</h2>
+            </div>
+            <div class="rule-content">
+                <p>Solo puedes combatir con otros jugadores si ambos están de acuerdo. <span class="highlight">Atacar a otros sin su permiso puede resultar en sanciones.</span></p>
+            </div>
+        </div>
+
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">🔞</div>
+                <h2>Nada de contenido NSFW</h2>
+            </div>
+            <div class="rule-content">
+                <p>Imágenes, skins, nombres o cualquier contenido inapropiado están totalmente prohibidos.</p>
+            </div>
+        </div>
+
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">🛠️</div>
+                <h2>Respeta al staff</h2>
+            </div>
+            <div class="rule-content">
+                <p>Los administradores y moderadores están para ayudar. <span class="highlight">Sigue sus indicaciones y reporta problemas mediante tickets en Discord.</span></p>
+            </div>
+        </div>
+
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">🐛</div>
+                <h2>No abusar de bugs</h2>
+            </div>
+            <div class="rule-content">
+                <p>Si encuentras un error en el servidor, repórtalo. <span class="highlight">Aprovecharlo para beneficio propio puede llevar a un baneo inmediato.</span></p>
+            </div>
+        </div>
+
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">👥</div>
+                <h2>Multi-cuentas</h2>
+            </div>
+            <div class="rule-content">
+                <p>No uses cuentas secundarias para obtener beneficios injustos sin autorización.</p>
+            </div>
+        </div>
+
+        <div class="rule-card">
+            <div class="rule-header">
+                <div class="rule-emoji">🎙️</div>
+                <h2>Uso adecuado del chat de voz</h2>
+            </div>
+            <div class="rule-content">
+                <p>Evita ruidos molestos en los voice-chats de Discord y usa los comandos en los canales adecuados.</p>
+            </div>
+        </div>
+
+        <div class="final-notice">
+            <p>⚡ Incumplir estas reglas puede llevar a sanciones, desde advertencias hasta baneos permanentes</p>
+            <p>📢 ¡Diviértete y haz de Tottaland un lugar increíble para todos! 🚀</p>
+            <p>Recuerda seguir las normas para tener una comunidad bonita 😎</p>
+        </div>
+    </div>
+
+    <footer><!-- Tu footer original aquí --></footer>
+</body>
+</html>
