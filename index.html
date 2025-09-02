@@ -61,21 +61,35 @@
             align-items: center;
         }
 
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: linear-gradient(45deg, var(--main-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: white;
+            /* Reemplazar con tu imagen: 
+            background: url('ruta/a/tu/logo.png') center/cover;
+            */
+        }
+
         .logo {
             font-size: 1.8rem;
             font-weight: 800;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: white; /* Cambiado a blanco */
             display: flex;
             align-items: center;
             gap: 0.5rem;
-        }
-
-        .logo::before {
-            content: "⛏️";
-            font-size: 1.5rem;
         }
 
         /* Menú Hamburguesa mejorado */
@@ -649,6 +663,16 @@
             .social-links {
                 justify-content: center;
             }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .logo-img {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -677,7 +701,10 @@
 <body>
     <header>
         <nav class="nav-container">
-            <div class="logo">TOTTALAND</div>
+            <div class="logo-container">
+                <div class="logo-img">TL</div>
+                <div class="logo">TOTTALAND</div>
+            </div>
             
             <div class="hamburger">
                 <span></span>
@@ -778,7 +805,7 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h3>Sobre Nosotros</h3>
-                <p>Tottaland es un servidor de Minecraft dedicado a proporcionar la mejor experiencia de juego con un enfoque en la comunidad y la diversión.</p>
+                <p>Tottaland es un servidor de Minecraft dedicado to proporcionar la mejor experiencia de juego con un enfoque en la comunidad y la diversión.</p>
             </div>
             
             <div class="footer-section">
@@ -879,4 +906,3 @@
     </script>
 </body>
 </html>
-
