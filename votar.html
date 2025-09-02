@@ -3,268 +3,548 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Votación - MiServidor Minecraft</title>
+    <meta name="theme-color" content="#0d0d0d">
+    <title>Votar - Tottaland Minecraft Server</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #4CAF50;
-            --secondary-color: #2E7D32;
-            --accent-color: #8BC34A;
-            --dark-color: #1B5E20;
-            --light-color: #C8E6C9;
-            --text-color: #333;
-            --background-color: #f5f5f5;
+            --main-color: #2ecc71;
+            --accent-color: #9b59b6;
+            --dark-bg: #0f0f17;
+            --darker-bg: #090910;
+            --card-bg: rgba(30, 30, 46, 0.8);
+            --text: #ecf0f1;
+            --text-secondary: #b3b3cc;
+            --header-gradient: linear-gradient(135deg, rgba(46, 204, 113, 0.95), rgba(155, 89, 182, 0.95));
+            --gradient: linear-gradient(135deg, var(--main-color), var(--accent-color));
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
-        
+
         body {
-            background-color: var(--background-color);
-            color: var(--text-color);
+            background: var(--darker-bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
             line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            position: relative;
         }
-        
+
+        /* Header */
         header {
-            background-color: var(--primary-color);
-            color: white;
-            text-align: center;
-            padding: 2rem 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: var(--header-gradient);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
-        
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: default;
+        }
+
+        .logo::before {
+            content: "⛏️";
+            font-size: 1.2rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        /* Contenido Principal */
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.2rem;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        /* Sección de Información */
+        .info-section {
+            background: var(--card-bg);
+            border-radius: 12px;
             padding: 2rem;
-        }
-        
-        .server-info {
-            background-color: white;
-            border-radius: 8px;
-            padding: 1.5rem;
             margin-bottom: 2rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
-        
-        .rewards {
-            background-color: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        .info-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--main-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        
+
+        .info-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        /* Recompensas */
         .rewards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 1.5rem;
-            margin-top: 1rem;
+            margin: 2rem 0;
         }
-        
+
         .reward-card {
-            background-color: var(--light-color);
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-        
-        .reward-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .reward-card h3 {
-            color: var(--dark-color);
-            margin-bottom: 0.5rem;
-        }
-        
-        .voting-sites {
-            background-color: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .voting-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-        
-        .voting-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            background: rgba(40, 40, 56, 0.6);
+            border-radius: 10px;
             padding: 1.5rem;
             text-align: center;
             transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        
-        .voting-card:hover {
-            border-color: var(--primary-color);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+        .reward-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: rgba(46, 204, 113, 0.3);
         }
-        
-        .voting-card h3 {
-            color: var(--primary-color);
+
+        .reward-icon {
+            font-size: 2.5rem;
             margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
-        
-        .btn {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+
+        .reward-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
         }
-        
-        .btn:hover {
-            background-color: var(--secondary-color);
+
+        .reward-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
-        
-        .instructions {
-            background-color: white;
-            border-radius: 8px;
+
+        /* Sitios de Votación */
+        .voting-sites {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .voting-site {
+            background: var(--card-bg);
+            border-radius: 12px;
             padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
-        
+
+        .voting-site:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: rgba(46, 204, 113, 0.3);
+        }
+
+        .site-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            gap: 1rem;
+        }
+
+        .site-icon {
+            font-size: 2rem;
+            color: var(--main-color);
+        }
+
+        .site-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .site-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+            font-size: 0.9rem;
+        }
+
+        .vote-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin-top: auto;
+        }
+
+        .vote-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+        }
+
+        /* Instrucciones */
+        .instructions {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         .steps {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             padding-left: 1.5rem;
         }
-        
-        footer {
-            background-color: var(--dark-color);
-            color: white;
-            text-align: center;
-            padding: 1.5rem 0;
-            margin-top: 2rem;
+
+        .steps li {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
         }
-        
+
+        .steps li strong {
+            color: var(--text);
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            color: var(--main-color);
+        }
+
+        /* Notificación */
+        .notification {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 0.9rem 1.2rem;
+            border-radius: 6px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            max-width: 90%;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .notification.success {
+            border-left: 3px solid var(--success);
+        }
+
+        .notification.error {
+            border-left: 3px solid var(--danger);
+        }
+
+        .notification-icon {
+            font-size: 1.3rem;
+        }
+
+        .success .notification-icon {
+            color: var(--success);
+        }
+
+        .error .notification-icon {
+            color: var(--danger);
+        }
+
+        .notification-content {
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .voting-grid, .rewards-grid {
+            .rewards-grid,
+            .voting-sites {
                 grid-template-columns: 1fr;
             }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .info-section,
+            .instructions {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Scroll personalizado */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darker-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--main-color), var(--accent-color));
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>¡Vota por Nuestro Servidor Minecraft!</h1>
-        <p>Ayuda a nuestro servidor crecer y recibe increíbles recompensas</p>
+        <nav class="nav-container">
+            <div class="logo">TOTTALAND</div>
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Volver al Inicio
+            </a>
+        </nav>
     </header>
-    
+
     <div class="container">
-        <section class="server-info">
-            <h2>Servidor: MiServidor Minecraft</h2>
-            <p>IP: <strong>miservidor.minecraft.com</strong></p>
-            <p>Versión: <strong>1.19.2</strong></p>
-            <p>¡Cada voto ayuda a que más jugadores nos encuentren y nuestra comunidad crezca!</p>
-        </section>
+        <h1 class="page-title">🗳️ Sistema de Votación</h1>
         
-        <section class="rewards">
-            <h2>Recompensas por Votar</h2>
-            <p>Por cada voto, recibirás las siguientes recompensas en el juego:</p>
+        <div class="info-section">
+            <h2><i class="fas fa-info-circle"></i> ¿Por qué votar?</h2>
+            <p>Al votar por nuestro servidor, nos ayudas a crecer y llegar a más jugadores. Como agradecimiento, recibirás recompensas exclusivas en el juego por cada voto que realices.</p>
+            <p>¡Cada voto cuenta y nos acerca más a ser uno de los mejores servidores de Minecraft!</p>
+        </div>
+
+        <div class="info-section">
+            <h2><i class="fas fa-gift"></i> Recompensas por Votar</h2>
+            <p>Por cada voto que realices, recibirás las siguientes recompensas al ingresar al servidor:</p>
             
             <div class="rewards-grid">
                 <div class="reward-card">
-                    <h3>💰 Monedas del Servidor</h3>
-                    <p>500 monedas para usar en nuestra tienda</p>
+                    <div class="reward-icon"><i class="fas fa-coins"></i></div>
+                    <h3 class="reward-title">500 Monedas</h3>
+                    <p class="reward-description">Para usar en la tienda del servidor</p>
                 </div>
                 
                 <div class="reward-card">
-                    <h3>⚔️ Kit de Votante</h3>
-                    <p>Armadura y herramientas especiales</p>
+                    <div class="reward-icon"><i class="fas fa-key"></i></div>
+                    <h3 class="reward-title">2 Llaves Místicas</h3>
+                    <p class="reward-description">Desbloquea cofres con items exclusivos</p>
                 </div>
                 
                 <div class="reward-card">
-                    <h3>🎁 Cajas Misteriosas</h3>
-                    <p>2 cajas misteriosas con items exclusivos</p>
+                    <div class="reward-icon"><i class="fas fa-cube"></i></div>
+                    <h3 class="reward-title">Kit Votante</h3>
+                    <p class="reward-description">Armadura y herramientas especiales</p>
                 </div>
                 
                 <div class="reward-card">
-                    <h3>🔑 Llaves de Votante</h3>
-                    <p>3 llaves para abrir cofres especiales</p>
+                    <div class="reward-icon"><i class="fas fa-medal"></i></div>
+                    <h3 class="reward-title">Experiencia</h3>
+                    <p class="reward-description">30 niveles de experiencia en el juego</p>
                 </div>
             </div>
+        </div>
+
+        <div class="info-section">
+            <h2><i class="fas fa-vote-yea"></i> Sitios para Votar</h2>
+            <p>Haz clic en los siguientes enlaces para votar por nuestro servidor. ¡Puedes votar en todos los sitios una vez cada 24 horas!</p>
             
-            <p style="margin-top: 1.5rem; font-style: italic;">
-                Las recompensas se entregan automáticamente al siguiente ingresar al servidor después de votar.
-            </p>
-        </section>
-        
-        <section class="voting-sites">
-            <h2>Sitios para Votar</h2>
-            <p>Haz clic en los siguientes enlaces para votar por nuestro servidor:</p>
-            
-            <div class="voting-grid">
-                <div class="voting-card">
-                    <h3>Minecraft-Servers.org</h3>
-                    <p>Vota y ayuda a nuestro ranking</p>
-                    <a href="#" class="btn" target="_blank">Votar Ahora</a>
+            <div class="voting-sites">
+                <div class="voting-site">
+                    <div class="site-header">
+                        <div class="site-icon"><i class="fas fa-server"></i></div>
+                        <h3 class="site-name">Minecraft-Servers.org</h3>
+                    </div>
+                    <p class="site-description">Vota en uno de los directorios de servidores más populares de Minecraft.</p>
+                    <a href="#" class="vote-btn" onclick="vote('minecraft-servers')">
+                        <i class="fas fa-external-link-alt"></i> Votar Ahora
+                    </a>
                 </div>
                 
-                <div class="voting-card">
-                    <h3>TopG.org</h3>
-                    <p>Muestra tu apoyo en TopG</p>
-                    <a href="#" class="btn" target="_blank">Votar Ahora</a>
+                <div class="voting-site">
+                    <div class="site-header">
+                        <div class="site-icon"><i class="fas fa-globe"></i></div>
+                        <h3 class="site-name">TopG.org</h3>
+                    </div>
+                    <p class="site-description">Ayúdanos a mejorar nuestro ranking en TopG con tu voto.</p>
+                    <a href="#" class="vote-btn" onclick="vote('topg')">
+                        <i class="fas fa-external-link-alt"></i> Votar Ahora
+                    </a>
                 </div>
                 
-                <div class="voting-card">
-                    <h3>PlanetMinecraft.com</h3>
-                    <p>Vota en Planet Minecraft</p>
-                    <a href="#" class="btn" target="_blank">Votar Ahora</a>
+                <div class="voting-site">
+                    <div class="site-header">
+                        <div class="site-icon"><i class="fas fa-list"></i></div>
+                        <h3 class="site-name">PlanetMinecraft</h3>
+                    </div>
+                    <p class="site-description">Vota en el famoso directorio PlanetMinecraft.</p>
+                    <a href="#" class="vote-btn" onclick="vote('planetminecraft')">
+                        <i class="fas fa-external-link-alt"></i> Votar Ahora
+                    </a>
                 </div>
             </div>
-        </section>
-        
-        <section class="instructions">
-            <h2>¿Cómo Reclamar tus Recompensas?</h2>
+        </div>
+
+        <div class="instructions">
+            <h2><i class="fas fa-question-circle"></i> ¿Cómo reclamar mis recompensas?</h2>
             <ol class="steps">
-                <li>Haz clic en uno de los enlaces de arriba para votar</li>
-                <li>Completa el proceso de votación en el sitio web (puede requerir iniciar sesión)</li>
-                <li>Ingresa a nuestro servidor de Minecraft</li>
-                <li>Ejecuta el comando <code>/claim</code> o <code>/recompensas</code> en el juego</li>
-                <li>¡Disfruta de tus recompensas!</li>
+                <li><strong>Vota</strong> en cualquiera de los sitios listados arriba</li>
+                <li><strong>Ingresa</strong> a nuestro servidor de Minecraft</li>
+                <li><strong>Ejecuta</strong> el comando <code>/claim</code> en el juego</li>
+                <li><strong>Disfruta</strong> de tus recompensas automáticamente</li>
             </ol>
-            
-            <p style="margin-top: 1.5rem;">
-                <strong>Nota:</strong> Si no recibes tus recompensas automáticamente, contacta a un staff en nuestro Discord.
-            </p>
-        </section>
+            <p style="margin-top: 1rem; color: var(--warning);"><i class="fas fa-exclamation-circle"></i> <strong>Nota:</strong> Si tienes problemas para recibir tus recompensas, contacta a un miembro del staff en nuestro Discord.</p>
+        </div>
     </div>
-    
-    <footer>
-        <p>© 2023 MiServidor Minecraft. Todos los derechos reservados.</p>
-        <p>¿Problemas con el sistema de votación? Únete a nuestro <a href="#" style="color: var(--accent-color);">Discord</a></p>
-    </footer>
+
+    <!-- Notificación -->
+    <div class="notification" id="notification">
+        <div class="notification-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="notification-content">
+            <div class="notification-message" id="notification-message"></div>
+        </div>
+    </div>
 
     <script>
-        // Aquí iría el código JavaScript para:
-        // 1. Verificar si un usuario ya votó
-        // 2. Conectarse con la API del servidor
-        // 3. Mostrar contadores de votos en tiempo real
-        
+        // Simulación de función de voto
+        function vote(site) {
+            // Aquí normalmente se redirigiría al sitio de votación real
+            // Esta es una simulación para mostrar la notificación
+            
+            // Mensajes aleatorios de agradecimiento
+            const messages = [
+                "¡Gracias por votar! Tus recompensas estarán disponibles en el juego.",
+                "¡Voto registrado! No olvides reclamar tus recompensas en el servidor.",
+                "¡Gracias por apoyarnos! Tu voto ayuda a que nuestro servidor crezca."
+            ];
+            
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            showNotification(randomMessage, 'success');
+            
+            // En una implementación real, aquí se abriría la página de votación
+            // window.open(`https://sitio-de-votacion.com/vote/${site}`, '_blank');
+        }
+
+        // Mostrar notificación
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            const messageElement = document.getElementById('notification-message');
+            
+            messageElement.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Simular estadísticas de votos (solo para demostración)
         document.addEventListener('DOMContentLoaded', function() {
-            // Ejemplo: Contador de votos totales (simulado)
-            const voteCount = 1247;
-            document.querySelector('.server-info p:last-child').innerHTML += 
-                `<br><strong>Votos totales: ${voteCount}</strong>`;
-                
-            // Aquí se conectaría con la API del servidor para obtener datos reales
-            console.log("Página de votación cargada");
+            // Simular actualización de estadísticas
+            const voteStats = [
+                { site: 'minecraft-servers', votes: 342 },
+                { site: 'topg', votes: 278 },
+                { site: 'planetminecraft', votes: 195 }
+            ];
+            
+            // En una implementación real, estos datos vendrían de una API
+            console.log('Estadísticas de votos simuladas:', voteStats);
         });
     </script>
 </body>
