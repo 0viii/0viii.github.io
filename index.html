@@ -427,90 +427,6 @@
             color: var(--text-secondary);
         }
 
-        /* Sección de estadísticas en tiempo real */
-        .stats {
-            background: var(--card-bg);
-            padding: 4rem 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .stats-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 1.5rem;
-        }
-
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .stat-label {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-        }
-
-        /* Sección de galería */
-        .gallery {
-            padding: 6rem 1rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .gallery-item {
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-            height: 250px;
-            cursor: pointer;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.1);
-        }
-
-        .gallery-item::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(transparent 60%, rgba(0, 0, 0, 0.7));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .gallery-item:hover::after {
-            opacity: 1;
-        }
-
         /* Footer mejorado */
         footer {
             background: var(--darker-bg);
@@ -822,27 +738,6 @@
         </div>
     </section>
 
-    <section class="stats">
-        <div class="stats-container">
-            <div class="stat-item">
-                <div class="stat-number" id="onlinePlayers">24</div>
-                <div class="stat-label">Jugadores Online</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="totalPlayers">520</div>
-                <div class="stat-label">Jugadores Totales</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="serverUptime">99.8%</div>
-                <div class="stat-label">Tiempo Activo</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="votes">1280</div>
-                <div class="stat-label">Votos Totales</div>
-            </div>
-        </div>
-    </section>
-
     <section class="features">
         <h2 class="section-title">Nuestras <span>Características</span></h2>
         <div class="grid-container">
@@ -879,36 +774,11 @@
         </div>
     </section>
 
-    <section class="gallery">
-        <h2 class="section-title">Galería del <span>Servidor</span></h2>
-        <div class="gallery-grid">
-            <div class="gallery-item">
-                <img src="https://images.alphacoders.com/129/1291040.png" alt="Minecraft Build">
-            </div>
-            <div class="gallery-item">
-                <img src="https://images7.alphacoders.com/129/1291039.png" alt="Minecraft Landscape">
-            </div>
-            <div class="gallery-item">
-                <img src="https://images2.alphacoders.com/129/1291042.png" alt="Minecraft Adventure">
-            </div>
-        </div>
-    </section>
-
     <footer>
         <div class="footer-content">
             <div class="footer-section">
                 <h3>Sobre Nosotros</h3>
                 <p>Tottaland es un servidor de Minecraft dedicado a proporcionar la mejor experiencia de juego con un enfoque en la comunidad y la diversión.</p>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Enlaces Rápidos</h3>
-                <ul class="footer-links">
-                    <li><a href="#"><i class="fas fa-home"></i> Inicio</a></li>
-                    <li><a href="#"><i class="fas fa-key"></i> Tienda</a></li>
-                    <li><a href="#"><i class="fas fa-vote-yea"></i> Votar</a></li>
-                    <li><a href="#"><i class="fas fa-book"></i> Reglas</a></li>
-                </ul>
             </div>
             
             <div class="footer-section">
@@ -1004,74 +874,6 @@
                 hamburger.classList.remove('active');
                 navMenu.classList.remove('active');
                 document.body.style.overflow = 'auto';
-            }
-        });
-
-        // Animación de contadores de estadísticas
-        function animateCounter(el, target, duration = 2000) {
-            let startTime = null;
-            const startValue = 0;
-            
-            function animation(currentTime) {
-                if (!startTime) startTime = currentTime;
-                const progress = Math.min((currentTime - startTime) / duration, 1);
-                const value = Math.floor(progress * (target - startValue) + startValue);
-                el.textContent = value.toLocaleString();
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animation);
-                } else {
-                    el.textContent = target.toLocaleString();
-                }
-            }
-            
-            requestAnimationFrame(animation);
-        }
-
-        // Iniciar animación cuando los elementos son visibles
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const target = entry.target;
-                    const finalValue = parseInt(target.getAttribute('data-value'));
-                    
-                    switch(target.id) {
-                        case 'onlinePlayers':
-                            animateCounter(target, finalValue, 1500);
-                            break;
-                        case 'totalPlayers':
-                            animateCounter(target, finalValue, 2000);
-                            break;
-                        case 'votes':
-                            animateCounter(target, finalValue, 2500);
-                            break;
-                    }
-                    
-                    observer.unobserve(target);
-                }
-            });
-        }, { threshold: 0.5 });
-
-        // Observar los contadores
-        document.querySelectorAll('.stat-number').forEach(el => {
-            // Establecer valores iniciales
-            switch(el.id) {
-                case 'onlinePlayers':
-                    el.setAttribute('data-value', '24');
-                    break;
-                case 'totalPlayers':
-                    el.setAttribute('data-value', '520');
-                    break;
-                case 'serverUptime':
-                    el.textContent = '99.8%';
-                    break;
-                case 'votes':
-                    el.setAttribute('data-value', '1280');
-                    break;
-            }
-            
-            if (el.id !== 'serverUptime') {
-                observer.observe(el);
             }
         });
     </script>
