@@ -3,229 +3,469 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d0d0d">
     <title>Tottaland - Reglas Oficiales</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --main-color: #2ecc71;
-            --dark-bg: #0f1721;
-            --accent: #1abc9c;
+            --accent-color: #9b59b6;
+            --dark-bg: #0f0f17;
+            --darker-bg: #090910;
+            --card-bg: rgba(30, 30, 46, 0.8);
             --text: #ecf0f1;
+            --text-secondary: #b3b3cc;
+            --header-gradient: linear-gradient(135deg, rgba(46, 204, 113, 0.95), rgba(155, 89, 182, 0.95));
+            --gradient: linear-gradient(135deg, var(--main-color), var(--accent-color));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background: var(--dark-bg);
+            background: var(--darker-bg);
             color: var(--text);
-            line-height: 1.7;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
         }
 
+        /* Header */
+        header {
+            background: var(--header-gradient);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            cursor: default;
+        }
+
+        .logo::before {
+            content: "⛏️";
+            font-size: 1.2rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        /* Contenido Principal */
         .rules-container {
             max-width: 1200px;
-            margin: 100px auto 50px;
-            padding: 0 20px;
+            margin: 2rem auto 3rem;
+            padding: 0 1.5rem;
         }
 
         .rules-title {
             text-align: center;
-            font-size: 2.8rem;
-            margin-bottom: 40px;
+            font-size: 2.5rem;
+            margin-bottom: 2.5rem;
             color: var(--main-color);
-            text-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .rules-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
         }
 
         .rule-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(46, 204, 113, 0.1);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
             transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            padding: 1.5rem;
         }
 
         .rule-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: rgba(46, 204, 113, 0.3);
         }
 
         .rule-header {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
 
         .rule-emoji {
             font-size: 2rem;
-            min-width: 50px;
-            text-align: center;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(46, 204, 113, 0.1);
+            border-radius: 50%;
+        }
+
+        .rule-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text);
         }
 
         .rule-content {
-            border-left: 3px solid var(--main-color);
-            padding-left: 25px;
-            margin-left: 35px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
         }
 
         .highlight {
             color: var(--main-color);
-            font-weight: bold;
+            font-weight: 600;
         }
 
         .final-notice {
             text-align: center;
-            margin: 50px 0;
-            padding: 30px;
+            margin: 3rem 0;
+            padding: 2rem;
             background: rgba(46, 204, 113, 0.05);
-            border-radius: 15px;
+            border-radius: 12px;
             border: 2px dashed var(--main-color);
+        }
+
+        .final-notice p {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .final-notice p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--darker-bg);
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .footer-link:hover {
+            color: var(--main-color);
+        }
+
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .rules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .rules-container {
+                padding: 0 1rem;
+                margin: 1.5rem auto 2rem;
+            }
+            
+            .rules-title {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+            
+            .rule-card {
+                padding: 1.2rem;
+            }
+            
+            .rule-header {
+                gap: 0.8rem;
+                margin-bottom: 0.8rem;
+            }
+            
+            .rule-emoji {
+                font-size: 1.7rem;
+                width: 45px;
+                height: 45px;
+            }
+            
+            .rule-title {
+                font-size: 1.1rem;
+            }
+            
+            .footer-links {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 0.8rem;
+            }
+            
+            .logo {
+                font-size: 1.3rem;
+            }
+            
+            .back-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.85rem;
+            }
+            
+            .rules-title {
+                font-size: 1.8rem;
+            }
+            
+            .rule-card {
+                padding: 1rem;
+            }
+            
+            .rule-emoji {
+                font-size: 1.5rem;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .final-notice {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <header><!-- Tu header original aquí --></header>
+    <header>
+        <nav class="nav-container">
+            <div class="logo">TOTTALAND</div>
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Volver al Inicio
+            </a>
+        </nav>
+    </header>
 
     <div class="rules-container">
         <h1 class="rules-title">📜 Reglas de Tottaland 🏰</h1>
 
-        <!-- Todas las reglas con sus emojis -->
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">⚠️</div>
-                <h2>Respeto ante todo</h2>
+        <div class="rules-grid">
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">⚠️</div>
+                    <h2 class="rule-title">Respeto ante todo</h2>
+                </div>
+                <div class="rule-content">
+                    <p>Todos los jugadores deben tratarse con respeto. <span class="highlight">No se tolerarán insultos, amenazas ni actitudes tóxicas.</span></p>
+                </div>
             </div>
-            <div class="rule-content">
-                <p>Todos los jugadores deben tratarse con respeto. <span class="highlight">No se tolerarán insultos, amenazas ni actitudes tóxicas.</span></p>
-            </div>
-        </div>
 
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">🗣️</div>
-                <h2>No al lenguaje inapropiado</h2>
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">🗣️</div>
+                    <h2 class="rule-title">No al lenguaje inapropiado</h2>
+                </div>
+                <div class="rule-content">
+                    <p>Evita lenguaje ofensivo, racista, homofóbico o discriminatorio. <span class="highlight">El spam de insultos o el acoso serán sancionados.</span></p>
+                </div>
             </div>
-            <div class="rule-content">
-                <p>Evita lenguaje ofensivo, racista, homofóbico o discriminatorio. <span class="highlight">El spam de insultos o el acoso serán sancionados.</span></p>
-            </div>
-        </div>
 
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">📨</div>
-                <h2>No spam ni flood</h2>
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">📨</div>
+                    <h2 class="rule-title">No spam ni flood</h2>
+                </div>
+                <div class="rule-content">
+                    <p>No envíes mensajes repetitivos o innecesarios en el chat, ya sea en el juego o en Discord.</p>
+                </div>
             </div>
-            <div class="rule-content">
-                <p>No envíes mensajes repetitivos o innecesarios en el chat, ya sea en el juego o en Discord.</p>
-            </div>
-        </div>
 
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">🚫</div>
-                <h2>No publicidad ni autopromoción</h2>
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">🚫</div>
+                    <h2 class="rule-title">No publicidad ni autopromoción</h2>
+                </div>
+                <div class="rule-content">
+                    <p>Está prohibido promocionar otros servidores, redes sociales o contenido personal sin autorización.</p>
+                </div>
             </div>
-            <div class="rule-content">
-                <p>Está prohibido promocionar otros servidores, redes sociales o contenido personal sin autorización.</p>
-            </div>
-        </div>
 
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">🛑</div>
-                <h2>No al uso de hacks</h2>
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">🛑</div>
+                    <h2 class="rule-title">No al uso de hacks</h2>
+                </div>
+                <div class="rule-content">
+                    <p>No se permite el uso de hacks, mods o cualquier herramienta que otorgue ventaja desleal <span class="highlight">(X-ray, Fly, KillAura, AutoClick, etc.)</span></p>
+                </div>
             </div>
-            <div class="rule-content">
-                <p>No se permite el uso de hacks, mods o cualquier herramienta que otorgue ventaja desleal <span class="highlight">(X-ray, Fly, KillAura, AutoClick, etc.)</span></p>
-            </div>
-        </div>
 
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">🏠</div>
-                <h2>Prohibido el griefing y robo</h2>
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">🏠</div>
+                    <h2 class="rule-title">Prohibido el griefing y robo</h2>
+                </div>
+                <div class="rule-content">
+                    <p>Respeta las construcciones y pertenencias de otros jugadores. <span class="highlight">No destruyas, robes o modifiques estructuras ajenas sin permiso.</span></p>
+                </div>
             </div>
-            <div class="rule-content">
-                <p>Respeta las construcciones y pertenencias de otros jugadores. <span class="highlight">No destruyas, robes o modifiques estructuras ajenas sin permiso.</span></p>
-            </div>
-        </div>
 
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">🔒</div>
-                <h2>Protege tus construcciones</h2>
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">🔒</div>
+                    <h2 class="rule-title">Protege tus construcciones</h2>
+                </div>
+                <div class="rule-content">
+                    <p>Usa el sistema de protecciones para evitar conflictos. <span class="highlight">Si alguien invade tu espacio sin permiso, repórtalo con pruebas.</span></p>
+                </div>
             </div>
-            <div class="rule-content">
-                <p>Usa el sistema de protecciones para evitar conflictos. <span class="highlight">Si alguien invade tu espacio sin permiso, repórtalo con pruebas.</span></p>
-            </div>
-        </div>
 
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">💸</div>
-                <h2>No abusar del comercio</h2>
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">💸</div>
+                    <h2 class="rule-title">No abusar del comercio</h2>
+                </div>
+                <div class="rule-content">
+                    <p>Usa el sistema de economía de manera justa. <span class="highlight">Evita fraudes, estafas o explotación de errores en la tienda, subastas o intercambios.</span></p>
+                </div>
             </div>
-            <div class="rule-content">
-                <p>Usa el sistema de economía de manera justa. <span class="highlight">Evita fraudes, estafas o explotación de errores en la tienda, subastas o intercambios.</span></p>
-            </div>
-        </div>
 
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">⚔️</div>
-                <h2>No al PvP sin consentimiento</h2>
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">⚔️</div>
+                    <h2 class="rule-title">No al PvP sin consentimiento</h2>
+                </div>
+                <div class="rule-content">
+                    <p>Solo puedes combatir con otros jugadores si ambos están de acuerdo. <span class="highlight">Atacar a otros sin su permiso puede resultar en sanciones.</span></p>
+                </div>
             </div>
-            <div class="rule-content">
-                <p>Solo puedes combatir con otros jugadores si ambos están de acuerdo. <span class="highlight">Atacar a otros sin su permiso puede resultar en sanciones.</span></p>
-            </div>
-        </div>
 
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">🔞</div>
-                <h2>Nada de contenido NSFW</h2>
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">🔞</div>
+                    <h2 class="rule-title">Nada de contenido NSFW</h2>
+                </div>
+                <div class="rule-content">
+                    <p>Imágenes, skins, nombres o cualquier contenido inapropiado están totalmente prohibidos.</p>
+                </div>
             </div>
-            <div class="rule-content">
-                <p>Imágenes, skins, nombres o cualquier contenido inapropiado están totalmente prohibidos.</p>
-            </div>
-        </div>
 
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">🛠️</div>
-                <h2>Respeta al staff</h2>
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">🛠️</div>
+                    <h2 class="rule-title">Respeta al staff</h2>
+                </div>
+                <div class="rule-content">
+                    <p>Los administradores y moderadores están para ayudar. <span class="highlight">Sigue sus indicaciones y reporta problemas mediante tickets en Discord.</span></p>
+                </div>
             </div>
-            <div class="rule-content">
-                <p>Los administradores y moderadores están para ayudar. <span class="highlight">Sigue sus indicaciones y reporta problemas mediante tickets en Discord.</span></p>
-            </div>
-        </div>
 
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">🐛</div>
-                <h2>No abusar de bugs</h2>
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">🐛</div>
+                    <h2 class="rule-title">No abusar de bugs</h2>
+                </div>
+                <div class="rule-content">
+                    <p>Si encuentras un error en el servidor, repórtalo. <span class="highlight">Aprovecharlo para beneficio propio puede llevar a un baneo inmediato.</span></p>
+                </div>
             </div>
-            <div class="rule-content">
-                <p>Si encuentras un error en el servidor, repórtalo. <span class="highlight">Aprovecharlo para beneficio propio puede llevar a un baneo inmediato.</span></p>
-            </div>
-        </div>
 
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">👥</div>
-                <h2>Multi-cuentas</h2>
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">👥</div>
+                    <h2 class="rule-title">Multi-cuentas</h2>
+                </div>
+                <div class="rule-content">
+                    <p>No uses cuentas secundarias para obtener beneficios injustos sin autorización.</p>
+                </div>
             </div>
-            <div class="rule-content">
-                <p>No uses cuentas secundarias para obtener beneficios injustos sin autorización.</p>
-            </div>
-        </div>
 
-        <div class="rule-card">
-            <div class="rule-header">
-                <div class="rule-emoji">🎙️</div>
-                <h2>Uso adecuado del chat de voz</h2>
-            </div>
-            <div class="rule-content">
-                <p>Evita ruidos molestos en los voice-chats de Discord y usa los comandos en los canales adecuados.</p>
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-emoji">🎙️</div>
+                    <h2 class="rule-title">Uso adecuado del chat de voz</h2>
+                </div>
+                <div class="rule-content">
+                    <p>Evita ruidos molestos en los voice-chats de Discord y usa los comandos en los canales adecuados.</p>
+                </div>
             </div>
         </div>
 
@@ -236,6 +476,16 @@
         </div>
     </div>
 
-    <footer><!-- Tu footer original aquí --></footer>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="index.html" class="footer-link">Inicio</a>
+                <a href="llaves.html" class="footer-link">Tienda de Llaves</a>
+                <a href="rangos.html" class="footer-link">Tienda de Rangos</a>
+                <a href="https://discord.gg/MJ5QfTc2KQ" class="footer-link" target="_blank">Discord</a>
+            </div>
+            <p class="copyright">© 2023 Tottaland Minecraft Server. Todos los derechos reservados.</p>
+        </div>
+    </footer>
 </body>
-</html>
+    </html>
