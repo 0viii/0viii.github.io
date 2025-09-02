@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Votación - MiServidor Minecraft</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2E7D32;
+            --accent-color: #8BC34A;
+            --dark-color: #1B5E20;
+            --light-color: #C8E6C9;
+            --text-color: #333;
+            --background-color: #f5f5f5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .server-info {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .rewards {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .reward-card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .reward-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .reward-card h3 {
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .voting-sites {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .voting-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .voting-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .voting-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .voting-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .instructions {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .steps {
+            margin-top: 1rem;
+            padding-left: 1.5rem;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .voting-grid, .rewards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>¡Vota por Nuestro Servidor Minecraft!</h1>
+        <p>Ayuda a nuestro servidor crecer y recibe increíbles recompensas</p>
+    </header>
+    
+    <div class="container">
+        <section class="server-info">
+            <h2>Servidor: MiServidor Minecraft</h2>
+            <p>IP: <strong>miservidor.minecraft.com</strong></p>
+            <p>Versión: <strong>1.19.2</strong></p>
+            <p>¡Cada voto ayuda a que más jugadores nos encuentren y nuestra comunidad crezca!</p>
+        </section>
+        
+        <section class="rewards">
+            <h2>Recompensas por Votar</h2>
+            <p>Por cada voto, recibirás las siguientes recompensas en el juego:</p>
+            
+            <div class="rewards-grid">
+                <div class="reward-card">
+                    <h3>💰 Monedas del Servidor</h3>
+                    <p>500 monedas para usar en nuestra tienda</p>
+                </div>
+                
+                <div class="reward-card">
+                    <h3>⚔️ Kit de Votante</h3>
+                    <p>Armadura y herramientas especiales</p>
+                </div>
+                
+                <div class="reward-card">
+                    <h3>🎁 Cajas Misteriosas</h3>
+                    <p>2 cajas misteriosas con items exclusivos</p>
+                </div>
+                
+                <div class="reward-card">
+                    <h3>🔑 Llaves de Votante</h3>
+                    <p>3 llaves para abrir cofres especiales</p>
+                </div>
+            </div>
+            
+            <p style="margin-top: 1.5rem; font-style: italic;">
+                Las recompensas se entregan automáticamente al siguiente ingresar al servidor después de votar.
+            </p>
+        </section>
+        
+        <section class="voting-sites">
+            <h2>Sitios para Votar</h2>
+            <p>Haz clic en los siguientes enlaces para votar por nuestro servidor:</p>
+            
+            <div class="voting-grid">
+                <div class="voting-card">
+                    <h3>Minecraft-Servers.org</h3>
+                    <p>Vota y ayuda a nuestro ranking</p>
+                    <a href="#" class="btn" target="_blank">Votar Ahora</a>
+                </div>
+                
+                <div class="voting-card">
+                    <h3>TopG.org</h3>
+                    <p>Muestra tu apoyo en TopG</p>
+                    <a href="#" class="btn" target="_blank">Votar Ahora</a>
+                </div>
+                
+                <div class="voting-card">
+                    <h3>PlanetMinecraft.com</h3>
+                    <p>Vota en Planet Minecraft</p>
+                    <a href="#" class="btn" target="_blank">Votar Ahora</a>
+                </div>
+            </div>
+        </section>
+        
+        <section class="instructions">
+            <h2>¿Cómo Reclamar tus Recompensas?</h2>
+            <ol class="steps">
+                <li>Haz clic en uno de los enlaces de arriba para votar</li>
+                <li>Completa el proceso de votación en el sitio web (puede requerir iniciar sesión)</li>
+                <li>Ingresa a nuestro servidor de Minecraft</li>
+                <li>Ejecuta el comando <code>/claim</code> o <code>/recompensas</code> en el juego</li>
+                <li>¡Disfruta de tus recompensas!</li>
+            </ol>
+            
+            <p style="margin-top: 1.5rem;">
+                <strong>Nota:</strong> Si no recibes tus recompensas automáticamente, contacta a un staff en nuestro Discord.
+            </p>
+        </section>
+    </div>
+    
+    <footer>
+        <p>© 2023 MiServidor Minecraft. Todos los derechos reservados.</p>
+        <p>¿Problemas con el sistema de votación? Únete a nuestro <a href="#" style="color: var(--accent-color);">Discord</a></p>
+    </footer>
+
+    <script>
+        // Aquí iría el código JavaScript para:
+        // 1. Verificar si un usuario ya votó
+        // 2. Conectarse con la API del servidor
+        // 3. Mostrar contadores de votos en tiempo real
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ejemplo: Contador de votos totales (simulado)
+            const voteCount = 1247;
+            document.querySelector('.server-info p:last-child').innerHTML += 
+                `<br><strong>Votos totales: ${voteCount}</strong>`;
+                
+            // Aquí se conectaría con la API del servidor para obtener datos reales
+            console.log("Página de votación cargada");
+        });
+    </script>
+</body>
+</html>
