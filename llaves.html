@@ -63,23 +63,37 @@
             align-items: center;
         }
 
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: linear-gradient(45deg, var(--main-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: white;
+            /* Reemplazar con tu imagen: 
+            background: url('ruta/a/tu/logo.png') center/cover;
+            */
+        }
+
         .logo {
             font-size: 1.5rem;
             font-weight: 800;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: white; /* Cambiado a blanco */
             display: flex;
             align-items: center;
             gap: 0.5rem;
             text-decoration: none;
-            cursor: default; /* Evita que sea clickeable */
-        }
-
-        .logo::before {
-            content: "⛏️";
-            font-size: 1.2rem;
+            cursor: default;
         }
 
         .back-btn {
@@ -677,6 +691,16 @@
             body {
                 font-size: 13px;
             }
+            
+            .logo {
+                font-size: 1.3rem;
+            }
+            
+            .logo-img {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
         }
 
         /* Scroll personalizado */
@@ -701,7 +725,10 @@
 <body>
     <header>
         <nav class="nav-container">
-            <div class="logo">TOTTALAND</div> <!-- Eliminado el enlace del logo -->
+            <div class="logo-container">
+                <div class="logo-img">TL</div>
+                <div class="logo">TOTTALAND</div>
+            </div>
             <a href="index.html" class="back-btn">
                 <i class="fas fa-arrow-left"></i> Volver al Inicio
             </a>
