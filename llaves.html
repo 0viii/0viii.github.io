@@ -445,6 +445,12 @@
             font-weight: 700;
             margin-bottom: 0.5rem;
             color: var(--text);
+            height: 2.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
 
         .product-description {
@@ -452,6 +458,12 @@
             margin-bottom: 1.2rem;
             font-size: 0.85rem;
             line-height: 1.5;
+            height: 4rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
         }
 
         .product-footer {
@@ -565,6 +577,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            color: var(--text);
         }
 
         .close-cart {
@@ -637,6 +650,7 @@
         .cart-item-name {
             font-weight: 600;
             font-size: 0.95rem;
+            color: var(--text);
         }
 
         .cart-item-price {
@@ -687,6 +701,7 @@
             min-width: 18px;
             text-align: center;
             font-size: 0.9rem;
+            color: var(--text);
         }
 
         .remove-item {
@@ -763,6 +778,7 @@
 
         .total-value {
             font-weight: 600;
+            color: var(--text);
         }
 
         .discount {
@@ -855,6 +871,7 @@
 
         .notification-content {
             font-size: 0.9rem;
+            color: var(--text);
         }
 
         /* Botón de cerrar carrito adicional */
@@ -920,6 +937,16 @@
             .user-info span {
                 display: none;
             }
+            
+            .product-title {
+                height: auto;
+                -webkit-line-clamp: 2;
+            }
+            
+            .product-description {
+                height: auto;
+                -webkit-line-clamp: 3;
+            }
         }
 
         /* Scroll personalizado */
@@ -938,6 +965,21 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(135deg, var(--main-color), var(--accent-color));
+        }
+        
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            display: none;
+        }
+        
+        .cart-overlay.active {
+            display: block;
         }
     </style>
 </head>
@@ -1209,14 +1251,7 @@
                 return;
             }
             
-            // Verificar si la cuenta de Minecraft existe
-            const isValidMinecraftAccount = await verifyMinecraftAccount(username);
-            if (!isValidMinecraftAccount) {
-                showNotification('El usuario de Minecraft no existe o no es válido', 'error');
-                return;
-            }
-            
-            // Simular verificación de credenciales (en un caso real, verificarías contra tu backend)
+            // Simular verificación de credenciales
             const users = JSON.parse(localStorage.getItem('users')) || [];
             const user = users.find(u => u.username === username && u.password === password);
             
@@ -1246,7 +1281,7 @@
                 return;
             }
             
-            // Guardar usuario (en un caso real, esto se haría en el backend)
+            // Guardar usuario
             const users = JSON.parse(localStorage.getItem('users')) || [];
             
             // Verificar si el usuario ya existe
@@ -1282,8 +1317,7 @@
 
         // ===== VERIFICACIÓN DE CUENTA MINECRAFT =====
         async function verifyMinecraftAccount(username) {
-            // En una implementación real, usarías la API de Mojang
-            // Por ahora simulamos una verificación exitosa para cualquier nombre
+            // Simulamos una verificación exitosa
             showNotification(`Verificando cuenta de Minecraft: ${username}`, 'success');
             
             // Simular delay de verificación
@@ -1291,17 +1325,6 @@
             
             // Simular que la verificación fue exitosa
             return true;
-            
-            /*
-            // Código real para verificar con la API de Mojang (descomentar en producción)
-            try {
-                const response = await fetch(`https://api.mojang.com/users/profiles/minecraft/${username}`);
-                return response.ok;
-            } catch (error) {
-                console.error('Error verificando cuenta de Minecraft:', error);
-                return false;
-            }
-            */
         }
 
         // ===== VERIFICACIÓN DE DOS PASOS =====
@@ -1317,7 +1340,7 @@
                 return;
             }
             
-            // Generar código de verificación (en un caso real, se enviaría por email)
+            // Generar código de verificación (simulado)
             verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
             console.log(`Código de verificación (simulado): ${verificationCode}`);
             
@@ -1639,4 +1662,4 @@
         window.onload = init;
     </script>
 </body>
-    </html>
+</html>
