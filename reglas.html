@@ -3,18 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Musica el david ilegal</title>
+<title>MiniSpotify</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family: 'Roboto', sans-serif; background-color:#121212; color:#fff; }
 
   /* Sidebar */
-  .sidebar {
-    position: fixed; left:0; top:0; bottom:100px; width:220px;
-    background-color:#000; padding:20px; display:flex; flex-direction:column;
-    border-right:1px solid #282828;
-  }
+  .sidebar { position: fixed; left:0; top:0; bottom:100px; width:220px; background-color:#000; padding:20px; display:flex; flex-direction:column; border-right:1px solid #282828; }
   .sidebar h2 { color:#1DB954; margin-bottom:40px; font-size:28px; text-align:center; }
   .sidebar a { color:#b3b3b3; text-decoration:none; margin-bottom:20px; font-weight:bold; font-size:16px; display:flex; align-items:center; gap:10px; }
   .sidebar a:hover { color:#fff; }
@@ -60,7 +56,7 @@
 
 <!-- Sidebar -->
 <div class="sidebar">
-  <h2>MiniSpotify</h2>
+  <h2>Musica Ilegal jiji</h2>
   <a href="#">🏠 Inicio</a>
   <a href="#">🔍 Explorar</a>
   <a href="#">📚 Tu Biblioteca</a>
@@ -76,18 +72,18 @@
   <!-- Playlists -->
   <h2 class="section-title">Playlists Populares</h2>
   <div class="grid">
-    <div class="card" onclick="playYT('f1iiTXwcXq0','Justicia','Banda Ejemplo','https://via.placeholder.com/60')">
-      <img src="https://via.placeholder.com/160" alt="Justicia">
-      <p>Justicia</p>
+    <div class="card" onclick="playYT('f1iiTXwcXq0','Canción YouTube','Artista YouTube','https://via.placeholder.com/60')">
+      <img src="https://via.placeholder.com/160" alt="Canción YouTube">
+      <p>Canción YouTube</p>
     </div>
   </div>
 
   <!-- Songs list -->
   <h2 class="section-title">Canciones Destacadas</h2>
   <div class="song-list">
-    <div class="song" onclick="playYT('f1iiTXwcXq0','Justicia','Banda Ejemplo','https://via.placeholder.com/60')">
-      <p>Justicia</p>
-      <p>Banda Ejemplo</p>
+    <div class="song" onclick="playYT('f1iiTXwcXq0','Canción YouTube','Artista YouTube','https://via.placeholder.com/60')">
+      <p>Canción YouTube</p>
+      <p>Artista YouTube</p>
     </div>
   </div>
 </div>
@@ -97,8 +93,8 @@
   <div class="player-left">
     <img id="player-img" src="https://via.placeholder.com/60" alt="Álbum">
     <div class="player-info">
-      <p id="player-song">Justicia</p>
-      <p id="player-artist">Banda Ejemplo</p>
+      <p id="player-song">Canción YouTube</p>
+      <p id="player-artist">Artista YouTube</p>
     </div>
   </div>
   
@@ -116,13 +112,11 @@
 
 <!-- YouTube oculto -->
 <iframe id="yt-audio" width="0" height="0"
-  src="https://www.youtube.com/embed/f1iiTXwcXq0?autoplay=1&controls=0&loop=1&playlist=f1iiTXwcXq0"
+  src="https://www.youtube.com/embed/f1iiTXwcXq0?autoplay=1&controls=0&loop=1&playlist=f1iiTXwcXq0&enablejsapi=1"
   frameborder="0" allow="autoplay"></iframe>
 
 <script>
 const playBtn = document.getElementById('play');
-const progress = document.getElementById('progress');
-const volume = document.getElementById('volume');
 const iframe = document.getElementById('yt-audio');
 let isPlaying = true; // autoplay inicial
 
@@ -150,3 +144,4 @@ function playYT(videoID, songName, artistName, img){
 
 </body>
 </html>
+
