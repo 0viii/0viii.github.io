@@ -9,8 +9,7 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
   font-family: 'Roboto', sans-serif;
-  background: url('https://images6.alphacoders.com/105/1058970.jpg') no-repeat center center fixed;
-  background-size: cover;
+  background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
   color:#fff;
   transition: background 0.8s ease;
 }
@@ -101,10 +100,12 @@ let player;
 let isPlaying = true;
 let currentSong = 0;
 
-// Lista de canciones
+// Lista de canciones actualizada
 const songs = [
   {id:'f1iiTXwcXq0', title:'LVL', artist:'A$AP Rocky', img:'https://via.placeholder.com/60'},
   {id:'t7aY6lJ77BM', title:'Tu Boda', artist:'Desconocido', img:'https://via.placeholder.com/60'},
+  {id:'kJQP7kiw5Fk', title:'Despacito', artist:'Luis Fonsi', img:'https://upload.wikimedia.org/wikipedia/en/0/0b/Luis_Fonsi_-_Despacito.png'},
+  {id:'HBNl2wL5fUQ', title:'See You Again', artist:'Tyler, The Creator', img:'https://upload.wikimedia.org/wikipedia/en/9/9a/Tyler_The_Creator_See_You_Again.jpg'}
 ];
 
 // Llenar lista en HTML
@@ -128,7 +129,7 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player('yt-player', {
     height:'0', width:'0',
     videoId:songs[currentSong].id,
-    playerVars:{'autoplay':1,'controls':0,'loop':1,'playlist':songs[currentSong].id,'mute':0},
+    playerVars:{'autoplay':1,'controls':0,'loop':1,'playlist':songs.map(s=>s.id).join(','),'mute':0},
     events:{'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange}
   });
 }
