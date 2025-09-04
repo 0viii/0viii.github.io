@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniSpotify Ultra</title>
+<title>MiniSpotify Moderno</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
+  /* Reset básico */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    margin: 0;
     font-family: 'Roboto', sans-serif;
     background-color: #121212;
     color: #fff;
@@ -24,72 +25,82 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
+    border-right: 1px solid #282828;
   }
   .sidebar h2 {
     color: #1DB954;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
+    font-size: 28px;
+    text-align: center;
   }
   .sidebar a {
     color: #b3b3b3;
     text-decoration: none;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
-  .sidebar a:hover {
-    color: #fff;
-  }
+  .sidebar a:hover { color: #fff; }
 
   /* Main content */
   .main {
     margin-left: 240px;
-    padding: 20px;
+    padding: 30px;
   }
 
   /* Search bar */
   .search {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
   }
   .search input {
     width: 100%;
-    padding: 10px;
-    border-radius: 20px;
+    padding: 12px 20px;
+    border-radius: 30px;
     border: none;
     background-color: #282828;
     color: #fff;
     font-size: 16px;
+    outline: none;
+    transition: 0.3s;
   }
-  .search input::placeholder {
-    color: #b3b3b3;
+  .search input:focus {
+    background-color: #1e1e1e;
+  }
+  .search input::placeholder { color: #b3b3b3; }
+
+  /* Section titles */
+  .section-title {
+    margin-bottom: 15px;
+    font-size: 22px;
+    font-weight: bold;
   }
 
-  /* Sections */
-  .section-title {
-    margin-top: 0;
-  }
+  /* Cards */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 20px;
     margin-bottom: 40px;
   }
   .card {
-    background-color: #282828;
-    border-radius: 10px;
+    background-color: #181818;
+    border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.3s, box-shadow 0.3s;
   }
   .card:hover {
-    transform: scale(1.05);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
   }
-  .card img {
-    width: 100%;
-    display: block;
-  }
+  .card img { width: 100%; display: block; }
   .card p {
     margin: 10px;
     text-align: center;
-    font-weight: bold;
+    font-weight: 500;
   }
 
   /* Song list */
@@ -99,7 +110,7 @@
   .song {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+    padding: 12px 15px;
     border-bottom: 1px solid #282828;
     cursor: pointer;
     transition: background 0.2s;
@@ -118,23 +129,30 @@
     background-color: #181818;
     display: flex;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 30px;
     gap: 15px;
+    border-top: 1px solid #282828;
   }
   .player img {
     width: 60px;
     height: 60px;
-    border-radius: 5px;
+    border-radius: 8px;
   }
   .player-info {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
-  .player-info p {
-    margin: 0;
+  .player-info p:first-child {
+    font-weight: bold;
+    font-size: 16px;
   }
-  .player audio {
-    width: 200px;
+  .player-info p:last-child {
+    font-size: 14px;
+    color: #b3b3b3;
   }
+  .player audio { width: 200px; }
 </style>
 </head>
 <body>
@@ -142,67 +160,67 @@
 <!-- Sidebar -->
 <div class="sidebar">
   <h2>MiniSpotify</h2>
-  <a href="#">Inicio</a>
-  <a href="#">Explorar</a>
-  <a href="#">Tu Biblioteca</a>
+  <a href="#">🏠 Inicio</a>
+  <a href="#">🔍 Explorar</a>
+  <a href="#">📚 Tu Biblioteca</a>
 </div>
 
 <!-- Main content -->
 <div class="main">
   <!-- Search -->
   <div class="search">
-    <input type="text" placeholder="Buscar...">
+    <input type="text" placeholder="Buscar música, artistas o playlists...">
   </div>
 
   <!-- Playlists -->
   <h2 class="section-title">Playlists Populares</h2>
   <div class="grid">
-    <div class="card" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'Adventure', 'SoundHelix', 'https://via.placeholder.com/60')">
-      <img src="https://via.placeholder.com/150" alt="Adventure">
-      <p>Adventure</p>
+    <div class="card" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'Aventura', 'Artista Ejemplo', 'https://via.placeholder.com/60')">
+      <img src="https://via.placeholder.com/160" alt="Aventura">
+      <p>Aventura</p>
     </div>
-    <div class="card" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', 'Romantic', 'SoundHelix', 'https://via.placeholder.com/60')">
-      <img src="https://via.placeholder.com/150" alt="Romantic">
-      <p>Romantic</p>
+    <div class="card" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', 'Romántica', 'Artista Ejemplo', 'https://via.placeholder.com/60')">
+      <img src="https://via.placeholder.com/160" alt="Romántica">
+      <p>Romántica</p>
     </div>
-    <div class="card" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', 'Jazz', 'SoundHelix', 'https://via.placeholder.com/60')">
-      <img src="https://via.placeholder.com/150" alt="Jazz">
+    <div class="card" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', 'Jazz', 'Artista Ejemplo', 'https://via.placeholder.com/60')">
+      <img src="https://via.placeholder.com/160" alt="Jazz">
       <p>Jazz</p>
     </div>
-    <div class="card" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3', 'Classical', 'SoundHelix', 'https://via.placeholder.com/60')">
-      <img src="https://via.placeholder.com/150" alt="Classical">
-      <p>Classical</p>
+    <div class="card" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3', 'Clásica', 'Artista Ejemplo', 'https://via.placeholder.com/60')">
+      <img src="https://via.placeholder.com/160" alt="Clásica">
+      <p>Clásica</p>
     </div>
   </div>
 
   <!-- Songs list -->
-  <h2 class="section-title">Canciones</h2>
+  <h2 class="section-title">Canciones Destacadas</h2>
   <div class="song-list">
-    <div class="song" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'Adventure', 'SoundHelix', 'https://via.placeholder.com/60')">
-      <p>Adventure</p>
-      <p>SoundHelix</p>
+    <div class="song" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'Aventura', 'Artista Ejemplo', 'https://via.placeholder.com/60')">
+      <p>Aventura</p>
+      <p>Artista Ejemplo</p>
     </div>
-    <div class="song" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', 'Romantic', 'SoundHelix', 'https://via.placeholder.com/60')">
-      <p>Romantic</p>
-      <p>SoundHelix</p>
+    <div class="song" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', 'Romántica', 'Artista Ejemplo', 'https://via.placeholder.com/60')">
+      <p>Romántica</p>
+      <p>Artista Ejemplo</p>
     </div>
-    <div class="song" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', 'Jazz', 'SoundHelix', 'https://via.placeholder.com/60')">
+    <div class="song" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', 'Jazz', 'Artista Ejemplo', 'https://via.placeholder.com/60')">
       <p>Jazz</p>
-      <p>SoundHelix</p>
+      <p>Artista Ejemplo</p>
     </div>
-    <div class="song" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3', 'Classical', 'SoundHelix', 'https://via.placeholder.com/60')">
-      <p>Classical</p>
-      <p>SoundHelix</p>
+    <div class="song" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3', 'Clásica', 'Artista Ejemplo', 'https://via.placeholder.com/60')">
+      <p>Clásica</p>
+      <p>Artista Ejemplo</p>
     </div>
   </div>
 </div>
 
 <!-- Player -->
 <div class="player">
-  <img id="player-img" src="https://via.placeholder.com/60" alt="Album">
+  <img id="player-img" src="https://via.placeholder.com/60" alt="Álbum">
   <div class="player-info">
-    <p id="player-song">Adventure</p>
-    <p id="player-artist">SoundHelix</p>
+    <p id="player-song">Aventura</p>
+    <p id="player-artist">Artista Ejemplo</p>
   </div>
   <audio id="player" controls>
     <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
