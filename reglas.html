@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</title>ilegal</title>
+<title>MiniSpotify YouTube</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -48,7 +48,7 @@ body { font-family: 'Roboto', sans-serif; background-color:#121212; color:#fff; 
 
 <!-- Sidebar -->
 <div class="sidebar">
-  <h2>Musica ilegal jiji</h2>
+  <h2>MiniIlegal</h2>
   <a href="#">🏠 Inicio</a>
   <a href="#">🔍 Explorar</a>
   <a href="#">📚 Tu Biblioteca</a>
@@ -62,17 +62,17 @@ body { font-family: 'Roboto', sans-serif; background-color:#121212; color:#fff; 
 
   <h2 class="section-title">Playlists Populares</h2>
   <div class="grid">
-    <div class="card" onclick="playYT('f1iiTXwcXq0','Solo Música','YouTube','https://via.placeholder.com/60')">
-      <img src="https://via.placeholder.com/160" alt="Solo Música">
-      <p>Solo Música</p>
+    <div class="card" onclick="playYT('f1iiTXwcXq0','Canción YouTube','Artista YouTube','https://via.placeholder.com/60')">
+      <img src="https://via.placeholder.com/160" alt="Canción YouTube">
+      <p>Canción YouTube</p>
     </div>
   </div>
 
   <h2 class="section-title">Canciones Destacadas</h2>
   <div class="song-list">
-    <div class="song" onclick="playYT('f1iiTXwcXq0','Solo Música','YouTube','https://via.placeholder.com/60')">
-      <p>Solo Música</p>
-      <p>YouTube</p>
+    <div class="song" onclick="playYT('f1iiTXwcXq0','Canción YouTube','Artista YouTube','https://via.placeholder.com/60')">
+      <p>Canción YouTube</p>
+      <p>Artista YouTube</p>
     </div>
   </div>
 </div>
@@ -82,8 +82,8 @@ body { font-family: 'Roboto', sans-serif; background-color:#121212; color:#fff; 
   <div class="player-left">
     <img id="player-img" src="https://via.placeholder.com/60" alt="Álbum">
     <div class="player-info">
-      <p id="player-song">Solo Música</p>
-      <p id="player-artist">YouTube</p>
+      <p id="player-song">Canción YouTube</p>
+      <p id="player-artist">Artista YouTube</p>
     </div>
   </div>
   
@@ -116,7 +116,13 @@ function onYouTubeIframeAPIReady() {
     height: '0',
     width: '0',
     videoId: 'f1iiTXwcXq0',
-    playerVars: { 'autoplay': 1, 'controls': 0, 'loop': 1, 'playlist': 'f1iiTXwcXq0' },
+    playerVars: { 
+      'autoplay': 1, 
+      'controls': 0, 
+      'loop': 1, 
+      'playlist': 'f1iiTXwcXq0',
+      'mute': 0
+    },
     events: { 'onReady': () => player.playVideo() }
   });
 }
