@@ -3,60 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniSpotify</title>
+</title>ilegal</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: 'Roboto', sans-serif; background-color:#121212; color:#fff; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Roboto', sans-serif; background-color:#121212; color:#fff; }
 
-  /* Sidebar */
-  .sidebar { position: fixed; left:0; top:0; bottom:100px; width:220px; background-color:#000; padding:20px; display:flex; flex-direction:column; border-right:1px solid #282828; }
-  .sidebar h2 { color:#1DB954; margin-bottom:40px; font-size:28px; text-align:center; }
-  .sidebar a { color:#b3b3b3; text-decoration:none; margin-bottom:20px; font-weight:bold; font-size:16px; display:flex; align-items:center; gap:10px; }
-  .sidebar a:hover { color:#fff; }
+.sidebar { position: fixed; left:0; top:0; bottom:100px; width:220px; background-color:#000; padding:20px; display:flex; flex-direction:column; border-right:1px solid #282828; }
+.sidebar h2 { color:#1DB954; margin-bottom:40px; font-size:28px; text-align:center; }
+.sidebar a { color:#b3b3b3; text-decoration:none; margin-bottom:20px; font-weight:bold; font-size:16px; display:flex; align-items:center; gap:10px; }
+.sidebar a:hover { color:#fff; }
 
-  /* Main content */
-  .main { margin-left:240px; padding:30px; }
+.main { margin-left:240px; padding:30px; }
 
-  /* Search bar */
-  .search { margin-bottom:30px; }
-  .search input { width:100%; padding:12px 20px; border-radius:30px; border:none; background-color:#282828; color:#fff; font-size:16px; outline:none; transition:0.3s; }
-  .search input:focus { background-color:#1e1e1e; }
-  .search input::placeholder { color:#b3b3b3; }
+.search { margin-bottom:30px; }
+.search input { width:100%; padding:12px 20px; border-radius:30px; border:none; background-color:#282828; color:#fff; font-size:16px; outline:none; transition:0.3s; }
+.search input:focus { background-color:#1e1e1e; }
+.search input::placeholder { color:#b3b3b3; }
 
-  /* Section titles */
-  .section-title { margin-bottom:15px; font-size:22px; font-weight:bold; }
+.section-title { margin-bottom:15px; font-size:22px; font-weight:bold; }
 
-  /* Cards */
-  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:20px; margin-bottom:40px; }
-  .card { background-color:#181818; border-radius:12px; overflow:hidden; cursor:pointer; transition:transform 0.3s, box-shadow 0.3s; }
-  .card:hover { transform:translateY(-5px); box-shadow:0 10px 20px rgba(0,0,0,0.5); }
-  .card img { width:100%; display:block; }
-  .card p { margin:10px; text-align:center; font-weight:500; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:20px; margin-bottom:40px; }
+.card { background-color:#181818; border-radius:12px; overflow:hidden; cursor:pointer; transition:transform 0.3s, box-shadow 0.3s; }
+.card:hover { transform:translateY(-5px); box-shadow:0 10px 20px rgba(0,0,0,0.5); }
+.card img { width:100%; display:block; }
+.card p { margin:10px; text-align:center; font-weight:500; }
 
-  /* Song list */
-  .song-list { margin-top:20px; }
-  .song { display:flex; justify-content:space-between; padding:12px 15px; border-bottom:1px solid #282828; cursor:pointer; transition: background 0.2s; }
-  .song:hover { background-color:#282828; }
+.song-list { margin-top:20px; }
+.song { display:flex; justify-content:space-between; padding:12px 15px; border-bottom:1px solid #282828; cursor:pointer; transition: background 0.2s; }
+.song:hover { background-color:#282828; }
 
-  /* Player Mejorado */
-  .player { position:fixed; bottom:0; left:0; right:0; height:100px; background-color:#181818; display:flex; justify-content:space-between; align-items:center; padding:0 30px; border-top:1px solid #282828; gap:20px; }
-  .player-left { display:flex; align-items:center; gap:15px; }
-  .player-left img { width:60px; height:60px; border-radius:8px; }
-  .player-info p:first-child { font-weight:bold; font-size:16px; }
-  .player-info p:last-child { font-size:14px; color:#b3b3b3; }
-  .player-center { display:flex; align-items:center; gap:15px; }
-  .player-center button { background:none; border:none; color:#fff; font-size:18px; cursor:pointer; transition:0.2s; }
-  .player-center button:hover { color:#1DB954; }
-  #progress { width:200px; cursor:pointer; }
-  .player-right input[type="range"] { width:100px; cursor:pointer; }
+.player { position:fixed; bottom:0; left:0; right:0; height:100px; background-color:#181818; display:flex; justify-content:space-between; align-items:center; padding:0 30px; border-top:1px solid #282828; gap:20px; }
+.player-left { display:flex; align-items:center; gap:15px; }
+.player-left img { width:60px; height:60px; border-radius:8px; }
+.player-info p:first-child { font-weight:bold; font-size:16px; }
+.player-info p:last-child { font-size:14px; color:#b3b3b3; }
+.player-center { display:flex; align-items:center; gap:15px; }
+.player-center button { background:none; border:none; color:#fff; font-size:18px; cursor:pointer; transition:0.2s; }
+.player-center button:hover { color:#1DB954; }
+.player-right input[type="range"] { width:100px; cursor:pointer; }
 </style>
 </head>
 <body>
 
 <!-- Sidebar -->
 <div class="sidebar">
-  <h2>Musica Ilegal jiji</h2>
+  <h2>Musica ilegal jiji</h2>
   <a href="#">🏠 Inicio</a>
   <a href="#">🔍 Explorar</a>
   <a href="#">📚 Tu Biblioteca</a>
@@ -64,26 +56,23 @@
 
 <!-- Main content -->
 <div class="main">
-  <!-- Search -->
   <div class="search">
     <input type="text" placeholder="Buscar música, artistas o playlists...">
   </div>
 
-  <!-- Playlists -->
   <h2 class="section-title">Playlists Populares</h2>
   <div class="grid">
-    <div class="card" onclick="playYT('f1iiTXwcXq0','Canción YouTube','Artista YouTube','https://via.placeholder.com/60')">
-      <img src="https://via.placeholder.com/160" alt="Canción YouTube">
-      <p>Canción YouTube</p>
+    <div class="card" onclick="playYT('f1iiTXwcXq0','Solo Música','YouTube','https://via.placeholder.com/60')">
+      <img src="https://via.placeholder.com/160" alt="Solo Música">
+      <p>Solo Música</p>
     </div>
   </div>
 
-  <!-- Songs list -->
   <h2 class="section-title">Canciones Destacadas</h2>
   <div class="song-list">
-    <div class="song" onclick="playYT('f1iiTXwcXq0','Canción YouTube','Artista YouTube','https://via.placeholder.com/60')">
-      <p>Canción YouTube</p>
-      <p>Artista YouTube</p>
+    <div class="song" onclick="playYT('f1iiTXwcXq0','Solo Música','YouTube','https://via.placeholder.com/60')">
+      <p>Solo Música</p>
+      <p>YouTube</p>
     </div>
   </div>
 </div>
@@ -93,8 +82,8 @@
   <div class="player-left">
     <img id="player-img" src="https://via.placeholder.com/60" alt="Álbum">
     <div class="player-info">
-      <p id="player-song">Canción YouTube</p>
-      <p id="player-artist">Artista YouTube</p>
+      <p id="player-song">Solo Música</p>
+      <p id="player-artist">YouTube</p>
     </div>
   </div>
   
@@ -102,7 +91,6 @@
     <button id="prev">&#9664;&#9664;</button>
     <button id="play">&#9654;</button>
     <button id="next">&#9654;&#9654;</button>
-    <input type="range" id="progress" value="0" min="0" max="100">
   </div>
   
   <div class="player-right">
@@ -111,37 +99,53 @@
 </div>
 
 <!-- YouTube oculto -->
-<iframe id="yt-audio" width="0" height="0"
-  src="https://www.youtube.com/embed/f1iiTXwcXq0?autoplay=1&controls=0&loop=1&playlist=f1iiTXwcXq0&enablejsapi=1"
-  frameborder="0" allow="autoplay"></iframe>
+<div id="yt-player"></div>
 
 <script>
-const playBtn = document.getElementById('play');
-const iframe = document.getElementById('yt-audio');
-let isPlaying = true; // autoplay inicial
+let player;
+let isPlaying = true;
 
-playBtn.addEventListener('click', () => {
+// Cargar YouTube API
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('yt-player', {
+    height: '0',
+    width: '0',
+    videoId: 'f1iiTXwcXq0',
+    playerVars: { 'autoplay': 1, 'controls': 0, 'loop': 1, 'playlist': 'f1iiTXwcXq0' },
+    events: { 'onReady': () => player.playVideo() }
+  });
+}
+
+document.getElementById('play').addEventListener('click', () => {
   if(isPlaying){
-    iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-    playBtn.textContent = '▶';
+    player.pauseVideo();
     isPlaying = false;
+    document.getElementById('play').textContent = '▶';
   } else {
-    iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-    playBtn.textContent = '❚❚';
+    player.playVideo();
     isPlaying = true;
+    document.getElementById('play').textContent = '❚❚';
   }
 });
 
 function playYT(videoID, songName, artistName, img){
-  iframe.src = `https://www.youtube.com/embed/${videoID}?autoplay=1&controls=0&loop=1&playlist=${videoID}&enablejsapi=1`;
+  player.loadVideoById(videoID);
   document.getElementById('player-song').innerText = songName;
   document.getElementById('player-artist').innerText = artistName;
   document.getElementById('player-img').src = img;
-  playBtn.textContent = '❚❚';
+  document.getElementById('play').textContent = '❚❚';
   isPlaying = true;
 }
+
+document.getElementById('volume').addEventListener('input', (e)=>{
+  player.setVolume(e.target.value*100);
+});
 </script>
 
 </body>
 </html>
-
