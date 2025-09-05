@@ -1,228 +1,152 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logo Tottaland - Minecraft Server</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0f17 0%, #090910 100%);
-            color: #ecf0f1;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1000px;
-            text-align: center;
-            background: rgba(30, 30, 46, 0.8);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            margin: 20px;
-        }
-        
-        h1 {
-            color: #2ecc71;
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 2.5rem;
-        }
-        
-        .logo-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
-            margin: 30px 0;
-        }
-        
-        .logo-option {
-            background: rgba(40, 40, 56, 0.6);
-            border-radius: 12px;
-            padding: 20px;
-            width: 280px;
-            transition: transform 0.3s ease;
-        }
-        
-        .logo-option:hover {
-            transform: translateY(-5px);
-        }
-        
-        .logo-img {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            background: #1a1a2e;
-            font-size: 40px;
-            font-weight: bold;
-            color: white;
-        }
-        
-        .logo-title {
-            font-size: 1.2rem;
-            margin: 10px 0;
-            color: #9b59b6;
-        }
-        
-        .logo-description {
-            font-size: 0.9rem;
-            color: #b3b3cc;
-            margin-bottom: 15px;
-        }
-        
-        .download-btn {
-            background: linear-gradient(135deg, #2ecc71, #9b59b6);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            margin: 5px;
-        }
-        
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
-        }
-        
-        .instructions {
-            background: rgba(46, 204, 113, 0.1);
-            border-left: 4px solid #2ecc71;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 30px 0;
-            text-align: left;
-        }
-        
-        .instructions h3 {
-            color: #2ecc71;
-            margin-top: 0;
-        }
-        
-        .code-block {
-            background: #1a1a2e;
-            padding: 15px;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 15px 0;
-            text-align: left;
-            font-family: monospace;
-            color: #2ecc71;
-        }
-        
-        @media (max-width: 768px) {
-            .logo-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .logo-option {
-                width: 100%;
-                max-width: 280px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini WhatsApp</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #e5ddd5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .chat-container {
+        width: 400px;
+        height: 600px;
+        background: #fff;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .chat-header {
+        background: #075e54;
+        color: #fff;
+        padding: 15px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .message {
+        max-width: 70%;
+        padding: 10px;
+        border-radius: 10px;
+        word-wrap: break-word;
+    }
+
+    .message.you {
+        background: #dcf8c6;
+        align-self: flex-end;
+    }
+
+    .message.other {
+        background: #fff;
+        border: 1px solid #ddd;
+        align-self: flex-start;
+    }
+
+    .chat-input {
+        display: flex;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        background: #f0f0f0;
+    }
+
+    .chat-input input {
+        flex: 1;
+        padding: 10px;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        outline: none;
+    }
+
+    .chat-input button {
+        margin-left: 10px;
+        padding: 10px 15px;
+        background: #075e54;
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+
+    .chat-input button:hover {
+        background: #128c7e;
+    }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>Logo para Tottaland Minecraft Server</h1>
-        
-        <p>He creado varias opciones de logo para tu servidor. Puedes hacer clic derecho sobre cualquier logo y seleccionar "Guardar imagen como..." para descargarlo.</p>
-        
-        <div class="logo-container">
-            <div class="logo-option">
-                <div class="logo-img" style="background: linear-gradient(135deg, #2ecc71, #9b59b6);">TL</div>
-                <div class="logo-title">Logo Simple</div>
-                <div class="logo-description">Diseño minimalista con las iniciales y colores del servidor</div>
-                <a href="#" class="download-btn">Descargar</a>
-            </div>
-            
-            <div class="logo-option">
-                <div class="logo-img" style="background: linear-gradient(135deg, #2ecc71, #3498db);">
-                    <svg width="80" height="80" viewBox="0 0 100 100">
-                        <path d="M50 15 L75 40 L65 50 L50 35 L35 50 L25 40 Z" fill="white"/>
-                        <rect x="35" y="50" width="30" height="25" fill="white"/>
-                        <rect x="30" y="75" width="40" height="10" fill="white"/>
-                    </svg>
-                </div>
-                <div class="logo-title">Logo con Herramientas</div>
-                <div class="logo-description">Incluye un pico de Minecraft como elemento identificativo</div>
-                <a href="#" class="download-btn">Descargar</a>
-            </div>
-            
-            <div class="logo-option">
-                <div class="logo-img" style="background: linear-gradient(135deg, #9b59b6, #e74c3c);">
-                    <svg width="80" height="80" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="40" fill="white"/>
-                        <text x="50" y="60" text-anchor="middle" fill="#9b59b6" font-size="30" font-weight="bold">T</text>
-                    </svg>
-                </div>
-                <div class="logo-title">Logo con Círculo</div>
-                <div class="logo-description">Diseño circular moderno con la inicial del servidor</div>
-                <a href="#" class="download-btn">Descargar</a>
-            </div>
-        </div>
-        
-        <div class="instructions">
-            <h3>Instrucciones para usar el logo en tus páginas</h3>
-            <p>Para agregar el logo a tu página, reemplaza el div con clase "logo-img" con una etiqueta img que apunte a la ubicación de tu logo:</p>
-            
-            <div class="code-block">
-                &lt;div class="logo-container"&gt;<br>
-                &nbsp;&nbsp;&lt;div class="logo-img"&gt;TL&lt;/div&gt;<br>
-                &nbsp;&nbsp;&lt;div class="logo"&gt;TOTTALAND&lt;/div&gt;<br>
-                &lt;/div&gt;
-            </div>
-            
-            <p>Reemplázalo con:</p>
-            
-            <div class="code-block">
-                &lt;div class="logo-container"&gt;<br>
-                &nbsp;&nbsp;&lt;img src="ruta/a/tu/logo.png" class="logo-img" alt="Tottaland Logo"&gt;<br>
-                &nbsp;&nbsp;&lt;div class="logo"&gt;TOTTALAND&lt;/div&gt;<br>
-                &lt;/div&gt;
-            </div>
-            
-            <p>También puedes usar el logo como favicon (icono de pestaña del navegador) agregando esto en el &lt;head&gt; de tu HTML:</p>
-            
-            <div class="code-block">
-                &lt;link rel="icon" href="ruta/a/tu/logo.png" type="image/png"&gt;
-            </div>
-        </div>
-        
-        <h2>O crea tu propio logo</h2>
-        <p>Si prefieres crear un logo personalizado, te recomiendo estas herramientas gratuitas:</p>
-        
-        <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin: 20px 0;">
-            <a href="https://www.canva.com/" class="download-btn" target="_blank">Canva</a>
-            <a href="https://www.figma.com/" class="download-btn" target="_blank">Figma</a>
-            <a href="https://www.adobe.com/express/create/logo" class="download-btn" target="_blank">Adobe Express</a>
-            <a href="https://looka.com/" class="download-btn" target="_blank">Looka</a>
-        </div>
-    </div>
 
-    <script>
-        // Simular descarga al hacer clic en los botones (en un entorno real, esto descargaría el archivo)
-        document.querySelectorAll('.download-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                alert('En un entorno real, esto descargaría el archivo de logo. Para esta demostración, puedes hacer clic derecho en cualquier logo y seleccionar "Guardar imagen como..."');
-            });
+<div class="chat-container">
+    <div class="chat-header">Mini WhatsApp</div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input">
+        <input type="text" id="message-input" placeholder="Escribe un mensaje...">
+        <button id="send-btn">Enviar</button>
+    </div>
+</div>
+
+<script>
+    const messagesEl = document.getElementById('chat-messages');
+    const inputEl = document.getElementById('message-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    // Cargar mensajes guardados
+    let messages = JSON.parse(localStorage.getItem('messages')) || [];
+
+    function renderMessages() {
+        messagesEl.innerHTML = '';
+        messages.forEach(msg => {
+            const div = document.createElement('div');
+            div.classList.add('message', msg.from);
+            div.textContent = msg.text;
+            messagesEl.appendChild(div);
         });
-    </script>
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function addMessage(text, from) {
+        messages.push({text, from});
+        localStorage.setItem('messages', JSON.stringify(messages));
+        renderMessages();
+    }
+
+    // Enviar mensaje
+    sendBtn.addEventListener('click', () => {
+        const text = inputEl.value.trim();
+        if(text) {
+            addMessage(text, 'you');
+            inputEl.value = '';
+            // Simular respuesta del "otro"
+            setTimeout(() => {
+                addMessage("Respuesta automática 😎", 'other');
+            }, 1000);
+        }
+    });
+
+    inputEl.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') sendBtn.click();
+    });
+
+    renderMessages();
+</script>
+
 </body>
 </html>
