@@ -3,116 +3,157 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Chat</title>
+<title>Mini WhatsApp</title>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
   body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #1DB954, #191414);
-    color: #fff;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e5ddd5;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
   }
+
   .chat-container {
-    background: rgba(0,0,0,0.85);
-    padding: 20px;
-    border-radius: 15px;
-    width: 100%;
-    max-width: 400px;
+    width: 400px;
+    height: 600px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   }
-  #messages {
-    flex: 1;
-    overflow-y: auto;
-    max-height: 300px;
-    padding: 10px;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 10px;
-  }
-  #messages div {
-    margin-bottom: 10px;
-  }
-  #messages .user {
+
+  .header {
+    background-color: #075e54;
+    color: white;
+    padding: 15px;
+    font-size: 20px;
     font-weight: bold;
-    color: #1ED760;
   }
-  form {
-    display: flex;
-    gap: 5px;
-  }
-  input[type="text"] {
+
+  .messages {
     flex: 1;
     padding: 10px;
-    border-radius: 10px;
-    border: none;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .message {
+    max-width: 70%;
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    clear: both;
+    word-wrap: break-word;
+  }
+
+  .message.self {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+  }
+
+  .message.other {
+    background-color: white;
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+  }
+
+  .input-container {
+    display: flex;
+    padding: 10px;
+    background-color: #f0f0f0;
+  }
+
+  .input-container input {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
     outline: none;
   }
-  button {
+
+  .input-container button {
+    margin-left: 10px;
     padding: 10px 15px;
-    border-radius: 10px;
     border: none;
-    background: #1ED760;
-    color: #000;
-    font-weight: bold;
+    background-color: #075e54;
+    color: white;
+    border-radius: 20px;
     cursor: pointer;
+  }
+
+  .input-container button:hover {
+    background-color: #128c7e;
   }
 </style>
 </head>
 <body>
 
 <div class="chat-container">
-  <div id="messages"></div>
-  <form id="chat-form">
-    <input type="text" id="message-input" placeholder="Escribe un mensaje..." required>
-    <button type="submit">Enviar</button>
-  </form>
+  <div class="header">Mini WhatsApp</div>
+  <div class="messages" id="messages"></div>
+  <div class="input-container">
+    <input type="text" id="messageInput" placeholder="Escribe un mensaje..." />
+    <button id="sendBtn">Enviar</button>
+  </div>
 </div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-
 <script>
-  // Configuración de Firebase
+  // Tu configuración de Firebase
   const firebaseConfig = {
-    apiKey: "AIzaSyDR6PNPfJDmQYv9uXUgedmozkngdk3bKDQ",
-    authDomain: "minidavid-134d1.firebaseapp.com",
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_AUTH_DOMAIN",
+    databaseURL: "https://minidavid-134d1-default-rtdb.firebaseio.com/",
     projectId: "minidavid-134d1",
-    storageBucket: "minidavid-134d1.firebasestorage.app",
-    messagingSenderId: "326973939527",
-    appId: "1:326973939527:web:32a464ab6f63262cc6b662"
+    storageBucket: "minidavid-134d1.appspot.com",
+    messagingSenderId: "TU_MESSAGING_SENDER_ID",
+    appId: "TU_APP_ID"
   };
+
+  // Inicializar Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
   const messagesDiv = document.getElementById('messages');
-  const chatForm = document.getElementById('chat-form');
-  const messageInput = document.getElementById('message-input');
+  const messageInput = document.getElementById('messageInput');
+  const sendBtn = document.getElementById('sendBtn');
 
-  // Pedir nombre de usuario
-  const username = prompt("Ingresa tu nombre:");
+  let username = prompt("Ingresa tu nombre:");
 
   // Escuchar mensajes en tiempo real
-  db.ref('chat').on('child_added', (snapshot) => {
+  db.ref('chat').on('child_added', snapshot => {
     const message = snapshot.val();
     const div = document.createElement('div');
-    div.innerHTML = `<span class="user">${message.user}:</span> ${message.text}`;
+    div.classList.add('message');
+    div.classList.add(message.user === username ? 'self' : 'other');
+    div.textContent = message.user + ": " + message.text;
     messagesDiv.appendChild(div);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   });
 
   // Enviar mensaje
-  chatForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+  sendBtn.addEventListener('click', () => {
     const text = messageInput.value.trim();
-    if (text) {
-      db.ref('chat').push({ user: username, text: text });
-      messageInput.value = '';
+    if (text !== "") {
+      db.ref('chat').push({
+        user: username,
+        text: text
+      });
+      messageInput.value = "";
     }
+  });
+
+  // Enviar con Enter
+  messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendBtn.click();
   });
 </script>
 
