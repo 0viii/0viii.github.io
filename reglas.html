@@ -1,101 +1,80 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini David Chat</title>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #ece5dd;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-      height: 100vh;
-      margin: 0;
-    }
-    h1 {
-      color: #075e54;
-      margin-bottom: 10px;
-    }
-    #chat {
-      width: 100%;
-      max-width: 500px;
-      flex: 1;
-      background: #ffffff;
-      border-radius: 10px;
-      padding: 10px;
-      overflow-y: scroll;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    .message {
-      display: inline-block;
-      margin: 5px 0;
-      padding: 10px 15px;
-      border-radius: 20px;
-      max-width: 70%;
-      position: relative;
-      word-wrap: break-word;
-    }
-    .me {
-      background: #dcf8c6;
-      align-self: flex-end;
-      margin-left: auto;
-    }
-    .other {
-      background: #fff;
-      border: 1px solid #ddd;
-      align-self: flex-start;
-      margin-right: auto;
-    }
-    .time {
-      font-size: 10px;
-      color: #555;
-      position: absolute;
-      bottom: -15px;
-      right: 10px;
-    }
-    #msgForm {
-      display: flex;
-      width: 100%;
-      max-width: 500px;
-      margin-top: 10px;
-    }
-    #msgInput {
-      flex: 1;
-      padding: 10px;
-      border-radius: 20px 0 0 20px;
-      border: none;
-      outline: none;
-      font-size: 14px;
-    }
-    #sendBtn {
-      padding: 0 20px;
-      border: none;
-      background: #075e54;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 0 20px 20px 0;
-      transition: background 0.3s;
-    }
-    #sendBtn:hover {
-      background: #128c7e;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Chat</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1DB954, #191414);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .chat-container {
+    background: rgba(0,0,0,0.85);
+    padding: 20px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 300px;
+    padding: 10px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+  }
+  #messages div {
+    margin-bottom: 10px;
+  }
+  #messages .user {
+    font-weight: bold;
+    color: #1ED760;
+  }
+  form {
+    display: flex;
+    gap: 5px;
+  }
+  input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+  }
+  button {
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: none;
+    background: #1ED760;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
 </head>
 <body>
 
-<h1>Mini David Chat</h1>
-<div id="chat"></div>
+<div class="chat-container">
+  <div id="messages"></div>
+  <form id="chat-form">
+    <input type="text" id="message-input" placeholder="Escribe un mensaje..." required>
+    <button type="submit">Enviar</button>
+  </form>
+</div>
 
-<form id="msgForm">
-  <input type="text" id="msgInput" placeholder="Escribe tu mensaje..." required>
-  <button type="submit" id="sendBtn">Enviar</button>
-</form>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
 <script>
   // Configuración de Firebase
@@ -107,57 +86,33 @@
     messagingSenderId: "326973939527",
     appId: "1:326973939527:web:32a464ab6f63262cc6b662"
   };
-
   firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+  const db = firebase.database();
 
-  // Pedir nombre al usuario
-  const username = prompt("Ingresa tu nombre:") || "Anonimo";
+  const messagesDiv = document.getElementById('messages');
+  const chatForm = document.getElementById('chat-form');
+  const messageInput = document.getElementById('message-input');
 
-  const chat = document.getElementById("chat");
-  const msgForm = document.getElementById("msgForm");
-  const msgInput = document.getElementById("msgInput");
-
-  // Función para formatear la hora
-  function formatTime(timestamp) {
-    if(!timestamp) return '';
-    const date = timestamp.toDate();
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    if(minutes < 10) minutes = '0' + minutes;
-    return `${hours}:${minutes}`;
-  }
-
-  // Enviar mensaje
-  msgForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const msg = msgInput.value.trim();
-    if(msg) {
-      db.collection("messages").add({
-        user: username,
-        text: msg,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      msgInput.value = "";
-    }
-  });
+  // Pedir nombre de usuario
+  const username = prompt("Ingresa tu nombre:");
 
   // Escuchar mensajes en tiempo real
-  db.collection("messages").orderBy("timestamp").onSnapshot((snapshot) => {
-    chat.innerHTML = "";
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const div = document.createElement("div");
-      div.classList.add("message");
-      div.classList.add(data.user === username ? "me" : "other");
-      div.textContent = `${data.text}`;
-      const timeSpan = document.createElement("span");
-      timeSpan.classList.add("time");
-      timeSpan.textContent = formatTime(data.timestamp);
-      div.appendChild(timeSpan);
-      chat.appendChild(div);
-    });
-    chat.scrollTop = chat.scrollHeight;
+  db.ref('chat').on('child_added', (snapshot) => {
+    const message = snapshot.val();
+    const div = document.createElement('div');
+    div.innerHTML = `<span class="user">${message.user}:</span> ${message.text}`;
+    messagesDiv.appendChild(div);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  });
+
+  // Enviar mensaje
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = messageInput.value.trim();
+    if (text) {
+      db.ref('chat').push({ user: username, text: text });
+      messageInput.value = '';
+    }
   });
 </script>
 
