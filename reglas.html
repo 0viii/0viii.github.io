@@ -1,619 +1,463 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>MiniDavid</title>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --david-red: #E91E63;
-      --david-pink: #FF80AB;
-      --david-dark: #880E4F;
-      --david-chat-background: #f9f0f5;
-      --david-outgoing: #F8BBD0;
-      --david-incoming: #FFFFFF;
-      --david-timestamp: #78909C;
-      --david-icon: #546E7A;
-    }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    html, body {
-      height: 100%;
-      overflow: hidden;
-    }
-    
-    body {
-      font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
-      background: var(--david-chat-background);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 0;
-      margin: 0;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mini David 👻</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Montserrat',sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    background: linear-gradient(135deg,#1DB954,#191414);
+    color:#fff;
+    padding:18px;
+  }
 
-    /* Animación de corazón palpitante */
-    @keyframes heartbeat {
-      0% { transform: scale(1); }
-      25% { transform: scale(1.1); }
-      50% { transform: scale(1); }
-      75% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-    
-    .heartbeat {
-      animation: heartbeat 1.5s infinite;
-      color: var(--david-red);
-    }
+  .player-container{
+    background: rgba(25,20,20,0.95);
+    padding:22px;
+    border-radius:18px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.45);
+    width:100%;
+    max-width:520px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
 
-    /* Modal de bienvenida */
-    .welcome-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      backdrop-filter: blur(5px);
-    }
-    
-    .modal-content {
-      background: white;
-      width: 90%;
-      max-width: 400px;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      animation: modalAppear 0.5s ease-out;
-    }
-    
-    @keyframes modalAppear {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    
-    .modal-header {
-      background: linear-gradient(135deg, var(--david-red) 0%, var(--david-dark) 100%);
-      color: white;
-      padding: 20px;
-      text-align: center;
-      position: relative;
-    }
-    
-    .modal-icon {
-      font-size: 40px;
-      margin-bottom: 10px;
-    }
-    
-    .modal-title {
-      font-size: 22px;
-      font-weight: 500;
-      margin-bottom: 5px;
-    }
-    
-    .modal-subtitle {
-      font-size: 14px;
-      opacity: 0.9;
-    }
-    
-    .modal-body {
-      padding: 25px;
-    }
-    
-    .input-group {
-      margin-bottom: 20px;
-    }
-    
-    .input-label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: #555;
-    }
-    
-    .name-input {
-      width: 100%;
-      padding: 12px 15px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      font-size: 16px;
-      transition: border-color 0.3s;
-    }
-    
-    .name-input:focus {
-      border-color: var(--david-red);
-      outline: none;
-    }
-    
-    .submit-btn {
-      width: 100%;
-      padding: 14px;
-      background: var(--david-red);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    
-    .submit-btn:hover {
-      background: var(--david-dark);
-    }
-    
-    .chat-container {
-      width: 100%;
-      max-width: 500px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 1px 10px rgba(0, 0, 0, 0.15);
-      background: white;
-      position: relative;
-      display: none; /* Oculto inicialmente */
-    }
+  .title-container{display:flex;justify-content:center;align-items:center;gap:12px;margin-bottom:12px}
+  h1{
+    font-size:26px;font-weight:700;
+    background: linear-gradient(to right,#1DB954,#1ED760);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .ghost-emoji{font-size:26px; animation:float 3s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 
-    .chat-header {
-      background: linear-gradient(135deg, var(--david-red) 0%, var(--david-dark) 100%);
-      color: white;
-      padding: 15px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-      z-index: 100;
-      flex-shrink: 0;
-    }
-    
-    .chat-header-info {
-      display: flex;
-      align-items: center;
-    }
-    
-    .chat-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12px;
-      font-size: 18px;
-    }
-    
-    .chat-title {
-      font-size: 16px;
-      font-weight: 500;
-    }
-    
-    .chat-subtitle {
-      font-size: 13px;
-      opacity: 0.8;
-      margin-top: 2px;
-    }
-    
-    .chat-header-icons {
-      display: flex;
-      gap: 20px;
-      font-size: 18px;
-    }
-    
-    .chat-header-icons i {
-      cursor: pointer;
-    }
+  .heart-btn{
+    position:absolute; top:18px; right:18px; background:none; border:none; color:#ff6b6b; font-size:22px; cursor:pointer;
+  }
 
-    #chat {
-      flex: 1;
-      padding: 10px 16px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23f48fb1' fill-opacity='0.2'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41zM20 18.6l2.83-2.83 1.41 1.41L21.41 20l2.83 2.83-1.41 1.41L20 21.41l-2.83 2.83-1.41-1.41L18.59 20l-2.83-2.83 1.41-1.41L20 18.59z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      -webkit-overflow-scrolling: touch;
-    }
+  .album-art{
+    width:220px; height:220px; margin:14px auto; border-radius:12px;
+    overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    background:#111; display:flex;align-items:center;justify-content:center;
+    transition:transform .28s ease;
+  }
+  .album-art i{font-size:56px;color:rgba(255,255,255,0.14)}
+  .album-art img{width:100%;height:100%;object-fit:cover;display:block;border-radius:12px;transition:transform .3s linear}
+  /* rotación suave mientras reproduce */
+  .album-art.playing img{animation:spin 20s linear infinite}
+  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
-    .message {
-      max-width: 75%;
-      margin: 4px 0;
-      padding: 8px 12px;
-      border-radius: 7.5px;
-      position: relative;
-      word-wrap: break-word;
-      font-size: 14.5px;
-      line-height: 1.4;
-      animation: fadeIn 0.2s ease-out;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+  .song-info{margin-top:12px}
+  #song-title{font-size:18px;font-weight:600}
+  #song-artist{font-size:14px;color:#b3b3b3;margin-top:4px}
 
-    .me {
-      align-self: flex-end;
-      background: var(--david-outgoing);
-      border-bottom-right-radius: 2px;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-    }
+  .progress-container{width:100%;height:8px;background:rgba(255,255,255,0.14);border-radius:10px;margin:18px 0;cursor:pointer;overflow:hidden}
+  .progress{height:100%;width:0;background:linear-gradient(to right,#1DB954,#1ED760);border-radius:10px;transition:width .1s linear}
 
-    .other {
-      align-self: flex-start;
-      background: var(--david-incoming);
-      border-bottom-left-radius: 2px;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-    }
-    
-    .message-sender {
-      font-weight: 600;
-      font-size: 13px;
-      margin-bottom: 3px;
-      color: var(--david-dark);
-    }
+  .time-display{display:flex;justify-content:space-between;font-size:13px;color:#b3b3b3;margin-bottom:6px}
 
-    .message-time {
-      font-size: 11px;
-      color: var(--david-timestamp);
-      text-align: right;
-      margin-top: 2px;
-      margin-left: 8px;
-      display: inline-block;
-      float: right;
-    }
-    
-    .message-status {
-      font-size: 12px;
-      margin-left: 4px;
-    }
-    
-    .message-status.delivered {
-      color: var(--david-timestamp);
-    }
-    
-    .message-status.read {
-      color: var(--david-red);
-    }
+  .main-controls{display:flex;justify-content:center;align-items:center;gap:18px;margin:10px 0}
+  .control-btn{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:10px;border-radius:50%;transition:transform .12s ease}
+  .control-btn:active{transform:scale(.95)}
+  .play-pause{width:62px;height:62px;border-radius:50%;font-size:22px;background:linear-gradient(135deg,#1DB954,#1ED760);box-shadow:0 6px 18px rgba(29,185,84,0.35);display:flex;align-items:center;justify-content:center}
 
-    #msgForm {
-      display: flex;
-      padding: 8px 12px;
-      background: #f9f9f9;
-      align-items: center;
-      border-top: 1px solid #e0e0e0;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 90;
-    }
-    
-    .input-wrapper {
-      flex: 1;
-      display: flex;
-      background: white;
-      border-radius: 20px;
-      padding: 0 5px;
-      margin: 5px 0;
-      border: 1px solid #e0e0e0;
-    }
+  .secondary-controls{display:flex;justify-content:center;gap:12px;align-items:center;margin:8px 0}
+  .volume-container{display:flex;align-items:center;gap:8px}
+  .volume-slider{width:110px;-webkit-appearance:none;height:5px;border-radius:6px;background:rgba(255,255,255,0.14);outline:none}
+  .volume-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#1DB954;cursor:pointer}
 
-    #msgInput {
-      flex: 1;
-      padding: 9px 12px;
-      border: none;
-      outline: none;
-      font-size: 14px;
-      background: transparent;
-    }
-    
-    .input-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0 5px;
-    }
-    
-    .input-actions i {
-      color: var(--david-icon);
-      cursor: pointer;
-      font-size: 18px;
-    }
+  .playlist-toggle{background:rgba(255,255,255,0.06);border:none;border-radius:30px;padding:10px 14px;color:#fff;margin-top:8px;cursor:pointer;font-weight:600}
+  .playlist-toggle:active{transform:scale(.98)}
+  .playlist-container{max-height:0;overflow:hidden;transition:max-height .45s ease;text-align:left;margin-top:12px}
+  .playlist-container.show{max-height:320px;overflow-y:auto}
+  .playlist{list-style:none;padding:8px}
+  .playlist li{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:8px;align-items:center;border-radius:8px;margin:6px 0;cursor:pointer}
+  .playlist li:hover{background:rgba(255,255,255,0.03)}
+  .playlist li.playing{background:rgba(29,185,84,0.12);color:#1ED760;font-weight:600}
+  .song-number{width:26px;color:#b3b3b3;font-size:13px}
 
-    #sendBtn {
-      background: var(--david-red);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      margin-left: 8px;
-      transition: background 0.2s;
-    }
-    
-    #sendBtn:hover {
-      background: var(--david-dark);
-    }
-    
-    #sendBtn i {
-      font-size: 18px;
-    }
+  .mode-active{color:#1ED760 !important}
 
-    /* Scroll estilo personalizado */
-    #chat::-webkit-scrollbar {
-      width: 6px;
-    }
+  @media (max-width:500px){
+    .album-art{width:180px;height:180px}
+    h1{font-size:20px}
+    .play-pause{width:56px;height:56px}
+  }
 
-    #chat::-webkit-scrollbar-thumb {
-      background-color: rgba(233, 30, 99, 0.2);
-      border-radius: 3px;
-    }
-    
-    .notification {
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
-      background: var(--david-red);
-      color: white;
-      padding: 10px 15px;
-      border-radius: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      display: none;
-      animation: slideIn 0.3s ease-out;
-      z-index: 1000;
-    }
-    
-    @keyframes slideIn {
-      from { transform: translateX(100px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @media (max-width: 500px) {
-      .chat-container {
-        max-width: 100%;
-        height: 100vh;
-        height: -webkit-fill-available;
-      }
-      
-      .chat-header {
-        padding: 15px 12px;
-      }
-      
-      #chat {
-        padding: 10px 12px;
-      }
-      
-      .message {
-        max-width: 85%;
-      }
-      
-      body {
-        padding: 0;
-      }
-      
-      .modal-content {
-        width: 95%;
-      }
-    }
-  </style>
+  /* pequeño loader mientras carga */
+  .loader{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:none}
+  .loading .loader{display:block}
+</style>
 </head>
 <body>
+  <div class="player-container" id="player-container">
+    <button class="heart-btn" id="heart-btn" title="Favorito"><i class="far fa-heart"></i></button>
 
-<!-- Modal de bienvenida -->
-<div class="welcome-modal" id="welcomeModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <div class="modal-icon">
-        <i class="fas fa-heart heartbeat"></i>
-      </div>
-      <h2 class="modal-title">MiniDavid</h2>
-      <p class="modal-subtitle">Conectando con amor</p>
+    <div class="title-container">
+      <h1>Mini David</h1>
+      <div class="ghost-emoji">👻</div>
     </div>
-    <div class="modal-body">
-      <div class="input-group">
-        <label for="userName" class="input-label">Ingresa tu nombre para comenzar</label>
-        <input type="text" id="userName" class="name-input" placeholder="Tu nombre" autocomplete="off" maxlength="20">
-      </div>
-      <button id="startChat" class="submit-btn">Comenzar a chatear</button>
+
+    <div class="album-art" id="album-art">
+      <i class="fas fa-music"></i>
     </div>
+
+    <div class="song-info">
+      <div id="song-title">A AP ROCKY LVL</div>
+      <div id="song-artist">ASAP Rocky</div>
+    </div>
+
+    <div class="progress-container" id="progress-container">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="time-display">
+      <span id="current-time">0:00</span>
+      <span id="duration">0:00</span>
+    </div>
+
+    <div class="main-controls">
+      <button class="control-btn" id="shuffle" title="Aleatorio"><i class="fas fa-random"></i></button>
+      <button class="control-btn" id="prev" title="Anterior"><i class="fas fa-step-backward"></i></button>
+      <button class="control-btn play-pause" id="play" title="Reproducir"><i class="fas fa-play"></i></button>
+      <button class="control-btn" id="next" title="Siguiente"><i class="fas fa-step-forward"></i></button>
+      <button class="control-btn" id="repeat" title="Repetir"><i class="fas fa-redo"></i></button>
+    </div>
+
+    <div class="secondary-controls">
+      <div class="volume-container">
+        <i class="fas fa-volume-up" id="volume-icon"></i>
+        <input type="range" id="volume" class="volume-slider" min="0" max="1" step="0.01" value="1">
+      </div>
+    </div>
+
+    <button class="playlist-toggle" id="playlist-toggle"><i class="fas fa-list"></i> Lista de reproducción</button>
+    <div class="playlist-container" id="playlist-container">
+      <ul class="playlist" id="playlist"></ul>
+    </div>
+
+    <div class="loader" id="loader">Cargando...</div>
+    <audio id="player" preload="metadata"></audio>
   </div>
-</div>
-
-<div class="chat-container" id="chatContainer">
-  <div class="chat-header">
-    <div class="chat-header-info">
-      <div class="chat-avatar">
-        <i class="fas fa-heart heartbeat"></i>
-      </div>
-      <div>
-        <div class="chat-title">MiniDavid</div>
-        <div class="chat-subtitle" id="onlineStatus">En línea</div>
-      </div>
-    </div>
-    <div class="chat-header-icons">
-      <i class="fas fa-search"></i>
-      <i class="fas fa-ellipsis-v"></i>
-    </div>
-  </div>
-  
-  <div id="chat"></div>
-
-  <form id="msgForm">
-    <div class="input-wrapper">
-      <div class="input-actions">
-        <i class="far fa-smile"></i>
-        <i class="fas fa-paperclip"></i>
-      </div>
-      <input type="text" id="msgInput" placeholder="Escribe un mensaje..." required>
-    </div>
-    <button type="submit" id="sendBtn">
-      <i class="fas fa-paper-plane"></i>
-    </button>
-  </form>
-</div>
-
-<div class="notification" id="notification">
-  <i class="fas fa-comment"></i> Nuevo mensaje
-</div>
 
 <script>
-  // Configuración de Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyDR6PNPfJDmQYv9uXUgedmozkngdk3bKDQ",
-    authDomain: "minidavid-134d1.firebaseapp.com",
-    projectId: "minidavid-134d1",
-    storageBucket: "minidavid-134d1.firebasestorage.app",
-    messagingSenderId: "326973939527",
-    appId: "1:326973939527:web:32a464ab6f63262cc6b662"
-  };
+/* ===== Datos de canciones (usa los tuyos) ===== */
+const songs = [
+  { title:"A AP ROCKY LVL", artist:"ASAP Rocky", url:"https://raw.githubusercontent.com/poxynext/mp3-host/main/LVL.mp3", image:"https://i.scdn.co/image/ab67616d0000b2737f1e6df8f3fa0c7d39f5d3fb" },
+  { title:"Acid Drip", artist:"ASAP Rocky", url:"https://raw.githubusercontent.com/poxynext/mp3-host/main/AcidDrip.mp3", image:"https://i.scdn.co/image/ab67616d0000b273ed3e0bce5d3386e2abef2d55" },
+  { title:"Salvatore", artist:"Lana Del Rey", url:"https://raw.githubusercontent.com/poxynext/mp3-host/main/Salvatore.mp3", image:"https://images.genius.com/4e1dfe57a41a23fd6c02cfa899025084.1000x1000x1.png" },
+  { title:"GroupieLove", artist:"Lana Del Rey", url:"https://raw.githubusercontent.com/poxynext/mp3-host/main/GroupieLove.mp3", image:"https://i.scdn.co/image/ab67616d0000b273fc318e44b81e5a67fc7db6ea" },
+  { title:"Everyday", artist:"ASAP Rocky", url:"https://raw.githubusercontent.com/poxynext/mp3-host/main/Everyday.mp3", image:"https://i.scdn.co/image/ab67616d0000b273f23c1c456d6e8e95d85f1b73" },
+  { title:"Doin Time", artist:"Lana Del Rey", url:"https://raw.githubusercontent.com/poxynext/mp3-host/main/Doin_Time.mp3", image:"https://i.scdn.co/image/ab67616d0000b2734a69a4eacb6a3f5af3d8f1cf" },
+  { title:"Cinnamon Girl", artist:"Lana Del Rey", url:"https://raw.githubusercontent.com/poxynext/mp3-host/main/CinnamonGirl.mp3", image:"https://i.scdn.co/image/ab67616d0000b273fb0ad72037d399a8ce28b5c6" },
+  { title:"BlueJeans", artist:"Lana Del Rey", url:"https://raw.githubusercontent.com/poxynext/mp3-host/main/BlueJeans.mp3", image:"https://i.scdn.co/image/ab67616d0000b273f7d4691c4e5886a28f2d485f" },
+  { title:"Tu Boda", artist:"Lana Del Rey", url:"https://raw.githubusercontent.com/poxynext/mp3-host/main/tuboda.mp3", image:"https://i.scdn.co/image/ab67616d0000b273cc12345d8e765abcd123ef90" },
+  { title:"Young and Beautiful", artist:"Lana Del Rey", url:"https://raw.githubusercontent.com/poxynext/mp3-host/main/YoungandBeautiful.mp3", image:"https://i.scdn.co/image/ab67616d0000b2735bb0c47721e2a8dfe2a5d7a2" },
+  { title:"Ultraviolence", artist:"Lana Del Rey", url:"https://raw.githubusercontent.com/poxynext/mp3-host/main/Ultraviolence.mp3", image:"https://i.scdn.co/image/ab67616d0000b273c719b7e64d0b77e048a3e3c2" }
+];
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+/* ===== Variables de estado ===== */
+let current = 0;
+let isPlaying = false;
+let isShuffle = false;
+let repeatMode = 0; // 0: none, 1: repeat all, 2: repeat one
+const favoritesKey = 'mini-david-favs-v1';
+let favorites = JSON.parse(localStorage.getItem(favoritesKey) || '[]');
 
-  // Elementos del DOM
-  const welcomeModal = document.getElementById('welcomeModal');
-  const chatContainer = document.getElementById('chatContainer');
-  const userNameInput = document.getElementById('userName');
-  const startChatBtn = document.getElementById('startChat');
-  const onlineStatus = document.getElementById('onlineStatus');
-  const chat = document.getElementById("chat");
-  const msgForm = document.getElementById("msgForm");
-  const msgInput = document.getElementById("msgInput");
-  const notification = document.getElementById("notification");
-  
-  let username = '';
+/* ===== Elementos DOM ===== */
+const player = document.getElementById('player');
+const playBtn = document.getElementById('play');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+const shuffleBtn = document.getElementById('shuffle');
+const repeatBtn = document.getElementById('repeat');
+const progressContainer = document.getElementById('progress-container');
+const progress = document.getElementById('progress');
+const titleEl = document.getElementById('song-title');
+const artistEl = document.getElementById('song-artist');
+const currentTimeEl = document.getElementById('current-time');
+const durationEl = document.getElementById('duration');
+const volumeSlider = document.getElementById('volume');
+const volumeIcon = document.getElementById('volume-icon');
+const playlistContainer = document.getElementById('playlist-container');
+const playlistToggle = document.getElementById('playlist-toggle');
+const playlistEl = document.getElementById('playlist');
+const albumArt = document.getElementById('album-art');
+const heartBtn = document.getElementById('heart-btn');
+const playerContainer = document.getElementById('player-container');
+const loader = document.getElementById('loader');
 
-  // Evento para iniciar el chat
-  startChatBtn.addEventListener('click', () => {
-    const name = userNameInput.value.trim();
-    if (name) {
-      username = name;
-      onlineStatus.textContent = `${username} - En línea`;
-      welcomeModal.style.display = 'none';
-      chatContainer.style.display = 'flex';
-      adjustChatHeight();
-    } else {
-      userNameInput.style.borderColor = 'red';
-      setTimeout(() => {
-        userNameInput.style.borderColor = '#ddd';
-      }, 2000);
-    }
-  });
-  
-  // Permitir enviar con Enter
-  userNameInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      startChatBtn.click();
-    }
-  });
-
-  // Ajustar la altura del chat cuando el teclado aparece/desaparece
-  function adjustChatHeight() {
-    const headerHeight = document.querySelector('.chat-header').offsetHeight;
-    const formHeight = document.getElementById('msgForm').offsetHeight;
-    chat.style.height = `calc(100% - ${headerHeight + formHeight}px)`;
-  }
-
-  // Llamar a la función al cargar y redimensionar
-  window.addEventListener('load', () => {
-    if (chatContainer.style.display === 'flex') {
-      adjustChatHeight();
-    }
-  });
-  window.addEventListener('resize', adjustChatHeight);
-
-  // También ajustar cuando el input está enfocado (teclado visible)
-  msgInput.addEventListener('focus', adjustChatHeight);
-  msgInput.addEventListener('blur', adjustChatHeight);
-
-  function formatTime(timestamp) {
-    if(!timestamp) return '';
-    const date = timestamp.toDate();
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    if(minutes < 10) minutes = '0' + minutes;
-    return `${hours}:${minutes}`;
-  }
-  
-  function showNotification() {
-    notification.style.display = 'block';
-    setTimeout(() => {
-      notification.style.display = 'none';
-    }, 3000);
-  }
-
-  // Enviar mensaje
-  msgForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const msg = msgInput.value.trim();
-    if(msg) {
-      db.collection("messages").add({
-        user: username,
-        text: msg,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      msgInput.value = "";
-    }
-  });
-
-  // Escuchar mensajes en tiempo real
-  db.collection("messages").orderBy("timestamp").onSnapshot((snapshot) => {
-    chat.innerHTML = "";
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const div = document.createElement("div");
-      div.classList.add("message");
-      div.classList.add(data.user === username ? "me" : "other");
-      
-      // Si el mensaje es de otro usuario, mostrar nombre
-      if (data.user !== username) {
-        const senderDiv = document.createElement("div");
-        senderDiv.classList.add("message-sender");
-        senderDiv.textContent = data.user;
-        div.appendChild(senderDiv);
-      }
-      
-      const textDiv = document.createElement("div");
-      textDiv.textContent = data.text;
-      div.appendChild(textDiv);
-
-      const timeSpan = document.createElement("span");
-      timeSpan.classList.add("message-time");
-      timeSpan.textContent = formatTime(data.timestamp);
-      
-      // Añadir estado de mensaje (solo para mensajes propios)
-      if (data.user === username) {
-        const statusSpan = document.createElement("span");
-        statusSpan.classList.add("message-status", "read");
-        statusSpan.innerHTML = " ✓✓";
-        timeSpan.appendChild(statusSpan);
-      }
-      
-      div.appendChild(timeSpan);
-      chat.appendChild(div);
-      
-      // Mostrar notificación si el mensaje es nuevo y de otro usuario
-      if (data.user !== username) {
-        showNotification();
-      }
+/* ===== Inicialización de playlist HTML ===== */
+function initPlaylist(){
+  playlistEl.innerHTML = '';
+  songs.forEach((s, i) => {
+    const li = document.createElement('li');
+    li.dataset.index = i;
+    li.innerHTML = `<span class="song-number">${i+1}</span><div style="flex:1">${s.title} - <small style="color:#b3b3b3">${s.artist}</small></div>`;
+    li.addEventListener('click', () => {
+      current = i; loadSong(current); playSong();
     });
-    chat.scrollTop = chat.scrollHeight;
+    playlistEl.appendChild(li);
   });
-</script>
+  updatePlaylistUI();
+}
 
+/* ===== Actualiza la clase 'playing' de la lista ===== */
+function updatePlaylistUI(){
+  const items = playlistEl.querySelectorAll('li');
+  items.forEach((it, idx) => {
+    it.classList.toggle('playing', idx === current);
+  });
+}
+
+/* ===== Cargar canción (no reproducir automáticamente) ===== */
+function loadSong(index){
+  const song = songs[index];
+  player.src = song.url;
+  titleEl.textContent = song.title;
+  artistEl.textContent = song.artist;
+
+  // portada: usa <img> para poder animarla (rotar)
+  if (song.image){
+    albumArt.innerHTML = `<img src="${song.image}" alt="${song.title}">`;
+  } else {
+    albumArt.innerHTML = '<i class="fas fa-music"></i>';
+  }
+
+  // setear estado de favorito
+  const isFav = favorites.includes(index);
+  heartBtn.innerHTML = isFav ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
+
+  updatePlaylistUI();
+  updateMediaSession(song);
+
+  // mostrar duración cuando esté listo
+  // handler globaliza abajo con onloadedmetadata
+}
+
+/* ===== Formato mm:ss ===== */
+function formatTime(seconds){
+  if (isNaN(seconds)) return '0:00';
+  const m = Math.floor(seconds/60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s < 10 ? '0' : ''}${s}`;
+}
+
+/* ===== Reproducir / Pausar ===== */
+function playSong(){
+  player.play().catch(()=>{ /* playback may be blocked by browser until user interacts */ });
+  isPlaying = true;
+  playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+  albumArt.classList.add('playing');
+  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
+}
+function pauseSong(){
+  player.pause();
+  isPlaying = false;
+  playBtn.innerHTML = '<i class="fas fa-play"></i>';
+  albumArt.classList.remove('playing');
+  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+}
+
+/* ===== Siguiente / Anterior / Aleatorio ===== */
+function nextSong(){
+  if (isShuffle){
+    playRandomSong();
+  } else {
+    current++;
+    if (current > songs.length - 1) current = 0;
+  }
+  loadSong(current);
+  playSong();
+}
+function prevSong(){
+  current--;
+  if (current < 0) current = songs.length - 1;
+  loadSong(current);
+  playSong();
+}
+function playRandomSong(){
+  if (songs.length <= 1) return;
+  let newIndex;
+  do { newIndex = Math.floor(Math.random() * songs.length); } while (newIndex === current && songs.length > 1);
+  current = newIndex;
+}
+
+/* ===== Media Session API ===== */
+function updateMediaSession(song){
+  if (!('mediaSession' in navigator)) return;
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: song.title,
+    artist: song.artist,
+    artwork: [
+      { src: song.image || '', sizes: '512x512', type: 'image/png' }
+    ]
+  });
+
+  try {
+    navigator.mediaSession.setActionHandler('play', playSong);
+    navigator.mediaSession.setActionHandler('pause', pauseSong);
+    navigator.mediaSession.setActionHandler('previoustrack', prevSong);
+    navigator.mediaSession.setActionHandler('nexttrack', nextSong);
+    // opcionales
+    navigator.mediaSession.setActionHandler('seekbackward', (details)=>{ player.currentTime = Math.max(0, player.currentTime - (details.seekOffset || 10)); });
+    navigator.mediaSession.setActionHandler('seekforward', (details)=>{ player.currentTime = Math.min(player.duration, player.currentTime + (details.seekOffset || 10)); });
+    navigator.mediaSession.setActionHandler('stop', pauseSong);
+  } catch(e){
+    // algunos navegadores no soportan todas las acciones
+    // console.log('MediaSession action error', e);
+  }
+}
+
+/* ===== Progreso ===== */
+function updateProgress(){
+  const { currentTime, duration } = player;
+  if (!duration || isNaN(duration)) return;
+  const percent = (currentTime/duration) * 100;
+  progress.style.width = `${percent}%`;
+  currentTimeEl.textContent = formatTime(currentTime);
+}
+
+/* ===== Click en barra para seek ===== */
+progressContainer.addEventListener('click', (e) => {
+  const rect = progressContainer.getBoundingClientRect();
+  const clickX = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+  const width = rect.width;
+  if (!player.duration || isNaN(player.duration)) return;
+  player.currentTime = (clickX / width) * player.duration;
+});
+
+/* ===== Controles físicos ===== */
+playBtn.addEventListener('click', ()=> isPlaying ? pauseSong() : playSong());
+prevBtn.addEventListener('click', prevSong);
+nextBtn.addEventListener('click', nextSong);
+
+/* ===== Shuffle y repeat ===== */
+shuffleBtn.addEventListener('click', ()=>{
+  isShuffle = !isShuffle;
+  shuffleBtn.classList.toggle('mode-active', isShuffle);
+  shuffleBtn.title = isShuffle ? 'Aleatorio activado' : 'Aleatorio';
+});
+
+repeatBtn.addEventListener('click', ()=>{
+  repeatMode = (repeatMode + 1) % 3;
+  // 0: none, 1: all, 2: one
+  repeatBtn.classList.toggle('mode-active', repeatMode !== 0);
+  if (repeatMode === 0) repeatBtn.title = 'Sin repetición';
+  else if (repeatMode === 1) repeatBtn.title = 'Repetir toda la lista';
+  else repeatBtn.title = 'Repetir una canción';
+});
+
+/* ===== Volumen ===== */
+volumeSlider.addEventListener('input', ()=>{
+  player.volume = volumeSlider.value;
+  if (player.volume == 0) volumeIcon.className = 'fas fa-volume-mute';
+  else if (player.volume < 0.5) volumeIcon.className = 'fas fa-volume-down';
+  else volumeIcon.className = 'fas fa-volume-up';
+});
+
+/* ===== Playlist toggle ===== */
+playlistToggle.addEventListener('click', ()=>{
+  playlistContainer.classList.toggle('show');
+  if (playlistContainer.classList.contains('show')) playlistToggle.innerHTML = '<i class="fas fa-chevron-up"></i> Ocultar lista';
+  else playlistToggle.innerHTML = '<i class="fas fa-list"></i> Lista de reproducción';
+});
+
+/* ===== Favoritos (corazón) ===== */
+function saveFavorites(){ localStorage.setItem(favoritesKey, JSON.stringify(favorites)); }
+heartBtn.addEventListener('click', ()=>{
+  const idx = current;
+  const pos = favorites.indexOf(idx);
+  if (pos === -1){
+    favorites.push(idx);
+    heartBtn.innerHTML = '<i class="fas fa-heart"></i>';
+  } else {
+    favorites.splice(pos,1);
+    heartBtn.innerHTML = '<i class="far fa-heart"></i>';
+  }
+  saveFavorites();
+});
+
+/* ===== Eventos del player (solo agregados una vez) ===== */
+player.addEventListener('loadedmetadata', ()=>{
+  durationEl.textContent = formatTime(player.duration);
+});
+player.addEventListener('timeupdate', updateProgress);
+
+player.addEventListener('ended', ()=>{
+  if (repeatMode === 2){
+    // repetir mismo
+    player.currentTime = 0;
+    playSong();
+  } else if (isShuffle){
+    playRandomSong();
+    loadSong(current);
+    playSong();
+  } else if (repeatMode === 1){
+    current++;
+    if (current > songs.length - 1) current = 0;
+    loadSong(current);
+    playSong();
+  } else {
+    // sin repetición
+    pauseSong();
+  }
+});
+
+/* ===== Gestos touch (swipe) para móviles ===== */
+let touchStartX = 0;
+let touchEndX = 0;
+playerContainer.addEventListener('touchstart', (e)=>{ touchStartX = e.changedTouches[0].screenX; }, {passive:true});
+playerContainer.addEventListener('touchend', (e)=>{
+  touchEndX = e.changedTouches[0].screenX;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > 50){
+    if (diff > 0) { /* swipe left */ nextSong(); }
+    else { /* swipe right */ prevSong(); }
+  }
+}, {passive:true});
+
+/* ===== Inicialización ===== */
+function init(){
+  initPlaylist();
+  loadSong(current);
+
+  // estado UI inicial
+  volumeSlider.value = 1;
+  player.volume = 1;
+  shuffleBtn.classList.toggle('mode-active', isShuffle);
+  repeatBtn.classList.toggle('mode-active', repeatMode !== 0);
+
+  // si hay favs guardadas, actualizar icono del actual
+  heartBtn.innerHTML = favorites.includes(current) ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
+}
+init();
+
+/* ===== Manejo de clic en playlist (cuando se actualice dinámicamente) ===== */
+/* (ya se asignó en initPlaylist), pero si quieres actualizar dinámicamente favoritos en la lista,
+   puedes añadir un icono dentro de cada li al renderizar la lista. */
+
+/* ===== Seguridad: capturar errores de reproducción para no romper la UI ===== */
+player.addEventListener('error', (e)=>{
+  console.error('Error en reproducción', e);
+  // Pausar y mostrar pausa visual
+  pauseSong();
+});
+
+/* ===== Mejoras opcionales que ya están listas para activar: ===== */
+/* - Haptic feedback: navigator.vibrate(10) en eventos de botón (si quieres lo agrego). */
+/* - Splash screen: si lo quieres, lo integro. */
+
+</script>
 </body>
 </html>
