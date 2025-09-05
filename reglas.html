@@ -3,208 +3,149 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniDavid PRO</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<title>Mini WhatsApp</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family: 'Roboto', sans-serif;
-  background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
-  color:#fff;
-  transition: background 0.8s ease;
-}
-.sidebar {
-  position: fixed; left:0; top:0; bottom:100px;
-  width:220px; background-color:rgba(0,0,0,0.7); padding:20px;
-  display:flex; flex-direction:column; border-right:1px solid #282828;
-}
-.sidebar h2 { color:#1DB954; margin-bottom:40px; font-size:28px; text-align:center; }
-.sidebar a { color:#b3b3b3; text-decoration:none; margin-bottom:20px; font-weight:bold; font-size:16px; display:flex; align-items:center; gap:10px; }
-.sidebar a:hover { color:#fff; }
-.main { margin-left:240px; padding:30px; }
-.section-title { margin-bottom:15px; font-size:22px; font-weight:bold; }
-.song-list { margin-top:20px; max-height:calc(100vh - 150px); overflow-y:auto; }
-.song { display:flex; justify-content:space-between; padding:12px 15px; border-radius:10px; margin-bottom:10px; cursor:pointer; background-color:rgba(24,24,24,0.8); transition:0.3s; }
-.song:hover { background-color:rgba(40,40,40,0.9); transform:translateY(-3px); box-shadow:0 4px 10px rgba(0,0,0,0.5); }
-.player {
-  position:fixed; bottom:0; left:0; right:0; height:140px;
-  background-color:rgba(24,24,24,0.9); display:flex; justify-content:space-between; align-items:center; padding:10px 20px; border-top:1px solid #282828; gap:10px; flex-wrap:wrap;
-}
-.player-left { display:flex; align-items:center; gap:10px; }
-.player-left img { width:50px; height:50px; border-radius:8px; }
-.player-info p:first-child { font-weight:bold; font-size:14px; }
-.player-info p:last-child { font-size:12px; color:#b3b3b3; }
-.player-center { display:flex; align-items:center; gap:10px; flex:1; }
-.player-center button { background:none; border:none; color:#fff; font-size:18px; cursor:pointer; transition:0.2s; }
-.player-center button:hover { color:#1DB954; }
-.progress-container { flex:1; height:6px; background:#282828; border-radius:5px; margin:0 10px; cursor:pointer; position:relative; }
-.progress { height:6px; background:#1DB954; width:0%; border-radius:5px; transition: width 0.1s linear; }
-.time-display { font-size:12px; width:70px; text-align:center; }
-.player-right input[type="range"] { width:80px; cursor:pointer; }
-@media(max-width:768px){
-  .sidebar { position:relative; width:100%; display:flex; flex-direction:row; justify-content:space-around; padding:10px 0; border-right:none; border-bottom:1px solid #282828; }
-  .sidebar h2 { display:none; }
-  .main { margin-left:0; padding:15px; }
-  .player-left img { width:40px; height:40px; }
-  .player-info p:first-child { font-size:12px; }
-  .player-info p:last-child { font-size:10px; }
-  .player { flex-direction:column; height:auto; padding:10px; }
-  .player-center { width:100%; margin-top:5px; }
-  .player-right { margin-top:5px; }
-  .time-display { display:none; }
-}
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #e5ddd5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .chat-container {
+        width: 400px;
+        height: 600px;
+        background: #fff;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .chat-header {
+        background: #075e54;
+        color: #fff;
+        padding: 15px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .message {
+        max-width: 70%;
+        padding: 10px;
+        border-radius: 10px;
+        word-wrap: break-word;
+    }
+
+    .message.you {
+        background: #dcf8c6;
+        align-self: flex-end;
+    }
+
+    .message.other {
+        background: #fff;
+        border: 1px solid #ddd;
+        align-self: flex-start;
+    }
+
+    .chat-input {
+        display: flex;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        background: #f0f0f0;
+    }
+
+    .chat-input input {
+        flex: 1;
+        padding: 10px;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        outline: none;
+    }
+
+    .chat-input button {
+        margin-left: 10px;
+        padding: 10px 15px;
+        background: #075e54;
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+
+    .chat-input button:hover {
+        background: #128c7e;
+    }
 </style>
 </head>
 <body>
 
-<div class="sidebar">
-  <h2>MiniDavid</h2>
-  <a href="#">🏠 Inicio</a>
-  <a href="#">🔍 Explorar</a>
-  <a href="#">📚 Tu Biblioteca</a>
-</div>
-
-<div class="main">
-  <h2 class="section-title">Canciones Destacadas</h2>
-  <div class="song-list" id="songList"></div>
-</div>
-
-<div class="player">
-  <div class="player-left">
-    <img id="player-img" src="" alt="Álbum">
-    <div class="player-info">
-      <p id="player-song">Canción</p>
-      <p id="player-artist">Artista</p>
+<div class="chat-container">
+    <div class="chat-header">Mini WhatsApp</div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input">
+        <input type="text" id="message-input" placeholder="Escribe un mensaje...">
+        <button id="send-btn">Enviar</button>
     </div>
-  </div>
-
-  <div class="player-center">
-    <button id="prev">&#9664;&#9664;</button>
-    <button id="play">&#9654;</button>
-    <button id="next">&#9654;&#9664;</button>
-    <div class="progress-container" id="progress-container">
-      <div class="progress" id="progress"></div>
-    </div>
-    <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
-  </div>
-
-  <div class="player-right">
-    <input type="range" id="volume" min="0" max="1" step="0.01" value="0.8">
-  </div>
 </div>
-
-<div id="yt-player"></div>
 
 <script>
-let player;
-let isPlaying = true;
-let currentSong = 0;
+    const messagesEl = document.getElementById('chat-messages');
+    const inputEl = document.getElementById('message-input');
+    const sendBtn = document.getElementById('send-btn');
 
-// Lista de canciones actualizada
-const songs = [
-  {id:'f1iiTXwcXq0', title:'LVL', artist:'A$AP Rocky', img:'https://via.placeholder.com/60'},
-  {id:'t7aY6lJ77BM', title:'Tu Boda', artist:'Desconocido', img:'https://via.placeholder.com/60'},
-  {id:'kJQP7kiw5Fk', title:'Despacito', artist:'Luis Fonsi', img:'https://upload.wikimedia.org/wikipedia/en/0/0b/Luis_Fonsi_-_Despacito.png'},
-  {id:'RgKAFK5djSk', title:'See You Again', artist:'Tyler, The Creator', img:'https://upload.wikimedia.org/wikipedia/en/9/9a/Tyler_The_Creator_See_You_Again.jpg'},
-  {id:'tBwoRviPvVw', title:'Groupie Love', artist:'Lana Del Rey', img:'https://upload.wikimedia.org/wikipedia/en/a/a1/Lana_Del_Rey_-_Lust_for_Life.png'},
-  {id:'LELFIuhSPCI', title:'Everyday', artist:'Acid Drip', img:'https://via.placeholder.com/60'}
-];
+    // Cargar mensajes guardados
+    let messages = JSON.parse(localStorage.getItem('messages')) || [];
 
-// Llenar lista en HTML
-const songListEl = document.getElementById('songList');
-songs.forEach((song,i)=>{
-  const div = document.createElement('div');
-  div.classList.add('song');
-  div.innerHTML = `<p>${song.title}</p><p>${song.artist}</p>`;
-  div.addEventListener('click', ()=>playSong(i));
-  songListEl.appendChild(div);
-});
+    function renderMessages() {
+        messagesEl.innerHTML = '';
+        messages.forEach(msg => {
+            const div = document.createElement('div');
+            div.classList.add('message', msg.from);
+            div.textContent = msg.text;
+            messagesEl.appendChild(div);
+        });
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
 
-// Cargar API de YouTube
-var tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    function addMessage(text, from) {
+        messages.push({text, from});
+        localStorage.setItem('messages', JSON.stringify(messages));
+        renderMessages();
+    }
 
-// Crear reproductor
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('yt-player', {
-    height:'0', width:'0',
-    videoId:songs[currentSong].id,
-    playerVars:{'autoplay':1,'controls':0,'loop':1,'playlist':songs.map(s=>s.id).join(','),'mute':0},
-    events:{'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange}
-  });
-}
+    // Enviar mensaje
+    sendBtn.addEventListener('click', () => {
+        const text = inputEl.value.trim();
+        if(text) {
+            addMessage(text, 'you');
+            inputEl.value = '';
+            // Simular respuesta del "otro"
+            setTimeout(() => {
+                addMessage("Respuesta automática 😎", 'other');
+            }, 1000);
+        }
+    });
 
-function onPlayerReady(event){
-  event.target.playVideo();
-  updatePlayerInfo();
-}
+    inputEl.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') sendBtn.click();
+    });
 
-function playSong(index){
-  currentSong = index;
-  player.loadVideoById(songs[currentSong].id);
-  updatePlayerInfo();
-  isPlaying = true;
-  document.getElementById('play').textContent='❚❚';
-}
-
-function updatePlayerInfo(){
-  document.getElementById('player-song').innerText = songs[currentSong].title;
-  document.getElementById('player-artist').innerText = songs[currentSong].artist;
-  document.getElementById('player-img').src = songs[currentSong].img;
-}
-
-// Botones play/pause
-document.getElementById('play').addEventListener('click',()=>{
-  if(isPlaying){ player.pauseVideo(); isPlaying=false; document.getElementById('play').textContent='▶'; }
-  else { player.playVideo(); isPlaying=true; document.getElementById('play').textContent='❚❚'; }
-});
-
-// Botones siguiente/anterior
-document.getElementById('next').addEventListener('click', ()=>playSong((currentSong+1)%songs.length));
-document.getElementById('prev').addEventListener('click', ()=>playSong((currentSong-1+songs.length)%songs.length));
-
-// Volumen
-document.getElementById('volume').addEventListener('input',(e)=>player.setVolume(e.target.value*100));
-
-// Barra de progreso y tiempo
-const progress = document.getElementById('progress');
-const progressContainer = document.getElementById('progress-container');
-const timeDisplay = document.getElementById('timeDisplay');
-
-function formatTime(sec){
-  const minutes = Math.floor(sec/60);
-  const seconds = Math.floor(sec%60);
-  return `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-}
-
-function updateProgress(){
-  if(player && player.getCurrentTime){
-    const time = player.getCurrentTime();
-    const duration = player.getDuration();
-    const percent = (time/duration)*100;
-    progress.style.width = percent+'%';
-    timeDisplay.textContent = `${formatTime(time)} / ${formatTime(duration)}`;
-  }
-  requestAnimationFrame(updateProgress);
-}
-updateProgress();
-
-// Saltar con barra
-progressContainer.addEventListener('click',(e)=>{
-  const width = progressContainer.clientWidth;
-  const clickX = e.offsetX;
-  const duration = player.getDuration();
-  player.seekTo((clickX/width)*duration,true);
-});
-
-// Cambiar de canción automáticamente cuando termina
-function onPlayerStateChange(event){
-  if(event.data === YT.PlayerState.ENDED){
-    playSong((currentSong+1)%songs.length);
-  }
-}
+    renderMessages();
 </script>
 
 </body>
