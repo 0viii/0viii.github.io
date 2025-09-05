@@ -133,6 +133,7 @@
             margin: 20px 0;
             cursor: pointer;
             overflow: hidden;
+            position: relative;
         }
 
         .progress {
@@ -141,6 +142,24 @@
             background: linear-gradient(to right, #1DB954, #1ED760);
             border-radius: 10px;
             transition: width 0.1s ease;
+        }
+
+        .progress-handle {
+            position: absolute;
+            top: 50%;
+            right: -8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #fff;
+            transform: translateY(-50%);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .progress-container:hover .progress-handle {
+            opacity: 1;
         }
 
         .time-display {
@@ -326,6 +345,14 @@
                 height: 180px;
             }
         }
+
+        .debug-info {
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -351,6 +378,7 @@
 
     <div class="progress-container" id="progress-container">
         <div class="progress" id="progress"></div>
+        <div class="progress-handle" id="progress-handle"></div>
     </div>
 
     <div class="time-display">
@@ -395,6 +423,12 @@
         <ul class="playlist" id="playlist"></ul>
     </div>
 
+    <div class="debug-info" id="debug-info">
+        Estado: <span id="debug-state">Inactivo</span> | 
+        Tiempo: <span id="debug-time">0</span> | 
+        Duración: <span id="debug-duration">0</span>
+    </div>
+
     <audio id="player"></audio>
 </div>
 
@@ -426,7 +460,7 @@
     },
     { 
         title: "Everyday", 
-        artist: "Ariana Grande", 
+        artist: "ASAP Rocky", 
         url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Everyday.mp3",
         image: "https://i.scdn.co/image/ab67616d0000b273f23c1c456d6e8e95d85f1b73" 
     },
@@ -483,6 +517,7 @@
     const repeatBtn = document.getElementById('repeat');
     const progressContainer = document.getElementById('progress-container');
     const progress = document.getElementById('progress');
+    const progressHandle = document.getElementById('progress-handle');
     const title = document.getElementById('song-title');
     const artist = document.getElementById('song-artist');
     const currentTimeEl = document.getElementById('current-time');
@@ -494,6 +529,10 @@
     const playlistEl = document.getElementById('playlist');
     const albumArt = document.getElementById('album-art');
     const heartBtn = document.getElementById('heart-btn');
+    const debugInfo = document.getElementById('debug-info');
+    const debugState = document.getElementById('debug-state');
+    const debugTime = document.getElementById('debug-time');
+    const debugDuration = document.getElementById('debug-duration');
 
     // Inicializar la lista de reproducción
     function initPlaylist() {
@@ -571,6 +610,8 @@
 
         player.addEventListener('loadedmetadata', () => {
             durationEl.textContent = formatTime(player.duration);
+            // Actualizar información de depuración
+            debugDuration.textContent = player.duration;
         });
 
         updatePlaylist();
@@ -591,24 +632,66 @@
         
         const progressPercent = (currentTime / duration) * 100;
         progress.style.width = `${progressPercent}%`;
+        progressHandle.style.right = `${100 - progressPercent}%`;
         currentTimeEl.textContent = formatTime(currentTime);
-
-        // Actualizar la posición de la media session
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.setPositionState({
-                duration: duration,
-                playbackRate: player.playbackRate,
-                position: currentTime
-            });
-        }
+        
+        // Actualizar información de depuración
+        debugTime.textContent = currentTime;
+        debugDuration.textContent = duration;
+        debugState.textContent = isPlaying ? 'Reproduciendo' : 'Pausado';
     }
 
     // Establecer progreso al hacer clic en la barra
-    progressContainer.addEventListener('click', (e) => {
+    function setProgress(e) {
         const width = progressContainer.clientWidth;
         const clickX = e.offsetX;
         const duration = player.duration;
         player.currentTime = (clickX / width) * duration;
+        updateProgress(); // Actualizar inmediatamente
+    }
+
+    progressContainer.addEventListener('click', setProgress);
+
+    // Arrastrar la barra de progreso
+    let isDragging = false;
+    
+    progressContainer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        setProgress(e);
+    });
+    
+    progressContainer.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            setProgress(e);
+        }
+    });
+    
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+    
+    // Soporte para dispositivos táctiles
+    progressContainer.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        const touch = e.touches[0];
+        const rect = progressContainer.getBoundingClientRect();
+        const offsetX = touch.clientX - rect.left;
+        const fakeEvent = { offsetX: offsetX };
+        setProgress(fakeEvent);
+    });
+    
+    progressContainer.addEventListener('touchmove', (e) => {
+        if (isDragging) {
+            const touch = e.touches[0];
+            const rect = progressContainer.getBoundingClientRect();
+            const offsetX = touch.clientX - rect.left;
+            const fakeEvent = { offsetX: offsetX };
+            setProgress(fakeEvent);
+        }
+    });
+    
+    document.addEventListener('touchend', () => {
+        isDragging = false;
     });
 
     // Reproducir canción
@@ -622,6 +705,9 @@
         if ('mediaSession' in navigator) {
             navigator.mediaSession.playbackState = 'playing';
         }
+        
+        // Iniciar actualización continua de la barra de progreso
+        requestAnimationFrame(updateProgressContinuously);
     }
 
     // Pausar canción
@@ -634,6 +720,14 @@
         // Actualizar la media session
         if ('mediaSession' in navigator) {
             navigator.mediaSession.playbackState = 'paused';
+        }
+    }
+
+    // Actualización continua de la barra de progreso
+    function updateProgressContinuously() {
+        if (isPlaying) {
+            updateProgress();
+            requestAnimationFrame(updateProgressContinuously);
         }
     }
 
@@ -768,11 +862,13 @@
             navigator.mediaSession.setActionHandler('seekbackward', (details) => {
                 const skipTime = details.seekOffset || 10;
                 player.currentTime = Math.max(player.currentTime - skipTime, 0);
+                updateProgress();
             });
             
             navigator.mediaSession.setActionHandler('seekforward', (details) => {
                 const skipTime = details.seekOffset || 10;
                 player.currentTime = Math.min(player.currentTime + skipTime, player.duration);
+                updateProgress();
             });
             
             navigator.mediaSession.setActionHandler('seekto', (details) => {
@@ -781,6 +877,7 @@
                     return;
                 }
                 player.currentTime = details.seekTime;
+                updateProgress();
             });
             
             // Establecer metadatos iniciales
@@ -796,11 +893,22 @@
 
     // Eventos del reproductor
     player.addEventListener('timeupdate', updateProgress);
+    
+    // Evento para cuando se carga el metadata
+    player.addEventListener('loadedmetadata', () => {
+        durationEl.textContent = formatTime(player.duration);
+        updateProgress(); // Actualizar la barra de progreso
+    });
 
     // Inicializar
     loadSong(current);
     initPlaylist();
     setupMediaSession();
+    
+    // Habilitar información de depuración con doble clic en el título
+    title.addEventListener('dblclick', () => {
+        debugInfo.style.display = debugInfo.style.display === 'none' ? 'block' : 'none';
+    });
 </script>
 
 </body>
