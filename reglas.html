@@ -4,95 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mini WhatsApp</title>
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #e5ddd5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-
-  .chat-container {
-    width: 400px;
-    height: 600px;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  }
-
-  .header {
-    background-color: #075e54;
-    color: white;
-    padding: 15px;
-    font-size: 20px;
-    font-weight: bold;
-  }
-
-  .messages {
-    flex: 1;
-    padding: 10px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .message {
-    max-width: 70%;
-    margin-bottom: 10px;
-    padding: 10px 15px;
-    border-radius: 20px;
-    clear: both;
-    word-wrap: break-word;
-  }
-
-  .message.self {
-    background-color: #dcf8c6;
-    align-self: flex-end;
-    border-bottom-right-radius: 5px;
-  }
-
-  .message.other {
-    background-color: white;
-    align-self: flex-start;
-    border-bottom-left-radius: 5px;
-  }
-
-  .input-container {
-    display: flex;
-    padding: 10px;
-    background-color: #f0f0f0;
-  }
-
-  .input-container input {
-    flex: 1;
-    padding: 10px 15px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-    outline: none;
-  }
-
-  .input-container button {
-    margin-left: 10px;
-    padding: 10px 15px;
-    border: none;
-    background-color: #075e54;
-    color: white;
-    border-radius: 20px;
-    cursor: pointer;
-  }
-
-  .input-container button:hover {
-    background-color: #128c7e;
-  }
+  body { margin:0; font-family: 'Segoe UI', sans-serif; background:#e5ddd5; display:flex; justify-content:center; align-items:center; height:100vh; }
+  .chat-container { width:400px; height:600px; background:#f0f0f0; border-radius:10px; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.2); }
+  .header { background:#075e54; color:white; padding:15px; font-size:20px; font-weight:bold; }
+  .messages { flex:1; padding:10px; overflow-y:auto; display:flex; flex-direction:column; }
+  .message { max-width:70%; margin-bottom:10px; padding:10px 15px; border-radius:20px; clear:both; word-wrap:break-word; }
+  .message.self { background:#dcf8c6; align-self:flex-end; border-bottom-right-radius:5px; }
+  .message.other { background:white; align-self:flex-start; border-bottom-left-radius:5px; }
+  .input-container { display:flex; padding:10px; background:#f0f0f0; }
+  .input-container input { flex:1; padding:10px 15px; border-radius:20px; border:1px solid #ccc; outline:none; }
+  .input-container button { margin-left:10px; padding:10px 15px; border:none; background:#075e54; color:white; border-radius:20px; cursor:pointer; }
+  .input-container button:hover { background:#128c7e; }
 </style>
 </head>
 <body>
@@ -107,7 +32,6 @@
 </div>
 
 <script>
-  // Tu configuración de Firebase
   const firebaseConfig = {
     apiKey: "TU_API_KEY",
     authDomain: "TU_AUTH_DOMAIN",
@@ -118,7 +42,6 @@
     appId: "TU_APP_ID"
   };
 
-  // Inicializar Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
@@ -128,13 +51,13 @@
 
   let username = prompt("Ingresa tu nombre:");
 
-  // Escuchar mensajes en tiempo real
+  // Mostrar mensajes en tiempo real
   db.ref('chat').on('child_added', snapshot => {
-    const message = snapshot.val();
+    const msg = snapshot.val();
     const div = document.createElement('div');
     div.classList.add('message');
-    div.classList.add(message.user === username ? 'self' : 'other');
-    div.textContent = message.user + ": " + message.text;
+    div.classList.add(msg.user === username ? 'self' : 'other');
+    div.textContent = msg.user + ": " + msg.text;
     messagesDiv.appendChild(div);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   });
@@ -142,18 +65,14 @@
   // Enviar mensaje
   sendBtn.addEventListener('click', () => {
     const text = messageInput.value.trim();
-    if (text !== "") {
-      db.ref('chat').push({
-        user: username,
-        text: text
-      });
+    if(text !== "") {
+      db.ref('chat').push({ user: username, text });
       messageInput.value = "";
     }
   });
 
-  // Enviar con Enter
-  messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendBtn.click();
+  messageInput.addEventListener('keypress', e => {
+    if(e.key === 'Enter') sendBtn.click();
   });
 </script>
 
