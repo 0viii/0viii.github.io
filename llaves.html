@@ -93,10 +93,14 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        .top-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
         .theme-switch {
-            position: absolute;
-            top: 20px;
-            right: 20px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             width: 40px;
@@ -120,7 +124,6 @@
             justify-content: center;
             align-items: center;
             gap: 15px;
-            margin-bottom: 20px;
             position: relative;
         }
 
@@ -145,9 +148,6 @@
         }
 
         .heart-btn {
-            position: absolute;
-            top: 0;
-            right: 0;
             background: none;
             border: none;
             color: #ff4d4d;
@@ -616,16 +616,18 @@
 <div class="particles-container" id="particles-container"></div>
 
 <div class="player-container">
-    <button class="theme-switch" id="theme-switch" title="Cambiar tema">
-        <i class="fas fa-moon"></i>
-    </button>
+    <div class="top-controls">
+        <button class="theme-switch" id="theme-switch" title="Cambiar tema">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button class="heart-btn" id="heart-btn">
+            <i class="fas fa-heart"></i>
+        </button>
+    </div>
 
     <div class="title-container">
         <h1>Mini David</h1>
         <div class="ghost-emoji">👻</div>
-        <button class="heart-btn" id="heart-btn">
-            <i class="fas fa-heart"></i>
-        </button>
     </div>
 
     <div class="album-art-container">
@@ -895,7 +897,6 @@
             li.addEventListener('click', () => {
                 current = parseInt(li.dataset.index);
                 loadSong(current);
-                updatePlaylist();
                 playSong();
             });
             playlistEl.appendChild(li);
@@ -957,9 +958,12 @@
             albumArt.style.transform = 'scale(1)';
         }, 300);
 
-        player.addEventListener('loadedmetadata', () => {
+        // Remover event listeners previos de loadedmetadata
+        player.onloadedmetadata = null;
+        
+        player.onloadedmetadata = function() {
             durationEl.textContent = formatTime(player.duration);
-        });
+        };
 
         updatePlaylist();
     }
