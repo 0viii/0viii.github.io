@@ -91,6 +91,7 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden; /* Added to prevent expansion */
         }
 
         .header-controls {
@@ -435,16 +436,20 @@
             margin-top: 20px;
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.05);
+            width: 100%; /* Added to fix expansion issue */
+            box-sizing: border-box; /* Added to include padding in width */
         }
 
         .playlist-container.show {
             max-height: 60vh; /* Altura máxima para móviles */
             overflow-y: auto;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
         }
 
         .playlist {
             list-style: none;
             padding: 10px;
+            width: 100%; /* Ensure playlist takes full width */
         }
 
         .playlist li {
@@ -457,6 +462,8 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            width: 100%; /* Ensure list items take full width */
+            box-sizing: border-box; /* Include padding in width calculation */
         }
 
         .playlist li:hover {
@@ -498,6 +505,7 @@
         .song-details {
             flex: 1;
             min-width: 0;
+            overflow: hidden; /* Prevent text overflow */
         }
 
         .song-details .title {
@@ -682,6 +690,15 @@
 
             .playlist-container.show {
                 max-height: 50vh; /* Ajuste para móviles más pequeños */
+            }
+            
+            .playlist li {
+                padding: 10px 12px; /* Slightly reduce padding on mobile */
+            }
+            
+            .song-thumb {
+                width: 35px;
+                height: 35px; /* Slightly smaller thumbnails on mobile */
             }
         }
     </style>
