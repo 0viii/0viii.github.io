@@ -108,33 +108,12 @@
             transition: var(--transition);
             border: none;
             color: var(--text);
-            z-index: 2;
+            z-index: 10;
         }
 
         .theme-switch:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: rotate(45deg);
-        }
-
-        .heart-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: #ff4d4d;
-            font-size: 24px;
-            cursor: pointer;
-            animation: heartbeat 1.2s infinite;
-            z-index: 2;
-        }
-
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            25% { transform: scale(1.1); }
-            50% { transform: scale(1); }
-            75% { transform: scale(1.1); }
-            100% { transform: scale(1); }
         }
 
         .title-container {
@@ -159,6 +138,32 @@
             font-size: 32px;
             animation: float 3s ease-in-out infinite;
             filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.3));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .heart-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: none;
+            border: none;
+            color: #ff4d4d;
+            font-size: 24px;
+            cursor: pointer;
+            animation: heartbeat 1.2s infinite;
+            z-index: 2;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         .song-info {
@@ -439,7 +444,7 @@
         }
 
         .playlist-container.show {
-            max-height: 350px;
+            max-height: 300px;
             overflow-y: auto;
         }
 
@@ -604,6 +609,10 @@
             .volume-slider {
                 width: 80px;
             }
+
+            .playlist-container.show {
+                max-height: 250px;
+            }
         }
     </style>
 </head>
@@ -616,13 +625,12 @@
         <i class="fas fa-moon"></i>
     </button>
 
-    <button class="heart-btn" id="heart-btn">
-        <i class="fas fa-heart"></i>
-    </button>
-
     <div class="title-container">
         <h1>Mini David</h1>
         <div class="ghost-emoji">👻</div>
+        <button class="heart-btn" id="heart-btn">
+            <i class="fas fa-heart"></i>
+        </button>
     </div>
 
     <div class="album-art-container">
@@ -845,26 +853,6 @@
     const waveContainer = document.getElementById('wave-container');
     const particlesContainer = document.getElementById('particles-container');
 
-    // Solicitar permiso para notificaciones
-    if ('Notification' in window) {
-        Notification.requestPermission();
-    }
-
-    // Función para mostrar notificación
-    function showNotification() {
-        if (Notification.permission === 'granted') {
-            const notification = new Notification('Reproduciendo ahora', {
-                body: `${songs[current].title} - ${songs[current].artist}`,
-                icon: songs[current].image || 'https://cdn-icons-png.flaticon.com/512/727/727240.png'
-            });
-
-            // Cerrar la notificación después de 5 segundos
-            setTimeout(() => {
-                notification.close();
-            }, 5000);
-        }
-    }
-
     // Crear partículas de fondo
     function createParticles() {
         for (let i = 0; i < 50; i++) {
@@ -979,6 +967,11 @@
         });
 
         updatePlaylist();
+        
+        // Actualizar notificación si está habilitada
+        if (isPlaying && !document.hidden) {
+            showNotification();
+        }
     }
 
     // Formatear tiempo
@@ -1015,8 +1008,11 @@
         playBtn.title = "Pausar";
         document.querySelector('.album-art-container').classList.add('playing');
         waveContainer.style.display = 'flex';
-        // Mostrar notificación
-        showNotification();
+        
+        // Mostrar notificación si la página no está visible
+        if (document.hidden) {
+            showNotification();
+        }
     }
 
     // Pausar canción
@@ -1027,6 +1023,9 @@
         playBtn.title = "Reproducir";
         document.querySelector('.album-art-container').classList.remove('playing');
         waveContainer.style.display = 'none';
+        
+        // Cerrar notificación si está activa
+        closeNotification();
     }
 
     // Cambiar entre play/pause
@@ -1133,6 +1132,51 @@
         }
     });
 
+    // Notificación
+    let notification = null;
+
+    function showNotification() {
+        // Solo si las notificaciones están soportadas y tenemos permiso
+        if (!("Notification" in window)) {
+            return;
+        }
+
+        if (Notification.permission === "granted") {
+            closeNotification();
+            notification = new Notification("Reproduciendo ahora", {
+                body: `${songs[current].title} - ${songs[current].artist}`,
+                icon: songs[current].image || "https://cdn-icons-png.flaticon.com/512/727/727240.png",
+                tag: "music-player"
+            });
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    showNotification();
+                }
+            });
+        }
+    }
+
+    function closeNotification() {
+        if (notification) {
+            notification.close();
+            notification = null;
+        }
+    }
+
+    // Gestionar la visibilidad de la página
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            // La página está en segundo plano
+            if (isPlaying) {
+                showNotification();
+            }
+        } else {
+            // La página está visible
+            closeNotification();
+        }
+    });
+
     // Eventos del reproductor
     player.addEventListener('timeupdate', updateProgress);
 
@@ -1140,6 +1184,11 @@
     loadSong(current);
     initPlaylist();
     createParticles();
+
+    // Solicitar permiso para notificaciones al cargar
+    if ("Notification" in window) {
+        Notification.requestPermission();
+    }
 </script>
 
 </body>
