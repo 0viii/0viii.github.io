@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M4A a MP3 - Conversor Privado</title>
+  <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js"></script>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      margin: 0;
+    }
+    .container {
+      background: rgba(0,0,0,0.4);
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    label {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    label:hover {
+      background: #45a049;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 25px;
+      background: #ff9800;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #e68900;
+    }
+    .progress-container {
+      width: 100%;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 12px;
+      width: 0%;
+      background: #4CAF50;
+      border-radius: 20px;
+      transition: width 0.3s;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #2196F3;
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      transition: 0.3s;
+    }
+    a:hover {
+      background: #0b7dda;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🎵 Conversor M4A → MP3</h2>
+    <input type="file" id="fileInput" accept=".m4a" />
+    <label for="fileInput">Seleccionar archivo</label>
+    <br>
+    <button onclick="convertir()">Convertir</button>
+
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <p id="status"></p>
+    <a id="downloadLink" style="display:none;">⬇ Descargar MP3</a>
+  </div>
+
+  <script>
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    const ffmpeg = createFFmpeg({ log: true });
+    const progressBar = document.getElementById("progressBar");
+    const statusText = document.getElementById("status");
+
+    async function convertir() {
+      const fileInput = document.getElementById('fileInput');
+      const downloadLink = document.getElementById('downloadLink');
+
+      if (!fileInput.files.length) {
+        alert("Selecciona un archivo M4A primero.");
+        return;
+      }
+
+      statusText.innerText = "Cargando FFmpeg...";
+      progressBar.style.width = "20%";
+
+      if (!ffmpeg.isLoaded()) {
+        await ffmpeg.load();
+      }
+
+      const file = fileInput.files[0];
+      const fileName = "input.m4a";
+      const outputName = "output.mp3";
+
+      statusText.innerText = "Convirtiendo...";
+      progressBar.style.width = "60%";
+
+      ffmpeg.FS('writeFile', fileName, await fetchFile(file));
+      await ffmpeg.run('-i', fileName, outputName);
+
+      progressBar.style.width = "90%";
+      statusText.innerText = "Finalizando...";
+
+      const data = ffmpeg.FS('readFile', outputName);
+      const url = URL.createObjectURL(new Blob([data.buffer], { type: 'audio/mpeg' }));
+
+      downloadLink.href = url;
+      downloadLink.download = file.name.replace('.m4a', '.mp3');
+      downloadLink.style.display = 'inline-block';
+
+      progressBar.style.width = "100%";
+      statusText.innerText = "✅ ¡Conversión lista!";
+    }
+  </script>
+</body>
+</html>
