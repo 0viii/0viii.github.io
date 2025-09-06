@@ -93,14 +93,10 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .top-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
         .theme-switch {
+            position: absolute;
+            top: 20px;
+            left: 20px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             width: 40px;
@@ -112,6 +108,7 @@
             transition: var(--transition);
             border: none;
             color: var(--text);
+            z-index: 2;
         }
 
         .theme-switch:hover {
@@ -119,11 +116,33 @@
             transform: rotate(45deg);
         }
 
+        .heart-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #ff4d4d;
+            font-size: 24px;
+            cursor: pointer;
+            animation: heartbeat 1.2s infinite;
+            z-index: 2;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
         .title-container {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 15px;
+            margin-bottom: 20px;
             position: relative;
         }
 
@@ -140,29 +159,6 @@
             font-size: 32px;
             animation: float 3s ease-in-out infinite;
             filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.3));
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .heart-btn {
-            background: none;
-            border: none;
-            color: #ff4d4d;
-            font-size: 24px;
-            cursor: pointer;
-            animation: heartbeat 1.2s infinite;
-            z-index: 2;
-        }
-
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            25% { transform: scale(1.1); }
-            50% { transform: scale(1); }
-            75% { transform: scale(1.1); }
-            100% { transform: scale(1); }
         }
 
         .song-info {
@@ -616,14 +612,13 @@
 <div class="particles-container" id="particles-container"></div>
 
 <div class="player-container">
-    <div class="top-controls">
-        <button class="theme-switch" id="theme-switch" title="Cambiar tema">
-            <i class="fas fa-moon"></i>
-        </button>
-        <button class="heart-btn" id="heart-btn">
-            <i class="fas fa-heart"></i>
-        </button>
-    </div>
+    <button class="theme-switch" id="theme-switch" title="Cambiar tema">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <button class="heart-btn" id="heart-btn">
+        <i class="fas fa-heart"></i>
+    </button>
 
     <div class="title-container">
         <h1>Mini David</h1>
@@ -850,6 +845,26 @@
     const waveContainer = document.getElementById('wave-container');
     const particlesContainer = document.getElementById('particles-container');
 
+    // Solicitar permiso para notificaciones
+    if ('Notification' in window) {
+        Notification.requestPermission();
+    }
+
+    // Función para mostrar notificación
+    function showNotification() {
+        if (Notification.permission === 'granted') {
+            const notification = new Notification('Reproduciendo ahora', {
+                body: `${songs[current].title} - ${songs[current].artist}`,
+                icon: songs[current].image || 'https://cdn-icons-png.flaticon.com/512/727/727240.png'
+            });
+
+            // Cerrar la notificación después de 5 segundos
+            setTimeout(() => {
+                notification.close();
+            }, 5000);
+        }
+    }
+
     // Crear partículas de fondo
     function createParticles() {
         for (let i = 0; i < 50; i++) {
@@ -897,6 +912,7 @@
             li.addEventListener('click', () => {
                 current = parseInt(li.dataset.index);
                 loadSong(current);
+                updatePlaylist();
                 playSong();
             });
             playlistEl.appendChild(li);
@@ -958,12 +974,9 @@
             albumArt.style.transform = 'scale(1)';
         }, 300);
 
-        // Remover event listeners previos de loadedmetadata
-        player.onloadedmetadata = null;
-        
-        player.onloadedmetadata = function() {
+        player.addEventListener('loadedmetadata', () => {
             durationEl.textContent = formatTime(player.duration);
-        };
+        });
 
         updatePlaylist();
     }
@@ -1002,6 +1015,8 @@
         playBtn.title = "Pausar";
         document.querySelector('.album-art-container').classList.add('playing');
         waveContainer.style.display = 'flex';
+        // Mostrar notificación
+        showNotification();
     }
 
     // Pausar canción
