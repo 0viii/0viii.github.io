@@ -1,453 +1,847 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galactic Stream</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
-<style>
-:root {
-  --neon-cyan: #0ff;
-  --neon-pink: #f0f;
-  --neon-green: #0f0;
-  --dark-space: #0a0a16;
-  --deep-space: #15152b;
-  --star-light: #ffffff;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Stream - Contenido Interdimensional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --alien-primary: #a832fa;
+            --alien-secondary: #32faf4;
+            --alien-accent: #fa32a0;
+            --alien-bg: #0a0515;
+            --alien-card: #160a28;
+            --alien-text: #ffffff;
+            --alien-glow: 0 0 15px currentColor;
+            --animation-color: #ff7be5;
+            --animation-glow: 0 0 20px #ff7be5;
+        }
 
-body {
-  margin: 0;
-  font-family: 'Exo 2', sans-serif;
-  background: linear-gradient(135deg, var(--dark-space) 0%, var(--deep-space) 100%);
-  color: #fff;
-  overflow-x: hidden;
-  position: relative;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 5px),
-    radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 3px),
-    radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 4px);
-  background-size: 550px 550px, 350px 350px, 250px 250px;
-  background-position: 0 0, 40px 60px, 130px 270px;
-  z-index: -1;
-}
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--alien-bg);
+            color: var(--alien-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-h1 {
-  margin: 20px;
-  text-align: center;
-  font-size: 2.8em;
-  font-family: 'Orbitron', sans-serif;
-  color: #fff;
-  text-shadow: 
-    0 0 5px var(--neon-cyan),
-    0 0 10px var(--neon-cyan),
-    0 0 20px var(--neon-cyan),
-    0 0 30px var(--neon-cyan);
-  letter-spacing: 2px;
-  animation: pulsate 2s infinite alternate;
-}
+        /* Efecto de partículas de fondo */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
 
-@keyframes pulsate {
-  0% { text-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan), 0 0 30px var(--neon-cyan); }
-  100% { text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan), 0 0 30px var(--neon-cyan), 0 0 40px var(--neon-cyan); }
-}
+        /* Header con diseño orgánico */
+        header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 5, 21, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(168, 50, 250, 0.3);
+            position: relative;
+            z-index: 10;
+        }
 
-#filtros {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 30px;
-  padding: 0 20px;
-}
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--alien-primary);
+            text-shadow: var(--alien-glow);
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+        }
 
-#buscar, #categoria {
-  background: rgba(10, 10, 30, 0.7);
-  border: 1px solid var(--neon-cyan);
-  border-radius: 20px;
-  padding: 10px 20px;
-  color: white;
-  font-family: 'Exo 2', sans-serif;
-  box-shadow: 0 0 10px var(--neon-cyan);
-  outline: none;
-}
+        .logo::before {
+            content: "◇";
+            margin-right: 10px;
+            color: var(--alien-secondary);
+            animation: pulse 3s infinite alternate;
+        }
 
-#buscar::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
+        /* Navegación orgánica */
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
 
-#catalogo {
-  display: flex;
-  overflow-x: auto;
-  gap: 25px;
-  padding: 30px 20px;
-  scroll-behavior: smooth;
-}
+        nav a {
+            color: var(--alien-text);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
 
-.card {
-  position: relative;
-  min-width: 240px;
-  height: 340px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  cursor: pointer;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-  transform-style: preserve-3d;
-}
+        nav a:hover {
+            color: var(--alien-secondary);
+            background: rgba(50, 250, 244, 0.1);
+        }
 
-.card img, .card video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  border-radius: 12px;
-  transition: all 0.5s ease;
-}
+        nav a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(50, 250, 244, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
 
-.card::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  z-index: -1;
-  background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink), var(--neon-green), var(--neon-pink), var(--neon-cyan));
-  border-radius: 14px;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
+        nav a:hover::before {
+            left: 100%;
+        }
 
-.card:hover { 
-  transform: scale(1.15) translateY(-10px) rotateY(5deg); 
-  z-index: 2;
-  box-shadow: 0 0 25px var(--neon-cyan), 0 0 50px var(--neon-pink);
-}
+        /* Filtros mejorados */
+        .filters {
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
 
-.card:hover::before {
-  opacity: 1;
-  animation: border-glow 1.5s linear infinite;
-}
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
 
-@keyframes border-glow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(22, 10, 40, 0.7);
+            border: 2px solid var(--alien-primary);
+            border-radius: 30px;
+            color: var(--alien-text);
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+        }
 
-.card h3 {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  margin: 0;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 1em;
-  font-weight: 600;
-  backdrop-filter: blur(4px);
-  border-left: 3px solid var(--neon-cyan);
-}
+        .search-box input:focus {
+            border-color: var(--alien-secondary);
+            box-shadow: 0 0 15px var(--alien-secondary);
+        }
 
-.fav {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  font-size: 28px;
-  color: yellow;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-shadow: 0 0 10px yellow;
-  z-index: 3;
-}
+        .search-box::after {
+            content: "🔍";
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--alien-primary);
+        }
 
-.fav:hover { 
-  transform: scale(1.4) rotate(15deg);
-  text-shadow: 0 0 20px yellow;
-}
+        .category-filter {
+            position: relative;
+        }
 
-#player-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(5, 5, 15, 0.98);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  display: none;
-  z-index: 1000;
-  backdrop-filter: blur(10px);
-}
+        .category-filter select {
+            padding: 12px 45px 12px 20px;
+            background: rgba(22, 10, 40, 0.7);
+            border: 2px solid var(--alien-primary);
+            border-radius: 30px;
+            color: var(--alien-text);
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+            appearance: none;
+            transition: all 0.3s ease;
+        }
 
-#player { 
-  width: 85%; 
-  max-width: 1000px; 
-  border-radius: 12px;
-  box-shadow: 0 0 30px var(--neon-cyan), 0 0 60px var(--neon-pink);
-}
+        .category-filter select:focus {
+            border-color: var(--alien-secondary);
+            box-shadow: 0 0 15px var(--alien-secondary);
+        }
 
-#cerrar {
-  margin-bottom: 20px;
-  padding: 12px 25px;
-  background: linear-gradient(45deg, #ff0080, #8000ff);
-  border: none;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 30px;
-  transition: all 0.3s ease;
-  font-family: 'Orbitron', sans-serif;
-  letter-spacing: 1px;
-  box-shadow: 0 0 15px rgba(255, 0, 128, 0.7);
-}
+        .category-filter::after {
+            content: "▼";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--alien-primary);
+            pointer-events: none;
+        }
 
-#cerrar:hover { 
-  transform: translateY(-3px);
-  box-shadow: 0 0 25px rgba(255, 0, 128, 1);
-}
+        /* Contenedor principal */
+        .main-content {
+            padding: 0 2rem 3rem;
+        }
 
-::-webkit-scrollbar { 
-  height: 10px; 
-  background: transparent;
-}
+        .category-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin: 2rem 0 1.5rem;
+            padding-left: 1rem;
+            border-left: 4px solid;
+            display: flex;
+            align-items: center;
+        }
 
-::-webkit-scrollbar-thumb { 
-  background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
-  border-radius: 10px; 
-  box-shadow: 0 0 10px var(--neon-cyan);
-}
+        .sci-fi-title {
+            color: var(--alien-secondary);
+            text-shadow: var(--alien-glow);
+            border-color: var(--alien-secondary);
+        }
 
-::-webkit-scrollbar-track { 
-  background: rgba(0, 0, 0, 0.2); 
-  border-radius: 10px; 
-  margin: 0 20px;
-}
+        .cyberpunk-title {
+            color: var(--alien-primary);
+            text-shadow: 0 0 15px var(--alien-primary);
+            border-color: var(--alien-primary);
+        }
 
-.categoria-titulo {
-  font-family: 'Orbitron', sans-serif;
-  color: var(--neon-green);
-  margin-left: 30px;
-  margin-bottom: 15px;
-  text-shadow: 0 0 10px var(--neon-green);
-  font-size: 1.5em;
-}
+        .animation-title {
+            color: var(--animation-color);
+            text-shadow: var(--animation-glow);
+            border-color: var(--animation-color);
+        }
 
-.seccion-categoria {
-  margin-bottom: 40px;
-}
+        .animation-title::before {
+            content: "✧";
+            margin-right: 10px;
+            font-size: 1.5rem;
+            animation: spin 4s infinite linear;
+        }
 
-/* Efectos de luz adicionales */
-.luz-flotante {
-  position: fixed;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--neon-pink) 0%, transparent 70%);
-  opacity: 0.1;
-  animation: flotar 15s infinite linear;
-  z-index: -1;
-}
+        /* Catalogo con diseño orgánico */
+        .catalog {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
 
-.luz-flotante:nth-child(1) {
-  top: 20%;
-  left: 10%;
-  animation-delay: 0s;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, var(--neon-cyan) 0%, transparent 70%);
-}
+        .card {
+            background: var(--alien-card);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
 
-.luz-flotante:nth-child(2) {
-  top: 60%;
-  right: 15%;
-  animation-delay: -5s;
-  background: radial-gradient(circle, var(--neon-green) 0%, transparent 70%);
-}
+        .animation-card {
+            background: linear-gradient(to bottom, #250235, #160a28);
+            box-shadow: 0 5px 15px rgba(255, 123, 229, 0.2);
+        }
 
-.luz-flotante:nth-child(3) {
-  bottom: 10%;
-  left: 20%;
-  animation-delay: -10s;
-  width: 100px;
-  height: 100px;
-}
+        .animation-card:hover {
+            box-shadow: 0 15px 30px rgba(255, 123, 229, 0.4);
+        }
 
-@keyframes flotar {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  25% { transform: translate(20px, 40px) rotate(90deg); }
-  50% { transform: translate(0, 80px) rotate(180deg); }
-  75% { transform: translate(-20px, 40px) rotate(270deg); }
-  100% { transform: translate(0, 0) rotate(360deg); }
-}
+        .card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 15px 30px rgba(168, 50, 250, 0.3);
+        }
 
-/* Responsive */
-@media (max-width: 768px) {
-  h1 { font-size: 2em; }
-  #catalogo { gap: 15px; padding: 20px 15px; }
-  .card { min-width: 200px; height: 300px; }
-  #filtros { flex-direction: column; align-items: center; }
-  #buscar, #categoria { width: 80%; }
-}
-</style>
+        .animation-card:hover {
+            transform: translateY(-10px) rotate(2deg);
+        }
+
+        .card-media {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            overflow: hidden;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .card video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .card:hover img {
+            transform: scale(1.1);
+        }
+
+        .card:hover video {
+            opacity: 1;
+        }
+
+        .card-content {
+            padding: 1.2rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .card-category {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .sci-fi-category {
+            background: rgba(50, 250, 244, 0.2);
+            color: var(--alien-secondary);
+        }
+
+        .cyberpunk-category {
+            background: rgba(168, 50, 250, 0.2);
+            color: var(--alien-primary);
+        }
+
+        .animation-category {
+            background: rgba(255, 123, 229, 0.2);
+            color: var(--animation-color);
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .play-btn, .fav-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .play-btn {
+            background: var(--alien-primary);
+            color: white;
+        }
+
+        .play-btn:hover {
+            background: var(--alien-accent);
+            box-shadow: 0 0 15px var(--alien-accent);
+        }
+
+        .animation-card .play-btn {
+            background: var(--animation-color);
+            color: white;
+        }
+
+        .animation-card .play-btn:hover {
+            background: #ff48d0;
+            box-shadow: 0 0 15px var(--animation-color);
+        }
+
+        .fav-btn {
+            background: transparent;
+            color: var(--alien-text);
+            border: 1px solid var(--alien-primary);
+        }
+
+        .fav-btn.active {
+            background: var(--alien-accent);
+            border-color: var(--alien-accent);
+            color: white;
+        }
+
+        .fav-btn:hover {
+            background: var(--alien-accent);
+            border-color: var(--alien-accent);
+            box-shadow: 0 0 15px var(--alien-accent);
+        }
+
+        .animation-card .fav-btn {
+            border: 1px solid var(--animation-color);
+        }
+
+        .animation-card .fav-btn:hover {
+            background: var(--animation-color);
+            border-color: var(--animation-color);
+            box-shadow: 0 0 15px var(--animation-color);
+        }
+
+        /* Reproductor mejorado */
+        .player-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 2, 15, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .player-container.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .player-content {
+            width: 85%;
+            max-width: 1000px;
+            position: relative;
+        }
+
+        #player {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 0 30px var(--alien-primary);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            padding: 12px 25px;
+            background: var(--alien-accent);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: var(--alien-primary);
+            box-shadow: 0 0 15px var(--alien-primary);
+        }
+
+        /* Animaciones */
+        @keyframes pulse {
+            0% { opacity: 0.6; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0.6; transform: scale(0.95); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .catalog {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .filters {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .search-box {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Partículas de fondo -->
+    <div id="particles-js"></div>
 
-<!-- Efectos de luz de fondo -->
-<div class="luz-flotante"></div>
-<div class="luz-flotante"></div>
-<div class="luz-flotante"></div>
+    <header>
+        <div class="logo">NEXUS STREAM</div>
+        <nav>
+            <ul>
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Series</a></li>
+                <li><a href="#">Películas</a></li>
+                <li><a href="#">Animación</a></li>
+                <li><a href="#">Mi Lista</a></li>
+            </ul>
+        </nav>
+    </header>
 
-<h1>GALACTIC STREAM</h1>
+    <div class="filters">
+        <div class="search-box">
+            <input type="text" id="search" placeholder="Buscar contenido interdimensional...">
+        </div>
+        <div class="category-filter">
+            <select id="category">
+                <option value="all">Todos los universos</option>
+                <option value="Sci-Fi">Ciencia Ficción</option>
+                <option value="Cyberpunk">Cyberpunk</option>
+                <option value="Animation">Animación</option>
+                <option value="Alien">Terror Alienígena</option>
+                <option value="Adventure">Aventura Espacial</option>
+            </select>
+        </div>
+    </div>
 
-<div id="filtros">
-    <input type="text" id="buscar" placeholder="Buscar contenido interdimensional..." />
-    <select id="categoria">
-        <option value="todas">Todos los universos</option>
-    </select>
-</div>
+    <div class="main-content">
+        <h2 class="category-title sci-fi-title">Ciencia Ficción</h2>
+        <div class="catalog" id="sci-fi-content">
+            <!-- Las tarjetas se generarán con JavaScript -->
+        </div>
 
-<div id="catalogo"></div>
+        <h2 class="category-title cyberpunk-title">Cyberpunk</h2>
+        <div class="catalog" id="cyberpunk-content">
+            <!-- Las tarjetas se generarán con JavaScript -->
+        </div>
 
-<div id="player-container">
-    <button id="cerrar">VOLVER A LA GALERÍA</button>
-    <video id="player" controls></video>
-</div>
+        <h2 class="category-title animation-title">Mundo Animado</h2>
+        <div class="catalog" id="animation-content">
+            <!-- Las tarjetas se generarán con JavaScript -->
+        </div>
+    </div>
 
-<script>
-const peliculas = [
-    { titulo: "Nebulosa Prohibida", categoria: "Ciencia Ficción", portada: "https://placehold.co/400x600/15152b/0ff?text=Nebulosa+Prohibida", trailer:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" },
-    { titulo: "Androide Destiny", categoria: "Cyberpunk", portada: "https://placehold.co/400x600/15152b/f0f?text=Androide+Destiny", trailer:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" },
-    { titulo: "Xenomorfos", categoria: "Terror Espacial", portada: "https://placehold.co/400x600/15152b/0f0?text=Xenomorfos", trailer:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" },
-    { titulo: "Crystal Planet", categoria: "Aventura", portada: "https://placehold.co/400x600/15152b/ff0?text=Crystal+Planet", trailer:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" },
-    { titulo: "Quantum Drift", categoria: "Cyberpunk", portada: "https://placehold.co/400x600/15152b/f0f?text=Quantum+Drift", trailer:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4" },
-    { titulo: "Cybernetic Revolution", categoria: "Ciencia Ficción", portada: "https://placehold.co/400x600/15152b/0ff?text=Cybernetic+Revolution", trailer:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4" }
-];
+    <div class="player-container" id="player-container">
+        <div class="player-content">
+            <button class="close-btn" id="close-player">Cerrar</button>
+            <video id="player" controls></video>
+        </div>
+    </div>
 
-const catalogo = document.getElementById("catalogo");
-const playerContainer = document.getElementById("player-container");
-const player = document.getElementById("player");
-const cerrar = document.getElementById("cerrar");
-const buscar = document.getElementById("buscar");
-const categoriaSelect = document.getElementById("categoria");
+    <script>
+        // Datos de contenido
+        const content = [
+            { 
+                id: 1, 
+                title: "Nebulosa Prohibida", 
+                category: "Sci-Fi", 
+                image: "https://placehold.co/400x600/160a28/32faf4?text=Nebulosa+Prohibida", 
+                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                featured: true
+            },
+            { 
+                id: 2, 
+                title: "Androide Destiny", 
+                category: "Cyberpunk", 
+                image: "https://placehold.co/400x600/160a28/fa32a0?text=Androide+Destiny", 
+                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+                featured: true
+            },
+            { 
+                id: 3, 
+                title: "Xenomorfos", 
+                category: "Sci-Fi", 
+                image: "https://placehold.co/400x600/160a28/a832fa?text=Xenomorfos", 
+                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                featured: true
+            },
+            { 
+                id: 4, 
+                title: "Crystal Planet", 
+                category: "Adventure", 
+                image: "https://placehold.co/400x600/160a28/32faf4?text=Crystal+Planet", 
+                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+                featured: true
+            },
+            { 
+                id: 5, 
+                title: "Quantum Drift", 
+                category: "Cyberpunk", 
+                image: "https://placehold.co/400x600/160a28/fa32a0?text=Quantum+Drift", 
+                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+                featured: true
+            },
+            { 
+                id: 6, 
+                title: "Cybernetic Revolution", 
+                category: "Sci-Fi", 
+                image: "https://placehold.co/400x600/160a28/a832fa?text=Cybernetic+Revolution", 
+                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+                featured: true
+            },
+            // Películas animadas
+            { 
+                id: 7, 
+                title: "Galaxy Rangers", 
+                category: "Animation", 
+                image: "https://placehold.co/400x600/250235/ff7be5?text=Galaxy+Rangers", 
+                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                featured: true
+            },
+            { 
+                id: 8, 
+                title: "Stellar Academy", 
+                category: "Animation", 
+                image: "https://placehold.co/400x600/250235/ff7be5?text=Stellar+Academy", 
+                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+                featured: true
+            },
+            { 
+                id: 9, 
+                title: "Cosmic Friends", 
+                category: "Animation", 
+                image: "https://placehold.co/400x600/250235/ff7be5?text=Cosmic+Friends", 
+                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                featured: true
+            },
+            { 
+                id: 10, 
+                title: "Robot Dreams", 
+                category: "Animation", 
+                image: "https://placehold.co/400x600/250235/ff7be5?text=Robot+Dreams", 
+                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+                featured: true
+            },
+            { 
+                id: 11, 
+                title: "Moonlight Tales", 
+                category: "Animation", 
+                image: "https://placehold.co/400x600/250235/ff7be5?text=Moonlight+Tales", 
+                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+                featured: true
+            },
+            { 
+                id: 12, 
+                title: "Space Adventures", 
+                category: "Animation", 
+                image: "https://placehold.co/400x600/250235/ff7be5?text=Space+Adventures", 
+                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+                featured: true
+            }
+        ];
 
-let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inicializar partículas
+            particlesJS("particles-js", {
+                particles: {
+                    number: { value: 30, density: { enable: true, value_area: 800 } },
+                    color: { value: "#a832fa" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#32faf4", opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } }
+                }
+            });
 
-function mostrarCatalogo() {
-    catalogo.innerHTML = "";
-    const busqueda = buscar.value.toLowerCase();
-    const categoria = categoriaSelect.value;
-
-    // Agrupar por categorías
-    const categoriasUnicas = [...new Set(peliculas.map(p => p.categoria))];
-    
-    categoriasUnicas.forEach(cat => {
-        const peliculasFiltradas = peliculas.filter(p => 
-            p.categoria === cat && 
-            (p.titulo.toLowerCase().includes(busqueda)) && 
-            (categoria === "todas" || p.categoria === categoria)
-        );
-        
-        if (peliculasFiltradas.length > 0) {
-            const seccionTitulo = document.createElement("h2");
-            seccionTitulo.className = "categoria-titulo";
-            seccionTitulo.textContent = cat;
-            catalogo.appendChild(seccionTitulo);
+            // Cargar contenido
+            renderContent();
             
-            const seccionContenedor = document.createElement("div");
-            seccionContenedor.className = "seccion-categoria";
-            seccionContenedor.style.display = "flex";
-            seccionContenedor.style.overflowX = "auto";
-            seccionContenedor.style.gap = "25px";
-            seccionContenedor.style.padding = "10px 5px";
+            // Configurar event listeners
+            document.getElementById('search').addEventListener('input', filterContent);
+            document.getElementById('category').addEventListener('change', filterContent);
+            document.getElementById('close-player').addEventListener('click', closePlayer);
+        });
+
+        // Renderizar contenido
+        function renderContent() {
+            const sciFiEl = document.getElementById('sci-fi-content');
+            const cyberpunkEl = document.getElementById('cyberpunk-content');
+            const animationEl = document.getElementById('animation-content');
             
-            peliculasFiltradas.forEach(p => {
-                const card = document.createElement("div");
-                card.className = "card";
-                card.innerHTML = `
-                    <img src="${p.portada}" alt="${p.titulo}">
-                    <video src="${p.trailer}" muted loop style="display:none;"></video>
-                    <span class="fav">${favoritos.includes(p.titulo) ? "★" : "☆"}</span>
-                    <h3>${p.titulo}</h3>
-                `;
-
-                const img = card.querySelector("img");
-                const vid = card.querySelector("video");
-                const fav = card.querySelector(".fav");
-
-                // Hover trailer
-                card.addEventListener("mouseenter", () => { 
-                    img.style.display="none"; 
-                    vid.style.display="block"; 
-                    vid.play(); 
-                });
-                card.addEventListener("mouseleave", () => { 
-                    vid.pause(); 
-                    vid.currentTime = 0;
-                    vid.style.display="none"; 
-                    img.style.display="block"; 
-                });
-
-                card.addEventListener("click", (e) => {
-                    if(e.target === fav){
-                        toggleFavorito(p.titulo, fav);
-                    } else {
-                        player.src = p.video;
-                        playerContainer.style.display = "flex";
-                        player.play();
-                    }
-                });
-
-                seccionContenedor.appendChild(card);
+            // Limpiar contenedores
+            sciFiEl.innerHTML = '';
+            cyberpunkEl.innerHTML = '';
+            animationEl.innerHTML = '';
+            
+            // Filtrar contenido por categoría
+            const sciFiContent = content.filter(item => item.category === "Sci-Fi");
+            const cyberpunkContent = content.filter(item => item.category === "Cyberpunk");
+            const animationContent = content.filter(item => item.category === "Animation");
+            
+            // Renderizar contenido
+            sciFiContent.forEach(item => {
+                sciFiEl.appendChild(createCard(item));
             });
             
-            catalogo.appendChild(seccionContenedor);
+            cyberpunkContent.forEach(item => {
+                cyberpunkEl.appendChild(createCard(item));
+            });
+            
+            animationContent.forEach(item => {
+                animationEl.appendChild(createCard(item));
+            });
         }
-    });
-}
 
-function toggleFavorito(titulo, elemento){
-    if(favoritos.includes(titulo)){
-        favoritos = favoritos.filter(f => f !== titulo);
-        elemento.textContent = "☆";
-    } else {
-        favoritos.push(titulo);
-        elemento.textContent = "★";
-    }
-    localStorage.setItem("favoritos", JSON.stringify(favoritos));
-}
+        // Crear tarjeta de contenido
+        function createCard(item) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            if (item.category === "Animation") {
+                card.classList.add('animation-card');
+            }
+            
+            card.innerHTML = `
+                <div class="card-media">
+                    <img src="${item.image}" alt="${item.title}">
+                    <video src="${item.trailer}" muted loop></video>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">${item.title}</h3>
+                    <span class="card-category ${getCategoryClass(item.category)}">${item.category}</span>
+                    <div class="card-actions">
+                        <button class="play-btn" data-id="${item.id}">▶ Reproducir</button>
+                        <button class="fav-btn" data-id="${item.id}">❤ Favorito</button>
+                    </div>
+                </div>
+            `;
+            
+            // Event listeners para la tarjeta
+            const playBtn = card.querySelector('.play-btn');
+            const favBtn = card.querySelector('.fav-btn');
+            
+            playBtn.addEventListener('click', () => playContent(item.video));
+            favBtn.addEventListener('click', () => toggleFavorite(item.id, favBtn));
+            
+            return card;
+        }
 
-cerrar.addEventListener("click", () => {
-    player.pause();
-    playerContainer.style.display = "none";
-});
+        // Obtener clase CSS para la categoría
+        function getCategoryClass(category) {
+            switch(category) {
+                case "Sci-Fi": return "sci-fi-category";
+                case "Cyberpunk": return "cyberpunk-category";
+                case "Animation": return "animation-category";
+                default: return "";
+            }
+        }
 
-// Categorías automáticas
-const categorias = ["todas", ...new Set(peliculas.map(p=>p.categoria))];
-categorias.forEach(cat => {
-    if(cat !== "todas"){
-        const opt = document.createElement("option");
-        opt.value = cat;
-        opt.textContent = cat;
-        categoriaSelect.appendChild(opt);
-    }
-});
+        // Filtrar contenido
+        function filterContent() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const category = document.getElementById('category').value;
+            
+            const sciFiEl = document.getElementById('sci-fi-content');
+            const cyberpunkEl = document.getElementById('cyberpunk-content');
+            const animationEl = document.getElementById('animation-content');
+            
+            // Limpiar contenedores
+            sciFiEl.innerHTML = '';
+            cyberpunkEl.innerHTML = '';
+            animationEl.innerHTML = '';
+            
+            // Filtrar contenido
+            const filteredSciFi = content.filter(item => {
+                return item.category === "Sci-Fi" && 
+                    (item.title.toLowerCase().includes(searchTerm)) &&
+                    (category === 'all' || item.category === category);
+            });
+            
+            const filteredCyberpunk = content.filter(item => {
+                return item.category === "Cyberpunk" && 
+                    (item.title.toLowerCase().includes(searchTerm)) &&
+                    (category === 'all' || item.category === category);
+            });
+            
+            const filteredAnimation = content.filter(item => {
+                return item.category === "Animation" && 
+                    (item.title.toLowerCase().includes(searchTerm)) &&
+                    (category === 'all' || item.category === category);
+            });
+            
+            // Renderizar contenido filtrado
+            filteredSciFi.forEach(item => {
+                sciFiEl.appendChild(createCard(item));
+            });
+            
+            filteredCyberpunk.forEach(item => {
+                cyberpunkEl.appendChild(createCard(item));
+            });
+            
+            filteredAnimation.forEach(item => {
+                animationEl.appendChild(createCard(item));
+            });
+        }
 
-buscar.addEventListener("input", mostrarCatalogo);
-categoriaSelect.addEventListener("change", mostrarCatalogo);
+        // Reproducir contenido
+        function playContent(videoUrl) {
+            const playerContainer = document.getElementById('player-container');
+            const player = document.getElementById('player');
+            
+            player.src = videoUrl;
+            playerContainer.classList.add('active');
+            player.play();
+        }
 
-mostrarCatalogo();
-</script>
+        // Cerrar reproductor
+        function closePlayer() {
+            const playerContainer = document.getElementById('player-container');
+            const player = document.getElementById('player');
+            
+            player.pause();
+            playerContainer.classList.remove('active');
+        }
 
+        // Alternar favorito
+        function toggleFavorite(id, button) {
+            button.classList.toggle('active');
+            // Aquí se podría agregar lógica para guardar en localStorage
+        }
+    </script>
+    
+    <!-- Librería de partículas -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </body>
 </html>
