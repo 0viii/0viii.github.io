@@ -1,168 +1,525 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini TikTok</title>
-<style>
-* {margin:0; padding:0; box-sizing:border-box;}
-body, html {height:100%; width:100%; font-family:sans-serif; background:#000; overflow:hidden;}
-#app {height:100vh; width:100vw; position:relative;}
-.video-slide {position:absolute; top:0; left:0; height:100vh; width:100vw; display:flex; align-items:flex-end; justify-content:space-between; flex-direction:column; transition: transform 0.5s ease;}
-video {width:100%; height:100%; object-fit:cover;}
-.info {position:absolute; bottom:20px; left:20px; color:white; max-width:70%;}
-.info h3, .info p {margin:5px 0;}
-.sidebar {position:absolute; right:10px; bottom:60px; display:flex; flex-direction:column; align-items:center; gap:25px;}
-.sidebar button {background: rgba(0,0,0,0.5); border:none; color:white; font-size:20px; padding:12px; border-radius:50%; cursor:pointer; transition: transform 0.2s;}
-.sidebar button:hover {transform: scale(1.2);}
-.music {position:absolute; bottom:20px; right:80px; width:40px; height:40px; border-radius:50%; border:3px solid white; animation: spin 3s linear infinite;}
-.upload-btn {position:fixed; top:20px; left:50%; transform:translateX(-50%); background:white; color:black; padding:10px 20px; border:none; border-radius:10px; cursor:pointer; z-index:1000;}
-@keyframes spin {from{transform:rotate(0deg);} to{transform:rotate(360deg);}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clon TikTok</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #000;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #2f2f2f;
+        }
+        
+        .logo {
+            font-weight: bold;
+            font-size: 22px;
+            color: #fff;
+        }
+        
+        .logo span {
+            color: #fe2c55;
+        }
+        
+        .header-icons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .header-icons i {
+            font-size: 22px;
+            cursor: pointer;
+        }
+        
+        /* Feed de videos */
+        .video-feed {
+            flex: 1;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+        
+        .video-feed::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .video-item {
+            position: relative;
+            height: 100vh;
+            scroll-snap-align: start;
+        }
+        
+        .video-player {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Controles de video */
+        .video-info {
+            position: absolute;
+            bottom: 80px;
+            left: 15px;
+            right: 15px;
+            z-index: 10;
+        }
+        
+        .video-author {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #fff;
+        }
+        
+        .author-name {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .follow-btn {
+            background-color: #fe2c55;
+            color: #fff;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .video-description {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        
+        .video-sound {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+        
+        /* Interacciones */
+        .video-interactions {
+            position: absolute;
+            right: 15px;
+            bottom: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .interaction-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .interaction-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .interaction-count {
+            font-size: 13px;
+        }
+        
+        .avatar-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .avatar-stack .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            margin-top: -15px;
+        }
+        
+        .avatar-stack .avatar:first-child {
+            margin-top: 0;
+        }
+        
+        /* Navegación inferior */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 12px 0;
+            background-color: #000;
+            border-top: 1px solid #2f2f2f;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-text {
+            font-size: 12px;
+        }
+        
+        .nav-item.active .nav-icon,
+        .nav-item.active .nav-text {
+            color: #fe2c55;
+        }
+        
+        .upload-btn {
+            width: 45px;
+            height: 30px;
+            background-color: #fe2c55;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Efectos de grabación */
+        .record-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .record-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #fe2c55;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        /* Para el modo cámara */
+        .camera-view {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 1000;
+            flex-direction: column;
+        }
+        
+        .camera-container {
+            flex: 1;
+            background-color: #000;
+            position: relative;
+        }
+        
+        .camera-controls {
+            padding: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .close-camera, .flip-camera, .record-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .record-button {
+            width: 60px;
+            height: 60px;
+            background-color: #fe2c55;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-
-<button class="upload-btn" onclick="document.getElementById('fileInput').click()">Subir Video</button>
-<input type="file" id="fileInput" accept="video/*" style="display:none">
-<div id="app"></div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, updateDoc, arrayUnion, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
-
-// Config Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyDR6PNPfJDmQYv9uXUgedmozkngdk3bKDQ",
-  authDomain: "minidavid-134d1.firebaseapp.com",
-  projectId: "minidavid-134d1",
-  storageBucket: "minidavid-134d1.firebasestorage.app",
-  messagingSenderId: "326973939527",
-  appId: "1:326973939527:web:32a464ab6f63262cc6b662"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-const appDiv = document.getElementById('app');
-let slidesArray = [];
-let currentUser = null;
-
-// Login automático
-onAuthStateChanged(auth, user => { currentUser = user; });
-
-// Subir videos
-document.getElementById('fileInput').addEventListener('change', async e => {
-  const file = e.target.files[0];
-  if(!currentUser) return alert("Inicia sesión primero!");
-  if(!file) return;
-
-  const storageRef = ref(storage, `videos/${Date.now()}_${file.name}`);
-  const uploadTask = uploadBytesResumable(storageRef, file);
-
-  uploadTask.on('state_changed', null, console.error, async () => {
-    const url = await getDownloadURL(uploadTask.snapshot.ref);
-    await addDoc(collection(db, "videos"), {
-      videoURL: url,
-      username: currentUser.displayName,
-      userId: currentUser.uid,
-      description: "Nuevo video",
-      likes: [],
-      createdAt: serverTimestamp()
-    });
-    alert("Video subido!");
-  });
-});
-
-// Botón Login
-const loginBtn = document.createElement('button');
-loginBtn.textContent = "Login con Google";
-loginBtn.style.position = "fixed";
-loginBtn.style.top = "20px";
-loginBtn.style.right = "20px";
-loginBtn.style.zIndex = "1000";
-loginBtn.onclick = async () => {
-  await signInWithPopup(auth, provider);
-  alert("Login exitoso!");
-};
-document.body.appendChild(loginBtn);
-
-// Cargar videos en tiempo real
-async function loadVideos() {
-  const videosCol = collection(db, "videos");
-  onSnapshot(videosCol, snapshot => {
-    appDiv.innerHTML = '';
-    slidesArray = [];
-    snapshot.docs.sort((a,b)=>b.data().createdAt?.seconds - a.data().createdAt?.seconds).forEach(docSnap => {
-      const data = docSnap.data();
-      const slide = document.createElement('div');
-      slide.className = 'video-slide';
-      slide.innerHTML = `
-        <video src="${data.videoURL}" muted autoplay loop></video>
-        <div class="info">
-          <h3>@${data.username}</h3>
-          <p>${data.description}</p>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">tik<span>tok</span></div>
+            <div class="header-icons">
+                <i class="fas fa-search"></i>
+                <i class="fas fa-inbox"></i>
+                <i class="fas fa-comment-dots"></i>
+            </div>
         </div>
-        <div class="sidebar">
-          <button onclick="like('${docSnap.id}', this)">❤️ ${data.likes?.length || 0}</button>
-          <button onclick="comment('${docSnap.id}')">💬</button>
-          <button onclick="share('${docSnap.id}')">🔗</button>
+        
+        <!-- Feed de videos -->
+        <div class="video-feed" id="videoFeed">
+            <!-- Los videos se cargarán dinámicamente con JavaScript -->
         </div>
-        <div class="music"></div>
-      `;
-      appDiv.appendChild(slide);
-      slidesArray.push(slide);
-    });
-    showSlide(0);
-  });
-}
+        
+        <!-- Navegación inferior -->
+        <div class="bottom-nav">
+            <div class="nav-item active">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <div class="nav-text">Inicio</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"><i class="fas fa-compass"></i></div>
+                <div class="nav-text">Descubrir</div>
+            </div>
+            <div class="nav-item" id="uploadBtn">
+                <div class="upload-btn">
+                    <i class="fas fa-plus" style="color: #fff;"></i>
+                </div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"><i class="fas fa-inbox"></i></div>
+                <div class="nav-text">Bandeja</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"><i class="fas fa-user"></i></div>
+                <div class="nav-text">Yo</div>
+            </div>
+        </div>
+        
+        <!-- Vista de cámara (oculta inicialmente) -->
+        <div class="camera-view" id="cameraView">
+            <div class="camera-container">
+                <div class="record-indicator">
+                    <div class="record-dot"></div>
+                    <span>En vivo</span>
+                </div>
+            </div>
+            <div class="camera-controls">
+                <div class="close-camera" id="closeCamera">
+                    <i class="fas fa-times"></i>
+                </div>
+                <div class="flip-camera">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="record-button">
+                    <i class="fas fa-video"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 
-let index = 0;
-function showSlide(i) {
-  slidesArray.forEach((slide, sIndex) => {
-    slide.style.transform = `translateY(${(sIndex-i)*100}%)`;
-    const video = slide.querySelector('video');
-    if(sIndex === i) video.play();
-    else video.pause();
-  });
-}
+    <script>
+        // Datos de ejemplo para los videos
+        const videos = [
+            {
+                id: 1,
+                url: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4",
+                author: "@usuario1",
+                avatar: "https://randomuser.me/api/portraits/women/65.jpg",
+                description: "¡Este es mi primer video! #primervideo #divertido",
+                sound: "Sonido original - usuario1",
+                likes: 1500,
+                comments: 120,
+                shares: 300
+            },
+            {
+                id: 2,
+                url: "https://samplelib.com/lib/preview/mp4/sample-10s.mp4",
+                author: "@creador_content",
+                avatar: "https://randomuser.me/api/portraits/men/22.jpg",
+                description: "Disfrutando del paisaje 🌄 #naturaleza #paisaje",
+                sound: "Canción popular - Artista",
+                likes: 24500,
+                comments: 1420,
+                shares: 5600
+            },
+            {
+                id: 3,
+                url: "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
+                author: "@bailarin",
+                avatar: "https://randomuser.me/api/portraits/women/32.jpg",
+                description: "Nuevo baile que aprendí 💃 #baile #tendencia",
+                sound: "Música de moda - DJ",
+                likes: 98200,
+                comments: 5300,
+                shares: 12700
+            }
+        ];
 
-window.addEventListener('wheel', e => {
-  if(e.deltaY>0) index=Math.min(index+1,slidesArray.length-1);
-  else index=Math.max(index-1,0);
-  showSlide(index);
-});
+        // Cargar videos en el feed
+        const videoFeed = document.getElementById('videoFeed');
+        
+        videos.forEach(video => {
+            const videoItem = document.createElement('div');
+            videoItem.className = 'video-item';
+            videoItem.innerHTML = `
+                <video class="video-player" loop>
+                    <source src="${video.url}" type="video/mp4">
+                </video>
+                <div class="video-info">
+                    <div class="video-author">
+                        <img src="${video.avatar}" class="author-avatar">
+                        <div class="author-name">${video.author}</div>
+                        <button class="follow-btn">Seguir</button>
+                    </div>
+                    <div class="video-description">${video.description}</div>
+                    <div class="video-sound">
+                        <i class="fas fa-music"></i> ${video.sound}
+                    </div>
+                </div>
+                <div class="video-interactions">
+                    <div class="interaction-item">
+                        <div class="interaction-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="interaction-count">${formatNumber(video.likes)}</div>
+                    </div>
+                    <div class="interaction-item">
+                        <div class="interaction-icon">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <div class="interaction-count">${formatNumber(video.comments)}</div>
+                    </div>
+                    <div class="interaction-item">
+                        <div class="interaction-icon">
+                            <i class="fas fa-share"></i>
+                        </div>
+                        <div class="interaction-count">${formatNumber(video.shares)}</div>
+                    </div>
+                    <div class="interaction-item avatar-stack">
+                        <img src="https://randomuser.me/api/portraits/women/43.jpg" class="avatar">
+                        <img src="https://randomuser.me/api/portraits/men/65.jpg" class="avatar">
+                    </div>
+                </div>
+            `;
+            videoFeed.appendChild(videoItem);
+        });
 
-// Interacciones
-window.like = async function(videoId, btn){
-  if(!currentUser) return alert("Inicia sesión primero!");
-  const videoRef = doc(db,"videos",videoId);
-  await updateDoc(videoRef,{likes: arrayUnion(currentUser.uid)});
-  const likesCount = parseInt(btn.textContent.split(' ')[1]||0)+1;
-  btn.textContent = `❤️ ${likesCount}`;
-};
+        // Formatear números (1.5K, 2.4M, etc.)
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num;
+        }
 
-window.comment = async function(videoId){
-  if(!currentUser) return alert("Inicia sesión primero!");
-  const c = prompt("Escribe tu comentario:");
-  if(c) await addDoc(collection(db,"comments"),{
-    videoId,
-    userId: currentUser.uid,
-    comment: c,
-    createdAt: serverTimestamp()
-  });
-};
+        // Reproducir videos cuando están en vista
+        const videoPlayers = document.querySelectorAll('.video-player');
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.8
+        };
 
-window.share = function(videoId){
-  navigator.clipboard.writeText(window.location.href+"#video="+videoId);
-  alert("Enlace copiado!");
-};
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.play();
+                } else {
+                    entry.target.pause();
+                }
+            });
+        }, observerOptions);
 
-loadVideos();
-</script>
+        videoPlayers.forEach(video => {
+            observer.observe(video);
+            
+            // Reproducir al hacer clic
+            video.addEventListener('click', () => {
+                if (video.paused) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            });
+        });
+
+        // Funcionalidad para el botón de subir video
+        const uploadBtn = document.getElementById('uploadBtn');
+        const cameraView = document.getElementById('cameraView');
+        const closeCamera = document.getElementById('closeCamera');
+        
+        uploadBtn.addEventListener('click', () => {
+            cameraView.style.display = 'flex';
+        });
+        
+        closeCamera.addEventListener('click', () => {
+            cameraView.style.display = 'none';
+        });
+
+        // Funcionalidad de like
+        const likeButtons = document.querySelectorAll('.fa-heart');
+        likeButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.classList.toggle('fas');
+                this.classList.toggle('far');
+                
+                // Cambiar color al dar like
+                if (this.classList.contains('fas')) {
+                    this.style.color = '#fe2c55';
+                } else {
+                    this.style.color = '#fff';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
