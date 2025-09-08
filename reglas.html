@@ -4,282 +4,2124 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MiniHost 🌍 - Minecraft Ultra-Pro</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@300;400;700&display=swap');
+
+:root {
+  --primary: #00cc66;
+  --primary-dark: #00994d;
+  --secondary: #ff9900;
+  --danger: #ff4757;
+  --info: #2d87ff;
+  --dark: #1a1a2e;
+  --darker: #16213e;
+  --light: #f1f2f6;
+  --gray: #a5b1c2;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  font-family: 'Press Start 2P', cursive;
-  margin:0; padding:0;
-  background: linear-gradient(#87ceeb,#1e3c72);
-  overflow-x:hidden;
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, var(--darker), var(--dark));
+  color: var(--light);
+  min-height: 100vh;
   transition: background 0.5s;
+  overflow-x: hidden;
 }
-body.dark { background: linear-gradient(#0b0b0b,#1e1e1e); }
+
+body.dark-mode { 
+  background: linear-gradient(135deg, #0b0b0b, #1e1e1e); 
+}
+
+/* Header y navegación */
+header {
+  background: rgba(26, 26, 46, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-bottom: 2px solid var(--primary);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo h1 {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.5rem;
+  color: var(--primary);
+  text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+}
+
+.logo-icon {
+  font-size: 2rem;
+  color: var(--primary);
+}
+
+nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+nav a {
+  color: var(--light);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+nav a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--primary);
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--light);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
 
 /* Fondo animado bloques */
 #background {
-  position:fixed; top:0; left:0; width:100%; height:100%; z-index:0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
   background: url('https://i.ibb.co/FwM1pG3/grass.png') repeat;
-  background-size:60px 60px;
+  background-size: 60px 60px;
   animation: moveBg 60s linear infinite;
+  opacity: 0.15;
 }
-@keyframes moveBg { from {background-position:0 0;} to {background-position:-600px -400px;} }
 
-h1 { text-align:center; font-size:2em; color:#00ff00; margin-top:20px; z-index:1; position:relative; }
-p { text-align:center; color:#fff; margin-bottom:20px; font-size:0.9em; z-index:1; position:relative; }
+@keyframes moveBg { 
+  from { background-position: 0 0; } 
+  to { background-position: -600px -400px; } 
+}
 
-.card {
-  background: rgba(0,0,0,0.7);
-  border: 4px solid #00ff00;
+/* Contenido principal */
+main {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.welcome-banner {
+  background: linear-gradient(135deg, rgba(0, 204, 102, 0.2), rgba(0, 102, 204, 0.2));
   border-radius: 12px;
-  padding: 20px;
-  margin: 20px auto;
-  max-width: 550px;
-  box-shadow: 0 6px 15px rgba(0,255,0,0.5);
-  position: relative; z-index:1;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.welcome-banner h2 {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+.welcome-banner p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: var(--gray);
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: rgba(26, 26, 46, 0.7);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: transform 0.3s, box-shadow 0.3s;
 }
-.card:hover { transform: translateY(-5px); box-shadow:0 8px 20px rgba(0,255,0,0.7); }
 
-input, select, button { padding: 12px; margin:5px; border-radius:6px; border:none; outline:none; width:80%; font-weight:bold; }
-select { width:85%; }
-button { cursor:pointer; transition: all 0.2s; font-weight:bold; }
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
 
-.btn-create { background:#00c853; color:white; }
-.btn-create:hover { background:#009624; transform: scale(1.05); }
+.stat-card i {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
 
-.btn-power { background:#ff9800; color:black; margin:5px 0; }
-.btn-power:hover { background:#f57c00; transform: scale(1.05); }
+.stat-card .stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
 
-.btn-delete { background:#d50000; color:white; margin:5px 0; }
-.btn-delete:hover { background:#9b0000; transform: scale(1.05); }
+.stat-card .stat-label {
+  color: var(--gray);
+  font-size: 0.9rem;
+}
 
-.btn-restart { background:#2196f3; color:white; margin:5px 0; }
-.btn-restart:hover { background:#1976d2; transform: scale(1.05); }
+/* Tarjetas */
+.card {
+  background: rgba(26, 26, 46, 0.7);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
 
-.logout-btn { background:#d50000; width:50%; margin-top:10px; }
-.logout-btn:hover { background:#9b0000; }
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
 
-.server-card { background: rgba(255,255,255,0.1); margin:10px auto; padding:10px; border-radius:10px; text-align:left; transition: background 0.3s, transform 0.3s; display:flex; align-items:center; justify-content:space-between; }
-.server-card:hover { background: rgba(255,255,255,0.2); transform: scale(1.02); }
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-.server-info { flex-grow:1; padding-left:10px; }
-.block { width:40px; height:40px; border:2px solid #000; border-radius:5px; background-size:cover; margin-right:10px; transition: transform 0.3s; }
-.grass { background-image:url('https://i.ibb.co/FwM1pG3/grass.png'); }
-.stone { background-image:url('https://i.ibb.co/5RkFjNx/stone.png'); }
-.lava { background-image:url('https://i.ibb.co/DY2S8G3/lava.png'); }
+.card-header h2 {
+  font-size: 1.5rem;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
-.progress-bar { width:100%; background: rgba(255,255,255,0.3); border-radius:5px; height:15px; margin-top:5px; overflow:hidden; }
-.progress-fill { height:100%; background:#00ff00; width:0%; transition: width 0.5s; }
+.card-header .actions {
+  display: flex;
+  gap: 0.5rem;
+}
 
-#notification { position:fixed; top:20px; right:20px; background:#00ff00; color:black; padding:10px 15px; border-radius:8px; display:none; font-weight:bold; box-shadow:0px 4px 10px rgba(0,255,0,0.5); z-index:2; }
+/* Formularios */
+.form-group {
+  margin-bottom: 1.2rem;
+}
 
-#log { background: rgba(0,0,0,0.7); color:#00ff00; font-size:10px; padding:10px; height:150px; overflow-y:auto; margin:10px auto; max-width:550px; border-radius:10px; font-family: monospace; }
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--gray);
+}
 
-.particle { position:absolute; width:10px; height:10px; background:#00ff00; opacity:0.7; border-radius:50%; animation: float 1s ease-out forwards; }
-@keyframes float { to { transform: translateY(-50px) scale(0.1); opacity:0; } }
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: var(--light);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 204, 102, 0.3);
+}
+
+/* Botones */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: black;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #e68a00;
+  transform: translateY(-2px);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #ff2e43;
+  transform: translateY(-2px);
+}
+
+.btn-info {
+  background: var(--info);
+  color: white;
+}
+
+.btn-info:hover:not(:disabled) {
+  background: #0d6efd;
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--gray);
+  color: var(--light);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Lista de servidores */
+.server-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.server-card {
+  background: rgba(38, 40, 62, 0.7);
+  border-radius: 10px;
+  padding: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s;
+  position: relative;
+}
+
+.server-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 204, 102, 0.3);
+}
+
+.server-card.favorite {
+  border-color: var(--secondary);
+}
+
+.server-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.server-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.server-info {
+  flex: 1;
+}
+
+.server-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.server-status {
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.status-online {
+  color: var(--primary);
+}
+
+.status-offline {
+  color: var(--danger);
+}
+
+.server-details {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.server-detail {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.detail-label {
+  color: var(--gray);
+}
+
+.server-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0.75rem 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 4px;
+  transition: width 0.5s;
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--gray);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.favorite-btn.active {
+  color: var(--secondary);
+}
+
+.favorite-btn:hover {
+  transform: scale(1.2);
+}
+
+/* Log del servidor */
+.log-container {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  height: 200px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: var(--primary);
+}
+
+.log-entry {
+  margin-bottom: 0.3rem;
+  line-height: 1.4;
+}
+
+.log-time {
+  color: var(--gray);
+  margin-right: 0.5rem;
+}
+
+/* Notificaciones */
+.notification {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  background: var(--dark);
+  color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 1000;
+  transform: translateX(100%);
+  opacity: 0;
+  transition: all 0.3s;
+  max-width: 350px;
+}
+
+.notification.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.notification.success {
+  border-left: 4px solid var(--primary);
+}
+
+.notification.error {
+  border-left: 4px solid var(--danger);
+}
+
+.notification.warning {
+  border-left: 4px solid var(--secondary);
+}
+
+.notification.info {
+  border-left: 4px solid var(--info);
+}
+
+.notification-icon {
+  font-size: 1.5rem;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-title {
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.notification-message {
+  font-size: 0.9rem;
+  color: var(--gray);
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: var(--gray);
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  background: var(--dark);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transform: translateY(20px);
+  transition: all 0.3s;
+}
+
+.modal-overlay.active .modal {
+  transform: translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--gray);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  margin-bottom: 1.5rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--gray);
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-bottom: 3px solid transparent;
+}
+
+.tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.tab:hover:not(.active) {
+  color: var(--light);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+  animation: fadeIn 0.5s;
+}
+
+/* Dashboard avanzado */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.resource-monitor {
+  background: rgba(38, 40, 62, 0.7);
+  border-radius: 10px;
+  padding: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resource-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.resource-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.resource-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.resource-bar {
+  width: 100%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.resource-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.5s;
+}
+
+.cpu-fill {
+  background: var(--info);
+}
+
+.ram-fill {
+  background: var(--secondary);
+}
+
+.storage-fill {
+  background: var(--primary);
+}
+
+/* Panel de plugins */
+.plugin-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.plugin-card {
+  background: rgba(38, 40, 62, 0.7);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s;
+}
+
+.plugin-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.plugin-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.plugin-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  font-size: 1.2rem;
+  color: var(--primary);
+}
+
+.plugin-name {
+  font-weight: 700;
+}
+
+.plugin-description {
+  font-size: 0.85rem;
+  color: var(--gray);
+  margin-bottom: 0.75rem;
+}
+
+.plugin-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Tooltips */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  background: var(--dark);
+  color: var(--light);
+  text-align: center;
+  border-radius: 6px;
+  padding: 0.5rem;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.85rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Tutorial */
+.tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.tutorial-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tutorial-card {
+  background: var(--dark);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.tutorial-step {
+  display: none;
+}
+
+.tutorial-step.active {
+  display: block;
+  animation: fadeIn 0.5s;
+}
+
+.tutorial-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.tutorial-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.tutorial-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gray);
+  cursor: pointer;
+}
+
+.tutorial-indicator.active {
+  background: var(--primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header {
+    padding: 1rem;
+  }
+  
+  .logo h1 {
+    font-size: 1.2rem;
+  }
+  
+  nav {
+    position: fixed;
+    top: 70px;
+    left: -100%;
+    width: 80%;
+    height: calc(100vh - 70px);
+    background: var(--dark);
+    flex-direction: column;
+    padding: 2rem;
+    transition: left 0.3s;
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  nav.active {
+    left: 0;
+  }
+  
+  .menu-toggle {
+    display: block;
+  }
+  
+  .server-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .plugin-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* Utilidades */
+.text-center {
+  text-align: center;
+}
+
+.mb-3 {
+  margin-bottom: 1.5rem;
+}
+
+.mt-3 {
+  margin-top: 1.5rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Partículas */
+.particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--primary);
+  opacity: 0.7;
+  border-radius: 50%;
+  animation: float 1s ease-out forwards;
+  z-index: 1;
+}
+
+@keyframes float { 
+  to { 
+    transform: translateY(-50px) scale(0.1); 
+    opacity: 0; 
+  } 
+}
 </style>
 </head>
 <body>
 <div id="background"></div>
-<h1>MiniHost 🌍</h1>
-<p>Panel ultra-pro de Minecraft (demo interactiva)</p>
 
-<div class="card" id="auth-card">
-<h2>Iniciar Sesión</h2>
-<input type="text" id="username" placeholder="Usuario"><br>
-<input type="password" id="password" placeholder="Contraseña"><br>
-<button class="btn-create" onclick="login()">Entrar</button>
-<p>¿No tienes cuenta? <a href="#" onclick="register()">Regístrate</a></p>
+<header>
+  <div class="logo">
+    <i class="fas fa-server logo-icon"></i>
+    <h1>MiniHost 🌍</h1>
+  </div>
+  
+  <button class="menu-toggle" id="menuToggle">
+    <i class="fas fa-bars"></i>
+  </button>
+  
+  <nav id="mainNav">
+    <a href="#" class="tooltip" onclick="showTab('dashboard')">
+      <i class="fas fa-home"></i> Inicio
+      <span class="tooltip-text">Panel principal con estadísticas</span>
+    </a>
+    <a href="#" class="tooltip" onclick="showTab('servers')">
+      <i class="fas fa-server"></i> Servidores
+      <span class="tooltip-text">Gestiona tus servidores de Minecraft</span>
+    </a>
+    <a href="#" class="tooltip" onclick="showTab('plugins')">
+      <i class="fas fa-puzzle-piece"></i> Plugins
+      <span class="tooltip-text">Administra plugins y mods</span>
+    </a>
+    <a href="#" class="tooltip" onclick="showTab('backups')">
+      <i class="fas fa-database"></i> Backups
+      <span class="tooltip-text">Sistema de copias de seguridad</span>
+    </a>
+    <a href="#" class="tooltip" onclick="showTab('settings')">
+      <i class="fas fa-cog"></i> Configuración
+      <span class="tooltip-text">Ajustes de la aplicación</span>
+    </a>
+  </nav>
+</header>
+
+<main>
+  <!-- Panel de autenticación -->
+  <section id="auth-section">
+    <div class="card">
+      <div class="card-header">
+        <h2><i class="fas fa-user"></i> Iniciar Sesión</h2>
+      </div>
+      
+      <div class="card-body">
+        <div class="form-group">
+          <label for="username">Usuario</label>
+          <input type="text" id="username" class="form-control" placeholder="Ingresa tu usuario">
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" class="form-control" placeholder="Ingresa tu contraseña">
+        </div>
+        
+        <div class="form-group">
+          <button class="btn btn-primary" onclick="login()" style="width: 100%">
+            <i class="fas fa-sign-in-alt"></i> Entrar
+          </button>
+        </div>
+        
+        <div class="text-center">
+          <p>¿No tienes cuenta? <a href="#" onclick="showRegisterForm()" style="color: var(--primary); text-decoration: none;">Regístrate</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Panel principal -->
+  <section id="panel-section" class="hidden">
+    <!-- Tabs de navegación -->
+    <div class="tabs">
+      <button class="tab active" data-tab="dashboard">Dashboard</button>
+      <button class="tab" data-tab="servers">Servidores</button>
+      <button class="tab" data-tab="plugins">Plugins</button>
+      <button class="tab" data-tab="backups">Backups</button>
+      <button class="tab" data-tab="settings">Configuración</button>
+    </div>
+    
+    <!-- Contenido de tabs -->
+    <div id="tab-content">
+      <!-- Dashboard -->
+      <div class="tab-content active" id="dashboard-tab">
+        <!-- Banner de bienvenida -->
+        <div class="welcome-banner">
+          <h2>¡Bienvenido, <span id="user-name">Usuario</span>!</h2>
+          <p>Gestiona tus servidores de Minecraft de forma rápida y eficiente</p>
+          <div>
+            <button class="btn btn-outline" onclick="toggleTheme()">
+              <i class="fas fa-moon"></i> Cambiar tema
+            </button>
+            <button class="btn btn-outline" onclick="startTutorial()">
+              <i class="fas fa-graduation-cap"></i> Ver tutorial
+            </button>
+          </div>
+        </div>
+        
+        <!-- Estadísticas -->
+        <div class="stats-container">
+          <div class="stat-card">
+            <i class="fas fa-server"></i>
+            <div class="stat-value" id="total-servers">0</div>
+            <div class="stat-label">Servidores Totales</div>
+          </div>
+          
+          <div class="stat-card">
+            <i class="fas fa-play-circle"></i>
+            <div class="stat-value" id="active-servers">0</div>
+            <div class="stat-label">Servidores Activos</div>
+          </div>
+          
+          <div class="stat-card">
+            <i class="fas fa-users"></i>
+            <div class="stat-value" id="total-players">0</div>
+            <div class="stat-label">Jugadores Conectados</div>
+          </div>
+          
+          <div class="stat-card">
+            <i class="fas fa-star"></i>
+            <div class="stat-value" id="favorite-servers">0</div>
+            <div class="stat-label">Favoritos</div>
+          </div>
+        </div>
+        
+        <!-- Monitor de recursos -->
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-tachometer-alt"></i> Monitor de Recursos</h2>
+          </div>
+          
+          <div class="card-body">
+            <div class="dashboard-grid">
+              <div class="resource-monitor">
+                <div class="resource-header">
+                  <div class="resource-title">Uso de CPU</div>
+                  <div class="resource-value" id="cpu-usage">0%</div>
+                </div>
+                <div class="resource-bar">
+                  <div class="resource-fill cpu-fill" id="cpu-bar" style="width: 0%"></div>
+                </div>
+                <div class="resource-details">
+                  <small>Núcleos disponibles: 4</small>
+                </div>
+              </div>
+              
+              <div class="resource-monitor">
+                <div class="resource-header">
+                  <div class="resource-title">Uso de RAM</div>
+                  <div class="resource-value" id="ram-usage">0%</div>
+                </div>
+                <div class="resource-bar">
+                  <div class="resource-fill ram-fill" id="ram-bar" style="width: 0%"></div>
+                </div>
+                <div class="resource-details">
+                  <small>Total: 8 GB</small>
+                </div>
+              </div>
+              
+              <div class="resource-monitor">
+                <div class="resource-header">
+                  <div class="resource-title">Almacenamiento</div>
+                  <div class="resource-value" id="storage-usage">0%</div>
+                </div>
+                <div class="resource-bar">
+                  <div class="resource-fill storage-fill" id="storage-bar" style="width: 0%"></div>
+                </div>
+                <div class="resource-details">
+                  <small>Total: 100 GB</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Log del servidor -->
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-terminal"></i> Log del Sistema</h2>
+            <div class="actions">
+              <button class="btn btn-outline btn-sm" onclick="clearLog()">
+                <i class="fas fa-trash"></i> Limpiar
+              </button>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <div id="log" class="log-container">
+              <!-- Log entries will be added here -->
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Servidores -->
+      <div class="tab-content" id="servers-tab">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-plus"></i> Crear Nuevo Servidor</h2>
+          </div>
+          
+          <div class="card-body">
+            <div class="form-group">
+              <label for="serverName">Nombre del servidor</label>
+              <input type="text" id="serverName" class="form-control" placeholder="Ej: Mi Servidor Survival">
+            </div>
+            
+            <div class="form-group">
+              <label for="mcVersion">Versión de Minecraft</label>
+              <select id="mcVersion" class="form-control">
+                <option value="1.20.1">1.20.1 (Latest)</option>
+                <option value="1.19.4">1.19.4</option>
+                <option value="1.18.2">1.18.2</option>
+                <option value="1.17.1">1.17.1</option>
+                <option value="1.16.5">1.16.5</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="gameMode">Modo de Juego</label>
+              <select id="gameMode" class="form-control">
+                <option value="Survival">Supervivencia</option>
+                <option value="Creative">Creativo</option>
+                <option value="Adventure">Aventura</option>
+                <option value="Hardcore">Hardcore</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="slots">Límite de Jugadores</label>
+              <input type="number" id="slots" class="form-control" min="1" max="50" value="10">
+            </div>
+            
+            <button class="btn btn-primary" onclick="createServer()" style="width: 100%">
+              <i class="fas fa-rocket"></i> Crear Servidor
+            </button>
+          </div>
+        </div>
+        
+        <!-- Filtros -->
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-filter"></i> Filtros</h2>
+          </div>
+          
+          <div class="card-body">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+              <button class="btn btn-outline" onclick="filterServers('all')">
+                <i class="fas fa-list"></i> Todos
+              </button>
+              
+              <button class="btn btn-outline" onclick="filterServers('online')">
+                <i class="fas fa-play-circle"></i> En línea
+              </button>
+              
+              <button class="btn btn-outline" onclick="filterServers('offline')">
+                <i class="fas fa-stop-circle"></i> Apagados
+              </button>
+              
+              <button class="btn btn-outline" onclick="filterServers('favorite')">
+                <i class="fas fa-star"></i> Favoritos
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Lista de servidores -->
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-server"></i> Tus Servidores</h2>
+            <div class="actions">
+              <button class="btn btn-outline btn-sm" onclick="refreshServers()">
+                <i class="fas fa-sync-alt"></i> Actualizar
+              </button>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <div id="serverList" class="server-list">
+              <!-- Los servidores se cargarán aquí dinámicamente -->
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Plugins -->
+      <div class="tab-content" id="plugins-tab">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-puzzle-piece"></i> Gestor de Plugins</h2>
+          </div>
+          
+          <div class="card-body">
+            <div class="form-group">
+              <label for="pluginSearch">Buscar plugins</label>
+              <input type="text" id="pluginSearch" class="form-control" placeholder="Escribe para buscar..." onkeyup="filterPlugins()">
+            </div>
+            
+            <div class="plugin-list" id="pluginList">
+              <div class="plugin-card">
+                <div class="plugin-header">
+                  <div class="plugin-icon">
+                    <i class="fas fa-home"></i>
+                  </div>
+                  <div class="plugin-name">WorldEdit</div>
+                </div>
+                <div class="plugin-description">
+                  Herramienta de edición de mapas para crear estructuras rápidamente.
+                </div>
+                <div class="plugin-actions">
+                  <span class="plugin-version">v7.2.10</span>
+                  <button class="btn btn-sm btn-primary">Instalar</button>
+                </div>
+              </div>
+              
+              <div class="plugin-card">
+                <div class="plugin-header">
+                  <div class="plugin-icon">
+                    <i class="fas fa-shield-alt"></i>
+                  </div>
+                  <div class="plugin-name">WorldGuard</div>
+                </div>
+                <div class="plugin-description">
+                  Protege áreas de tu mundo contra modificaciones no deseadas.
+                </div>
+                <div class="plugin-actions">
+                  <span class="plugin-version">v7.0.7</span>
+                  <button class="btn btn-sm btn-primary">Instalar</button>
+                </div>
+              </div>
+              
+              <div class="plugin-card">
+                <div class="plugin-header">
+                  <div class="plugin-icon">
+                    <i class="fas fa-economy"></i>
+                  </div>
+                  <div class="plugin-name">Vault</div>
+                </div>
+                <div class="plugin-description">
+                  Sistema de economía para servidores con múltiples plugins de economía.
+                </div>
+                <div class="plugin-actions">
+                  <span class="plugin-version">v1.7.3</span>
+                  <button class="btn btn-sm btn-primary">Instalar</button>
+                </div>
+              </div>
+              
+              <div class="plugin-card">
+                <div class="plugin-header">
+                  <div class="plugin-icon">
+                    <i class="fas fa-skull"></i>
+                  </div>
+                  <div class="plugin-name">EssentialsX</div>
+                </div>
+                <div class="plugin-description">
+                  Colección de utilidades esenciales para servidores de Minecraft.
+                </div>
+                <div class="plugin-actions">
+                  <span class="plugin-version">v2.19.7</span>
+                  <button class="btn btn-sm btn-primary">Instalar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Backups -->
+      <div class="tab-content" id="backups-tab">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-database"></i> Sistema de Backups</h2>
+          </div>
+          
+          <div class="card-body">
+            <div class="form-group">
+              <label>Configuración de backups automáticos</label>
+              <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <select class="form-control" style="flex: 1;">
+                  <option value="daily">Diariamente</option>
+                  <option value="weekly">Semanalmente</option>
+                  <option value="monthly">Mensualmente</option>
+                </select>
+                <button class="btn btn-primary">Guardar</button>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Crear backup manual</label>
+              <div>
+                <button class="btn btn-info">
+                  <i class="fas fa-plus"></i> Crear Backup Ahora
+                </button>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Backups existentes</label>
+              <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
+                <p class="text-center" style="color: var(--gray);">
+                  <i class="fas fa-info-circle"></i> No hay backups creados todavía
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Configuración -->
+      <div class="tab-content" id="settings-tab">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-cog"></i> Configuración de la Cuenta</h2>
+          </div>
+          
+          <div class="card-body">
+            <div class="form-group">
+              <label for="userEmail">Correo electrónico</label>
+              <input type="email" id="userEmail" class="form-control" placeholder="tu@email.com">
+            </div>
+            
+            <div class="form-group">
+              <label for="userLanguage">Idioma</label>
+              <select id="userLanguage" class="form-control">
+                <option value="es">Español</option>
+                <option value="en">English</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Notificaciones</label>
+              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="checkbox" checked> Notificaciones por correo
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="checkbox" checked> Notificaciones en la app
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="checkbox"> Sonidos de notificación
+                </label>
+              </div>
+            </div>
+            
+            <button class="btn btn-primary">Guardar cambios</button>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-shield-alt"></i> Seguridad</h2>
+          </div>
+          
+          <div class="card-body">
+            <div class="form-group">
+              <label for="currentPassword">Contraseña actual</label>
+              <input type="password" id="currentPassword" class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="newPassword">Nueva contraseña</label>
+              <input type="password" id="newPassword" class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="confirmPassword">Confirmar nueva contraseña</label>
+              <input type="password" id="confirmPassword" class="form-control">
+            </div>
+            
+            <button class="btn btn-primary">Cambiar contraseña</button>
+          </div>
+        </div>
+        
+        <div class="text-center mt-3">
+          <button class="btn btn-danger" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Modal de confirmación -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modalTitle">Confirmar acción</h3>
+      <button class="modal-close" onclick="closeModal('confirmModal')">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <p id="modalMessage">¿Estás seguro de que quieres realizar esta acción?</p>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('confirmModal')">Cancelar</button>
+      <button class="btn" id="modalConfirmBtn">Confirmar</button>
+    </div>
+  </div>
 </div>
 
-<div class="card" id="panel" style="display:none;">
-<h2>Bienvenido, <span id="user"></span> 👋</h2>
-
-<h3>Crear nuevo servidor</h3>
-<input type="text" id="serverName" placeholder="Nombre del servidor"><br>
-<select id="mcVersion">
-<option value="1.20.1">1.20.1</option>
-<option value="1.19.4">1.19.4</option>
-<option value="1.18.2">1.18.2</option>
-</select><br>
-<select id="gameMode">
-<option value="Survival">Survival</option>
-<option value="Creative">Creative</option>
-<option value="Adventure">Adventure</option>
-</select><br>
-<input type="number" id="slots" placeholder="Cantidad de jugadores" min="1" max="50"><br>
-<button class="btn-create" onclick="createServer()">🚀 Crear servidor</button>
-
-<h3 style="margin-top:20px;">Tus servidores</h3>
-<div id="serverList"></div>
-
-<h3>Log del servidor</h3>
-<div id="log"></div>
-
-<button class="logout-btn" onclick="logout()">Cerrar sesión</button>
-<button class="btn-create" onclick="toggleTheme()">🌙 Cambiar tema</button>
+<!-- Tutorial -->
+<div class="tutorial-overlay" id="tutorialOverlay">
+  <div class="tutorial-card">
+    <div class="tutorial-step active" id="tutorial-step-1">
+      <h3>Bienvenido a MiniHost</h3>
+      <p>Te guiaremos a través de las funciones principales de la plataforma para que puedas gestionar tus servidores de Minecraft de manera eficiente.</p>
+    </div>
+    
+    <div class="tutorial-step" id="tutorial-step-2">
+      <h3>Crear servidores</h3>
+      <p>Desde la pestaña "Servidores" puedes crear nuevos servidores personalizando versión, modo de juego y límite de jugadores.</p>
+    </div>
+    
+    <div class="tutorial-step" id="tutorial-step-3">
+      <h3>Gestión de plugins</h3>
+      <p>En la pestaña "Plugins" encontrarás una variedad de complementos para mejorar la experiencia de tu servidor.</p>
+    </div>
+    
+    <div class="tutorial-step" id="tutorial-step-4">
+      <h3>Backups y seguridad</h3>
+      <p>Configura backups automáticos y gestiona la seguridad de tu cuenta desde las pestañas correspondientes.</p>
+    </div>
+    
+    <div class="tutorial-indicators">
+      <div class="tutorial-indicator active" data-step="1"></div>
+      <div class="tutorial-indicator" data-step="2"></div>
+      <div class="tutorial-indicator" data-step="3"></div>
+      <div class="tutorial-indicator" data-step="4"></div>
+    </div>
+    
+    <div class="tutorial-navigation">
+      <button class="btn btn-outline" id="tutorial-prev">Anterior</button>
+      <button class="btn btn-primary" id="tutorial-next">Siguiente</button>
+      <button class="btn btn-primary hidden" id="tutorial-finish">Finalizar</button>
+    </div>
+  </div>
 </div>
 
-<div id="notification"></div>
+<!-- Notificaciones -->
+<div class="notification" id="notification">
+  <i class="fas fa-bell notification-icon"></i>
+  <div class="notification-content">
+    <div class="notification-title">Notificación</div>
+    <div class="notification-message">Mensaje de notificación</div>
+  </div>
+  <button class="notification-close" onclick="closeNotification()">
+    <i class="fas fa-times"></i>
+  </button>
+</div>
 
+<!-- Audio para efectos de sonido -->
 <audio id="soundOn" src="https://freesound.org/data/previews/341/341695_62486-lq.mp3"></audio>
 <audio id="soundOff" src="https://freesound.org/data/previews/271/271950_5121236-lq.mp3"></audio>
 <audio id="soundRestart" src="https://freesound.org/data/previews/41/41155_5121236-lq.mp3"></audio>
 
 <script>
-// Notificaciones
-function notify(msg,color="#00ff00"){
-  let n=document.getElementById("notification");
-  n.style.background=color; n.innerText=msg;
-  n.style.display="block";
-  setTimeout(()=>{ n.style.display="none"; },2500);
+// Variables globales
+let currentUser = null;
+let servers = [];
+let currentFilter = 'all';
+let currentTutorialStep = 1;
+
+// Inicialización
+window.addEventListener('DOMContentLoaded', () => {
+  // Comprobar si hay un usuario logueado
+  const loggedUser = localStorage.getItem('loggedUser');
+  if (loggedUser) {
+    currentUser = loggedUser;
+    showPanel();
+    loadUserData();
+    startResourceMonitor();
+  }
+  
+  // Configurar el menú responsive
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('mainNav').classList.toggle('active');
+  });
+  
+  // Configurar tabs
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabId = tab.getAttribute('data-tab');
+      showTab(tabId);
+    });
+  });
+  
+  // Configurar tutorial
+  document.getElementById('tutorial-next').addEventListener('click', nextTutorialStep);
+  document.getElementById('tutorial-prev').addEventListener('click', prevTutorialStep);
+  document.getElementById('tutorial-finish').addEventListener('click', finishTutorial);
+  
+  const indicators = document.querySelectorAll('.tutorial-indicator');
+  indicators.forEach(indicator => {
+    indicator.addEventListener('click', () => {
+      const step = parseInt(indicator.getAttribute('data-step'));
+      goToTutorialStep(step);
+    });
+  });
+});
+
+// Funciones de UI
+function showNotification(message, type = 'info', title = 'MiniHost') {
+  const notification = document.getElementById('notification');
+  const icon = notification.querySelector('.notification-icon');
+  const notifTitle = notification.querySelector('.notification-title');
+  const notifMessage = notification.querySelector('.notification-message');
+  
+  // Configurar según el tipo
+  notification.className = 'notification';
+  notification.classList.add(type);
+  
+  // Icono según el tipo
+  switch(type) {
+    case 'success':
+      icon.className = 'fas fa-check-circle notification-icon';
+      break;
+    case 'error':
+      icon.className = 'fas fa-exclamation-circle notification-icon';
+      break;
+    case 'warning':
+      icon.className = 'fas fa-exclamation-triangle notification-icon';
+      break;
+    default:
+      icon.className = 'fas fa-info-circle notification-icon';
+  }
+  
+  // Establecer título y mensaje
+  notifTitle.textContent = title;
+  notifMessage.textContent = message;
+  
+  // Mostrar notificación
+  notification.classList.add('show');
+  
+  // Ocultar automáticamente después de 3 segundos
+  setTimeout(() => {
+    closeNotification();
+  }, 3000);
 }
 
-// Log
-function addLog(msg){
-  let log=document.getElementById("log");
-  log.innerHTML+=msg+"<br>";
-  log.scrollTop=log.scrollHeight;
+function closeNotification() {
+  document.getElementById('notification').classList.remove('show');
 }
 
-// Partículas
-function createParticle(x,y,color="#00ff00"){
-  let p=document.createElement("div");
-  p.className="particle"; p.style.left=x+"px"; p.style.top=y+"px"; p.style.background=color;
-  document.body.appendChild(p);
-  setTimeout(()=>p.remove(),1000);
+function showModal(modalId) {
+  document.getElementById(modalId).classList.add('active');
 }
 
-// Login/Register
-function register(){
-  let user=document.getElementById("username").value;
-  let pass=document.getElementById("password").value;
-  if(user && pass){
-    if(localStorage.getItem("user_"+user)) return notify("Usuario ya existe","#ff9800");
-    localStorage.setItem("user_"+user,pass);
-    localStorage.setItem("servers_"+user,JSON.stringify([]));
-    notify("Usuario registrado con éxito");
-  }else notify("Completa usuario y contraseña","#ff9800");
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('active');
 }
 
-function login(){
-  let user=document.getElementById("username").value;
-  let pass=document.getElementById("password").value;
-  let savedPass=localStorage.getItem("user_"+user);
-  if(savedPass && savedPass===pass){
-    localStorage.setItem("loggedUser",user);
-    showPanel(user);
-    notify("Sesión iniciada ✔️");
-  } else notify("Usuario o contraseña incorrectos","#ff9800");
+function setupModal(title, message, confirmText, confirmCallback, confirmBtnType = 'primary') {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalMessage').textContent = message;
+  
+  const confirmBtn = document.getElementById('modalConfirmBtn');
+  confirmBtn.textContent = confirmText;
+  confirmBtn.className = 'btn';
+  confirmBtn.classList.add(`btn-${confirmBtnType}`);
+  
+  // Eliminar event listeners anteriores y añadir el nuevo
+  confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+  document.getElementById('modalConfirmBtn').addEventListener('click', confirmCallback);
+  
+  showModal('confirmModal');
 }
 
-function showPanel(user){
-  document.getElementById("auth-card").style.display="none";
-  document.getElementById("panel").style.display="block";
-  document.getElementById("user").innerText=user;
+function showTab(tabId) {
+  // Ocultar todos los tabs
+  const tabContents = document.querySelectorAll('.tab-content');
+  tabContents.forEach(content => content.classList.remove('active'));
+  
+  // Desactivar todos los botones de tab
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(tab => tab.classList.remove('active'));
+  
+  // Activar el tab seleccionado
+  document.getElementById(`${tabId}-tab`).classList.add('active');
+  
+  // Activar el botón correspondiente
+  const activeTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+  if (activeTab) activeTab.classList.add('active');
+}
+
+// Funciones de autenticación
+function showRegisterForm() {
+  showNotification('Función de registro no implementada en esta demo', 'warning', 'Información');
+}
+
+function login() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  
+  if (!username || !password) {
+    showNotification('Por favor, completa todos los campos', 'error', 'Error de login');
+    return;
+  }
+  
+  const savedPassword = localStorage.getItem(`user_${username}`);
+  
+  if (savedPassword && savedPassword === password) {
+    currentUser = username;
+    localStorage.setItem('loggedUser', username);
+    showPanel();
+    loadUserData();
+    startResourceMonitor();
+    showNotification(`Bienvenido de nuevo, ${username}!`, 'success', 'Sesión iniciada');
+  } else {
+    showNotification('Usuario o contraseña incorrectos', 'error', 'Error de login');
+  }
+}
+
+function showPanel() {
+  document.getElementById('auth-section').classList.add('hidden');
+  document.getElementById('panel-section').classList.remove('hidden');
+  document.getElementById('user-name').textContent = currentUser;
+}
+
+function logout() {
+  setupModal(
+    'Cerrar sesión', 
+    '¿Estás seguro de que quieres cerrar la sesión?',
+    'Cerrar sesión',
+    () => {
+      localStorage.removeItem('loggedUser');
+      currentUser = null;
+      document.getElementById('panel-section').classList.add('hidden');
+      document.getElementById('auth-section').classList.remove('hidden');
+      closeModal('confirmModal');
+      showNotification('Sesión cerrada correctamente', 'info', 'Hasta pronto');
+    },
+    'danger'
+  );
+}
+
+// Funciones de servidores
+function loadUserData() {
+  if (!currentUser) return;
+  
+  // Cargar servidores del usuario
+  const userServers = localStorage.getItem(`servers_${currentUser}`);
+  servers = userServers ? JSON.parse(userServers) : [];
+  
+  updateStats();
   renderServers();
 }
 
-// Crear servidor
-function createServer(){
-  let user=localStorage.getItem("loggedUser");
-  if(!user) return;
-  let name=document.getElementById("serverName").value||"MiServidor";
-  let version=document.getElementById("mcVersion").value;
-  let mode=document.getElementById("gameMode").value;
-  let slots=document.getElementById("slots").value||10;
-  let players=Math.floor(Math.random()*slots);
-  let icons=["grass","stone","lava"];
-  let block=icons[Math.floor(Math.random()*icons.length)];
-  let server={name,version,mode,slots,status:"🟢 Online",players,block,favorite:false};
-  let servers=JSON.parse(localStorage.getItem("servers_"+user))||[];
+function updateStats() {
+  const totalServers = servers.length;
+  const activeServers = servers.filter(s => s.status === '🟢 Online').length;
+  const totalPlayers = servers.reduce((sum, server) => sum + server.players, 0);
+  const favoriteServers = servers.filter(s => s.favorite).length;
+  
+  document.getElementById('total-servers').textContent = totalServers;
+  document.getElementById('active-servers').textContent = activeServers;
+  document.getElementById('total-players').textContent = totalPlayers;
+  document.getElementById('favorite-servers').textContent = favoriteServers;
+}
+
+function createServer() {
+  if (!currentUser) return;
+  
+  const name = document.getElementById('serverName').value || 'MiServidor';
+  const version = document.getElementById('mcVersion').value;
+  const mode = document.getElementById('gameMode').value;
+  const slots = document.getElementById('slots').value || 10;
+  
+  const icons = ['grass', 'stone', 'lava'];
+  const block = icons[Math.floor(Math.random() * icons.length)];
+  
+  const server = {
+    id: Date.now(),
+    name,
+    version,
+    mode,
+    slots: parseInt(slots),
+    status: '🟢 Online',
+    players: Math.floor(Math.random() * slots),
+    block,
+    favorite: false,
+    createdAt: new Date().toISOString()
+  };
+  
   servers.push(server);
-  localStorage.setItem("servers_"+user,JSON.stringify(servers));
+  localStorage.setItem(`servers_${currentUser}`, JSON.stringify(servers));
+  
+  updateStats();
   renderServers();
-  notify(`Servidor "${name}" creado!`);
-  addLog(`Servidor "${name}" se ha creado.`);
-  createParticle(Math.random()*window.innerWidth,Math.random()*window.innerHeight,"#00ff00");
+  addLog(`Servidor "${name}" creado exitosamente.`);
+  showNotification(`Servidor "${name}" creado!`, 'success');
+  createParticle();
+  
+  // Limpiar formulario
+  document.getElementById('serverName').value = '';
 }
 
-// Render servidores
-function renderServers(){
-  let user=localStorage.getItem("loggedUser");
-  let listDiv=document.getElementById("serverList");
-  listDiv.innerHTML="";
-  let servers=JSON.parse(localStorage.getItem("servers_"+user))||[];
-  servers.forEach((s,i)=>{
-    let div=document.createElement("div");
-    div.className="server-card";
-    div.innerHTML=`
-      <div class="block ${s.block}"></div>
-      <div class="server-info">
-        <b>${s.name}</b> ${s.favorite?'★':''}<br>
-        Versión: ${s.version} | Modo: ${s.mode}<br>
-        Slots: ${s.slots} | Jugadores: ${s.players} | Estado: ${s.status}
-        <div class="progress-bar"><div class="progress-fill" style="width:${(s.players/s.slots*100)}%"></div></div>
-      </div>
-      <div>
-        <button class="btn-power" onclick="toggleServer(${i})">Encender/Apagar</button><br>
-        <button class="btn-restart" onclick="restartServer(${i})">Reiniciar</button><br>
-        <button class="btn-delete" onclick="deleteServer(${i})">🗑 Eliminar</button><br>
-        <button class="btn-create" onclick="toggleFavorite(${i})">⭐ Favorito</button>
+function renderServers() {
+  const listDiv = document.getElementById('serverList');
+  listDiv.innerHTML = '';
+  
+  if (servers.length === 0) {
+    listDiv.innerHTML = `
+      <div class="text-center" style="grid-column: 1 / -1; padding: 2rem; color: var(--gray);">
+        <i class="fas fa-server" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+        <h3>No tienes servidores</h3>
+        <p>Crea tu primer servidor para comenzar</p>
       </div>
     `;
+    return;
+  }
+  
+  // Filtrar servidores según el filtro actual
+  let filteredServers = servers;
+  
+  if (currentFilter === 'online') {
+    filteredServers = servers.filter(s => s.status === '🟢 Online');
+  } else if (currentFilter === 'offline') {
+    filteredServers = servers.filter(s => s.status === '🔴 Offline');
+  } else if (currentFilter === 'favorite') {
+    filteredServers = servers.filter(s => s.favorite);
+  }
+  
+  filteredServers.forEach(server => {
+    const usagePercent = (server.players / server.slots) * 100;
+    let usageColor = 'var(--primary)';
+    
+    if (usagePercent > 85) {
+      usageColor = 'var(--danger)';
+    } else if (usagePercent > 60) {
+      usageColor = 'var(--secondary)';
+    }
+    
+    const div = document.createElement('div');
+    div.className = `server-card ${server.favorite ? 'favorite' : ''}`;
+    div.innerHTML = `
+      <button class="favorite-btn ${server.favorite ? 'active' : ''}" onclick="toggleFavorite(${server.id})">
+        <i class="fas fa-star"></i>
+      </button>
+      
+      <div class="server-header">
+        <div class="server-icon" style="background: rgba(0,0,0,0.3);">
+          <i class="fas fa-server"></i>
+        </div>
+        <div class="server-info">
+          <div class="server-name">
+            ${server.name}
+            ${server.favorite ? '<i class="fas fa-star" style="color: var(--secondary);"></i>' : ''}
+          </div>
+          <div class="server-status ${server.status === '🟢 Online' ? 'status-online' : 'status-offline'}">
+            <i class="fas fa-circle"></i> ${server.status}
+          </div>
+        </div>
+      </div>
+      
+      <div class="server-details">
+        <div class="server-detail">
+          <span class="detail-label">Versión:</span>
+          <span>${server.version}</span>
+        </div>
+        <div class="server-detail">
+          <span class="detail-label">Modo:</span>
+          <span>${server.mode}</span>
+        </div>
+        <div class="server-detail">
+          <span class="detail-label">Jugadores:</span>
+          <span>${server.players} / ${server.slots}</span>
+        </div>
+      </div>
+      
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${usagePercent}%; background: ${usageColor};"></div>
+      </div>
+      
+      <div class="server-actions">
+        <button class="btn btn-sm ${server.status === '🟢 Online' ? 'btn-danger' : 'btn-primary'}" onclick="toggleServer(${server.id})">
+          <i class="fas ${server.status === '🟢 Online' ? 'fa-stop' : 'fa-play'}"></i> 
+          ${server.status === '🟢 Online' ? 'Apagar' : 'Encender'}
+        </button>
+        
+        <button class="btn btn-sm btn-info" onclick="restartServer(${server.id})">
+          <i class="fas fa-redo"></i> Reiniciar
+        </button>
+        
+        <button class="btn btn-sm btn-secondary" onclick="showServerInfo(${server.id})">
+          <i class="fas fa-info"></i> Info
+        </button>
+        
+        <button class="btn btn-sm btn-danger" onclick="confirmDeleteServer(${server.id})">
+          <i class="fas fa-trash"></i> Eliminar
+        </button>
+      </div>
+    `;
+    
     listDiv.appendChild(div);
   });
 }
 
-// Funciones servidor
-function playSound(id){ document.getElementById(id).play(); }
-
-function toggleServer(index){
-  let user=localStorage.getItem("loggedUser");
-  let servers=JSON.parse(localStorage.getItem("servers_"+user))||[];
-  let s=servers[index];
-  if(s.status==="🟢 Online"){ s.status="🔴 Offline"; s.players=0; notify(`${s.name} apagado`,"#ff9800"); addLog(`${s.name} se apagó.`); playSound("soundOff"); }
-  else{ s.status="🟢 Online"; s.players=Math.floor(Math.random()*s.slots); notify(`${s.name} encendido`); addLog(`${s.name} se encendió.`); playSound("soundOn"); }
-  servers[index]=s; localStorage.setItem("servers_"+user,JSON.stringify(servers)); renderServers();
+function filterServers(filter) {
+  currentFilter = filter;
+  renderServers();
+  showNotification(`Filtro aplicado: ${filter}`, 'info');
 }
 
-function restartServer(index){
-  let user=localStorage.getItem("loggedUser");
-  let servers=JSON.parse(localStorage.getItem("servers_"+user))||[];
-  let s=servers[index]; s.status="🔴 Offline"; s.players=0;
-  renderServers(); addLog(`${s.name} se está reiniciando...`); notify(`${s.name} reiniciando...`,"#2196f3"); playSound("soundRestart");
-  setTimeout(()=>{
-    s.status="🟢 Online"; s.players=Math.floor(Math.random()*s.slots);
-    servers[index]=s; localStorage.setItem("servers_"+user,JSON.stringify(servers));
-    renderServers(); addLog(`${s.name} se ha reiniciado.`); notify(`${s.name} reiniciado ✔️`); createParticle(Math.random()*window.innerWidth,Math.random()*window.innerHeight,"#00ffff");
-  },2000);
+function refreshServers() {
+  // Simular actualización de datos
+  servers.forEach(server => {
+    if (server.status === '🟢 Online') {
+      server.players = Math.min(server.slots, Math.max(0, server.players + Math.floor(Math.random() * 3) - 1));
+    }
+  });
+  
+  localStorage.setItem(`servers_${currentUser}`, JSON.stringify(servers));
+  updateStats();
+  renderServers();
+  addLog('Servidores actualizados.');
+  showNotification('Servidores actualizados', 'success');
 }
 
-function deleteServer(index){
-  let user=localStorage.getItem("loggedUser");
-  let servers=JSON.parse(localStorage.getItem("servers_"+user))||[];
-  notify(`${servers[index].name} eliminado`,"#ff9800"); addLog(`${servers[index].name} se eliminó.`);
-  createParticle(Math.random()*window.innerWidth,Math.random()*window.innerHeight,"#ff0000");
-  servers.splice(index,1); localStorage.setItem("servers_"+user,JSON.stringify(servers)); renderServers();
-}
-
-function toggleFavorite(index){
-  let user=localStorage.getItem("loggedUser");
-  let servers=JSON.parse(localStorage.getItem("servers_"+user))||[];
-  servers[index].favorite=!servers[index].favorite;
-  localStorage.setItem("servers_"+user,JSON.stringify(servers));
+function toggleServer(id) {
+  const server = servers.find(s => s.id === id);
+  if (!server) return;
+  
+  if (server.status === '🟢 Online') {
+    server.status = '🔴 Offline';
+    server.players = 0;
+    addLog(`Servidor "${server.name}" apagado.`);
+    showNotification(`${server.name} apagado`, 'info');
+    playSound('soundOff');
+  } else {
+    server.status = '🟢 Online';
+    server.players = Math.floor(Math.random() * server.slots);
+    addLog(`Servidor "${server.name}" encendido.`);
+    showNotification(`${server.name} encendido`, 'success');
+    playSound('soundOn');
+  }
+  
+  localStorage.setItem(`servers_${currentUser}`, JSON.stringify(servers));
+  updateStats();
   renderServers();
 }
 
-function logout(){
-  localStorage.removeItem("loggedUser");
-  document.getElementById("panel").style.display="none";
-  document.getElementById("auth-card").style.display="block";
-  notify("Sesión cerrada","#ff9800");
+function restartServer(id) {
+  const server = servers.find(s => s.id === id);
+  if (!server) return;
+  
+  addLog(`Reiniciando servidor "${server.name}"...`);
+  showNotification(`Reiniciando ${server.name}...`, 'warning');
+  playSound('soundRestart');
+  
+  // Simular tiempo de reinicio
+  setTimeout(() => {
+    server.status = '🟢 Online';
+    server.players = Math.floor(Math.random() * server.slots);
+    localStorage.setItem(`servers_${currentUser}`, JSON.stringify(servers));
+    updateStats();
+    renderServers();
+    addLog(`Servidor "${server.name}" reiniciado correctamente.`);
+    showNotification(`${server.name} reiniciado`, 'success');
+    createParticle();
+  }, 2000);
 }
 
-function toggleTheme(){ document.body.classList.toggle("dark"); notify("Tema cambiado","#00ffff"); }
+function confirmDeleteServer(id) {
+  const server = servers.find(s => s.id === id);
+  if (!server) return;
+  
+  setupModal(
+    'Eliminar servidor',
+    `¿Estás seguro de que quieres eliminar el servidor "${server.name}"? Esta acción no se puede deshacer.`,
+    'Eliminar',
+    () => {
+      deleteServer(id);
+      closeModal('confirmModal');
+    },
+    'danger'
+  );
+}
 
-window.onload=()=>{ let loggedUser=localStorage.getItem("loggedUser"); if(loggedUser) showPanel(loggedUser); }
+function deleteServer(id) {
+  const serverIndex = servers.findIndex(s => s.id === id);
+  if (serverIndex === -1) return;
+  
+  const serverName = servers[serverIndex].name;
+  servers.splice(serverIndex, 1);
+  localStorage.setItem(`servers_${currentUser}`, JSON.stringify(servers));
+  
+  updateStats();
+  renderServers();
+  addLog(`Servidor "${serverName}" eliminado.`);
+  showNotification(`${serverName} eliminado`, 'info');
+  createParticle();
+}
+
+function toggleFavorite(id) {
+  const server = servers.find(s => s.id === id);
+  if (!server) return;
+  
+  server.favorite = !server.favorite;
+  localStorage.setItem(`servers_${currentUser}`, JSON.stringify(servers));
+  renderServers();
+  
+  if (server.favorite) {
+    showNotification(`"${server.name}" añadido a favoritos`, 'success');
+  } else {
+    showNotification(`"${server.name}" eliminado de favoritos`, 'info');
+  }
+}
+
+function showServerInfo(id) {
+  const server = servers.find(s => s.id === id);
+  if (!server) return;
+  
+  const created = new Date(server.createdAt).toLocaleDateString();
+  
+  setupModal(
+    `Información de ${server.name}`,
+    `Versión: ${server.version}\nModo: ${server.mode}\nSlots: ${server.slots}\nEstado: ${server.status}\nJugadores: ${server.players}\nCreado: ${created}`,
+    'Cerrar',
+    () => closeModal('confirmModal'),
+    'primary'
+  );
+}
+
+// Monitor de recursos
+function startResourceMonitor() {
+  setInterval(() => {
+    // Simular valores de recursos
+    const cpuUsage = Math.floor(Math.random() * 100);
+    const ramUsage = Math.floor(30 + Math.random() * 70);
+    const storageUsage = Math.floor(10 + Math.random() * 60);
+    
+    document.getElementById('cpu-usage').textContent = `${cpuUsage}%`;
+    document.getElementById('ram-usage').textContent = `${ramUsage}%`;
+    document.getElementById('storage-usage').textContent = `${storageUsage}%`;
+    
+    document.getElementById('cpu-bar').style.width = `${cpuUsage}%`;
+    document.getElementById('ram-bar').style.width = `${ramUsage}%`;
+    document.getElementById('storage-bar').style.width = `${storageUsage}%`;
+  }, 2000);
+}
+
+// Gestión de plugins
+function filterPlugins() {
+  const searchText = document.getElementById('pluginSearch').value.toLowerCase();
+  const plugins = document.querySelectorAll('.plugin-card');
+  
+  plugins.forEach(plugin => {
+    const pluginName = plugin.querySelector('.plugin-name').textContent.toLowerCase();
+    if (pluginName.includes(searchText)) {
+      plugin.style.display = 'block';
+    } else {
+      plugin.style.display = 'none';
+    }
+  });
+}
+
+// Tutorial
+function startTutorial() {
+  currentTutorialStep = 1;
+  goToTutorialStep(1);
+  document.getElementById('tutorialOverlay').classList.add('active');
+}
+
+function nextTutorialStep() {
+  if (currentTutorialStep < 4) {
+    goToTutorialStep(currentTutorialStep + 1);
+  }
+}
+
+function prevTutorialStep() {
+  if (currentTutorialStep > 1) {
+    goToTutorialStep(currentTutorialStep - 1);
+  }
+}
+
+function goToTutorialStep(step) {
+  // Ocultar todos los pasos
+  document.querySelectorAll('.tutorial-step').forEach(el => {
+    el.classList.remove('active');
+  });
+  
+  // Desactivar todos los indicadores
+  document.querySelectorAll('.tutorial-indicator').forEach(el => {
+    el.classList.remove('active');
+  });
+  
+  // Mostrar el paso actual
+  document.getElementById(`tutorial-step-${step}`).classList.add('active');
+  
+  // Activar el indicador actual
+  document.querySelector(`.tutorial-indicator[data-step="${step}"]`).classList.add('active');
+  
+  // Actualizar botones de navegación
+  document.getElementById('tutorial-prev').style.display = step === 1 ? 'none' : 'block';
+  document.getElementById('tutorial-next').style.display = step === 4 ? 'none' : 'block';
+  document.getElementById('tutorial-finish').style.display = step === 4 ? 'block' : 'none';
+  
+  currentTutorialStep = step;
+}
+
+function finishTutorial() {
+  document.getElementById('tutorialOverlay').classList.remove('active');
+  showNotification('Tutorial completado', 'success');
+}
+
+// Utilidades
+function addLog(message) {
+  const log = document.getElementById('log');
+  const time = new Date().toLocaleTimeString();
+  log.innerHTML += `<div class="log-entry"><span class="log-time">[${time}]</span> ${message}</div>`;
+  log.scrollTop = log.scrollHeight;
+}
+
+function clearLog() {
+  document.getElementById('log').innerHTML = '';
+  addLog('Log limpiado.');
+}
+
+function playSound(id) {
+  document.getElementById(id).play();
+}
+
+function createParticle() {
+  const x = Math.random() * window.innerWidth;
+  const y = Math.random() * window.innerHeight;
+  const colors = ['#00ff00', '#ff9900', '#2d87ff', '#ff4757'];
+  const color = colors[Math.floor(Math.random() * colors.length)];
+  
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.left = `${x}px`;
+  p.style.top = `${y}px`;
+  p.style.background = color;
+  document.body.appendChild(p);
+  
+  setTimeout(() => p.remove(), 1000);
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  showNotification(`Tema ${isDark ? 'oscuro' : 'claro'} activado`, 'info');
+}
 </script>
 </body>
-</html>
+  </html>
