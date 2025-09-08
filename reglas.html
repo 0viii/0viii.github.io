@@ -3,156 +3,175 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniHost 🌍 - Minecraft Panel</title>
+<title>MiniHost 🌍 - Minecraft Ultra-Pro</title>
 <style>
-  /* ===== Estilos Generales ===== */
-  body {
-    font-family: 'Minecraft', Arial, sans-serif;
-    background: linear-gradient(120deg, #1b2735, #090a0f);
-    color: white;
-    text-align: center;
-    padding: 20px;
-  }
-  h1 { font-size: 3em; margin-bottom: 5px; color:#00ff00; }
-  p { font-size:1.2em; margin-bottom: 20px; }
-  
-  /* ===== Tarjetas ===== */
-  .card {
-    background: rgba(0,0,0,0.7);
-    border: 4px solid #00ff00;
-    border-radius: 12px;
-    padding: 20px;
-    margin: 15px auto;
-    max-width: 450px;
-    box-shadow: 0px 6px 15px rgba(0,0,0,0.5);
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0px 8px 20px rgba(0,255,0,0.5);
-  }
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-  /* ===== Inputs y botones ===== */
-  input, select, button {
-    padding: 10px;
-    margin: 8px;
-    border-radius: 5px;
-    border: none;
-    outline: none;
-    width: 80%;
-    font-weight: bold;
-  }
-  select { width: 85%; }
-  button {
-    cursor: pointer;
-    font-weight: bold;
-  }
-  .btn-create { background:#00c853; color:white; }
-  .btn-create:hover { background:#009624; }
-  .btn-power { background:#ff9800; color:black; margin-top:5px; }
-  .btn-power:hover { background:#f57c00; }
-  .btn-delete { background:#d50000; color:white; margin-top:5px; }
-  .btn-delete:hover { background:#9b0000; }
+body {
+  font-family: 'Press Start 2P', cursive;
+  margin:0; padding:0;
+  background: linear-gradient(#87ceeb,#1e3c72);
+  overflow-x:hidden;
+  transition: background 0.5s;
+}
+body.dark { background: linear-gradient(#0b0b0b,#1e1e1e); }
 
-  /* ===== Servidores ===== */
-  .server-card {
-    background: rgba(255,255,255,0.1);
-    margin: 12px auto;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: left;
-    transition: background 0.3s;
-  }
-  .server-card:hover { background: rgba(255,255,255,0.2); }
+/* Fondo animado bloques */
+#background {
+  position:fixed; top:0; left:0; width:100%; height:100%; z-index:0;
+  background: url('https://i.ibb.co/FwM1pG3/grass.png') repeat;
+  background-size:60px 60px;
+  animation: moveBg 60s linear infinite;
+}
+@keyframes moveBg { from {background-position:0 0;} to {background-position:-600px -400px;} }
 
-  /* ===== Logout ===== */
-  .logout-btn {
-    background: #d50000; width: 50%; margin-top: 15px;
-  }
-  .logout-btn:hover { background: #9b0000; }
+h1 { text-align:center; font-size:2em; color:#00ff00; margin-top:20px; z-index:1; position:relative; }
+p { text-align:center; color:#fff; margin-bottom:20px; font-size:0.9em; z-index:1; position:relative; }
 
-  /* ===== Notificaciones ===== */
-  #notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background:#00ff00;
-    color:black;
-    padding:10px 15px;
-    border-radius:8px;
-    display:none;
-    font-weight:bold;
-    box-shadow:0px 4px 10px rgba(0,255,0,0.5);
-  }
+.card {
+  background: rgba(0,0,0,0.7);
+  border: 4px solid #00ff00;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 550px;
+  box-shadow: 0 6px 15px rgba(0,255,0,0.5);
+  position: relative; z-index:1;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover { transform: translateY(-5px); box-shadow:0 8px 20px rgba(0,255,0,0.7); }
+
+input, select, button { padding: 12px; margin:5px; border-radius:6px; border:none; outline:none; width:80%; font-weight:bold; }
+select { width:85%; }
+button { cursor:pointer; transition: all 0.2s; font-weight:bold; }
+
+.btn-create { background:#00c853; color:white; }
+.btn-create:hover { background:#009624; transform: scale(1.05); }
+
+.btn-power { background:#ff9800; color:black; margin:5px 0; }
+.btn-power:hover { background:#f57c00; transform: scale(1.05); }
+
+.btn-delete { background:#d50000; color:white; margin:5px 0; }
+.btn-delete:hover { background:#9b0000; transform: scale(1.05); }
+
+.btn-restart { background:#2196f3; color:white; margin:5px 0; }
+.btn-restart:hover { background:#1976d2; transform: scale(1.05); }
+
+.logout-btn { background:#d50000; width:50%; margin-top:10px; }
+.logout-btn:hover { background:#9b0000; }
+
+.server-card { background: rgba(255,255,255,0.1); margin:10px auto; padding:10px; border-radius:10px; text-align:left; transition: background 0.3s, transform 0.3s; display:flex; align-items:center; justify-content:space-between; }
+.server-card:hover { background: rgba(255,255,255,0.2); transform: scale(1.02); }
+
+.server-info { flex-grow:1; padding-left:10px; }
+.block { width:40px; height:40px; border:2px solid #000; border-radius:5px; background-size:cover; margin-right:10px; transition: transform 0.3s; }
+.grass { background-image:url('https://i.ibb.co/FwM1pG3/grass.png'); }
+.stone { background-image:url('https://i.ibb.co/5RkFjNx/stone.png'); }
+.lava { background-image:url('https://i.ibb.co/DY2S8G3/lava.png'); }
+
+.progress-bar { width:100%; background: rgba(255,255,255,0.3); border-radius:5px; height:15px; margin-top:5px; overflow:hidden; }
+.progress-fill { height:100%; background:#00ff00; width:0%; transition: width 0.5s; }
+
+#notification { position:fixed; top:20px; right:20px; background:#00ff00; color:black; padding:10px 15px; border-radius:8px; display:none; font-weight:bold; box-shadow:0px 4px 10px rgba(0,255,0,0.5); z-index:2; }
+
+#log { background: rgba(0,0,0,0.7); color:#00ff00; font-size:10px; padding:10px; height:150px; overflow-y:auto; margin:10px auto; max-width:550px; border-radius:10px; font-family: monospace; }
+
+.particle { position:absolute; width:10px; height:10px; background:#00ff00; opacity:0.7; border-radius:50%; animation: float 1s ease-out forwards; }
+@keyframes float { to { transform: translateY(-50px) scale(0.1); opacity:0; } }
 </style>
 </head>
 <body>
+<div id="background"></div>
 <h1>MiniHost 🌍</h1>
-<p>¡Crea y gestiona tus servidores de Minecraft!</p>
+<p>Panel ultra-pro de Minecraft (demo interactiva)</p>
 
 <div class="card" id="auth-card">
-  <h2>Iniciar Sesión</h2>
-  <input type="text" id="username" placeholder="Usuario"><br>
-  <input type="password" id="password" placeholder="Contraseña"><br>
-  <button class="btn-create" onclick="login()">Entrar</button>
-  <p>¿No tienes cuenta? <a href="#" onclick="register()">Regístrate</a></p>
+<h2>Iniciar Sesión</h2>
+<input type="text" id="username" placeholder="Usuario"><br>
+<input type="password" id="password" placeholder="Contraseña"><br>
+<button class="btn-create" onclick="login()">Entrar</button>
+<p>¿No tienes cuenta? <a href="#" onclick="register()">Regístrate</a></p>
 </div>
 
 <div class="card" id="panel" style="display:none;">
-  <h2>Bienvenido, <span id="user"></span> 👋</h2>
+<h2>Bienvenido, <span id="user"></span> 👋</h2>
 
-  <h3>Crear nuevo servidor</h3>
-  <input type="text" id="serverName" placeholder="Nombre del servidor"><br>
-  <select id="mcVersion">
-    <option value="1.20.1">1.20.1</option>
-    <option value="1.19.4">1.19.4</option>
-    <option value="1.18.2">1.18.2</option>
-  </select><br>
-  <select id="gameMode">
-    <option value="Survival">Survival</option>
-    <option value="Creative">Creative</option>
-    <option value="Adventure">Adventure</option>
-  </select><br>
-  <input type="number" id="slots" placeholder="Cantidad de jugadores" min="1" max="50"><br>
-  <button class="btn-create" onclick="createServer()">🚀 Crear servidor</button>
+<h3>Crear nuevo servidor</h3>
+<input type="text" id="serverName" placeholder="Nombre del servidor"><br>
+<select id="mcVersion">
+<option value="1.20.1">1.20.1</option>
+<option value="1.19.4">1.19.4</option>
+<option value="1.18.2">1.18.2</option>
+</select><br>
+<select id="gameMode">
+<option value="Survival">Survival</option>
+<option value="Creative">Creative</option>
+<option value="Adventure">Adventure</option>
+</select><br>
+<input type="number" id="slots" placeholder="Cantidad de jugadores" min="1" max="50"><br>
+<button class="btn-create" onclick="createServer()">🚀 Crear servidor</button>
 
-  <h3 style="margin-top:30px;">Tus servidores</h3>
-  <div id="serverList"></div>
+<h3 style="margin-top:20px;">Tus servidores</h3>
+<div id="serverList"></div>
 
-  <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+<h3>Log del servidor</h3>
+<div id="log"></div>
+
+<button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+<button class="btn-create" onclick="toggleTheme()">🌙 Cambiar tema</button>
 </div>
 
 <div id="notification"></div>
 
+<audio id="soundOn" src="https://freesound.org/data/previews/341/341695_62486-lq.mp3"></audio>
+<audio id="soundOff" src="https://freesound.org/data/previews/271/271950_5121236-lq.mp3"></audio>
+<audio id="soundRestart" src="https://freesound.org/data/previews/41/41155_5121236-lq.mp3"></audio>
+
 <script>
-function notify(msg, color="#00ff00"){
-  let n = document.getElementById("notification");
+// Notificaciones
+function notify(msg,color="#00ff00"){
+  let n=document.getElementById("notification");
   n.style.background=color; n.innerText=msg;
   n.style.display="block";
   setTimeout(()=>{ n.style.display="none"; },2500);
 }
 
-// Registro/Login con localStorage
-function register() {
-  let user = document.getElementById("username").value;
-  let pass = document.getElementById("password").value;
-  if(user && pass){
-    if(localStorage.getItem("user_" + user)) return notify("Usuario ya existe","#ff9800");
-    localStorage.setItem("user_" + user, pass);
-    localStorage.setItem("servers_" + user, JSON.stringify([]));
-    notify("Usuario registrado con éxito");
-  } else { notify("Completa usuario y contraseña","#ff9800"); }
+// Log
+function addLog(msg){
+  let log=document.getElementById("log");
+  log.innerHTML+=msg+"<br>";
+  log.scrollTop=log.scrollHeight;
 }
 
-function login() {
-  let user = document.getElementById("username").value;
-  let pass = document.getElementById("password").value;
-  let savedPass = localStorage.getItem("user_" + user);
+// Partículas
+function createParticle(x,y,color="#00ff00"){
+  let p=document.createElement("div");
+  p.className="particle"; p.style.left=x+"px"; p.style.top=y+"px"; p.style.background=color;
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(),1000);
+}
+
+// Login/Register
+function register(){
+  let user=document.getElementById("username").value;
+  let pass=document.getElementById("password").value;
+  if(user && pass){
+    if(localStorage.getItem("user_"+user)) return notify("Usuario ya existe","#ff9800");
+    localStorage.setItem("user_"+user,pass);
+    localStorage.setItem("servers_"+user,JSON.stringify([]));
+    notify("Usuario registrado con éxito");
+  }else notify("Completa usuario y contraseña","#ff9800");
+}
+
+function login(){
+  let user=document.getElementById("username").value;
+  let pass=document.getElementById("password").value;
+  let savedPass=localStorage.getItem("user_"+user);
   if(savedPass && savedPass===pass){
-    localStorage.setItem("loggedUser", user);
+    localStorage.setItem("loggedUser",user);
     showPanel(user);
     notify("Sesión iniciada ✔️");
-  } else { notify("Usuario o contraseña incorrectos","#ff9800"); }
+  } else notify("Usuario o contraseña incorrectos","#ff9800");
 }
 
 function showPanel(user){
@@ -162,64 +181,92 @@ function showPanel(user){
   renderServers();
 }
 
+// Crear servidor
 function createServer(){
-  let user = localStorage.getItem("loggedUser");
+  let user=localStorage.getItem("loggedUser");
   if(!user) return;
-  let name = document.getElementById("serverName").value || "MiServidor";
-  let version = document.getElementById("mcVersion").value;
-  let mode = document.getElementById("gameMode").value;
-  let slots = document.getElementById("slots").value || 10;
-  let players = Math.floor(Math.random()*slots); // jugadores aleatorios
-
-  let server = {name, version, mode, slots, status:"🟢 Online", players};
-  let servers = JSON.parse(localStorage.getItem("servers_" + user)) || [];
+  let name=document.getElementById("serverName").value||"MiServidor";
+  let version=document.getElementById("mcVersion").value;
+  let mode=document.getElementById("gameMode").value;
+  let slots=document.getElementById("slots").value||10;
+  let players=Math.floor(Math.random()*slots);
+  let icons=["grass","stone","lava"];
+  let block=icons[Math.floor(Math.random()*icons.length)];
+  let server={name,version,mode,slots,status:"🟢 Online",players,block,favorite:false};
+  let servers=JSON.parse(localStorage.getItem("servers_"+user))||[];
   servers.push(server);
-  localStorage.setItem("servers_" + user, JSON.stringify(servers));
+  localStorage.setItem("servers_"+user,JSON.stringify(servers));
   renderServers();
   notify(`Servidor "${name}" creado!`);
+  addLog(`Servidor "${name}" se ha creado.`);
+  createParticle(Math.random()*window.innerWidth,Math.random()*window.innerHeight,"#00ff00");
 }
 
+// Render servidores
 function renderServers(){
-  let user = localStorage.getItem("loggedUser");
-  let listDiv = document.getElementById("serverList");
+  let user=localStorage.getItem("loggedUser");
+  let listDiv=document.getElementById("serverList");
   listDiv.innerHTML="";
-  let servers = JSON.parse(localStorage.getItem("servers_" + user)) || [];
+  let servers=JSON.parse(localStorage.getItem("servers_"+user))||[];
   servers.forEach((s,i)=>{
     let div=document.createElement("div");
     div.className="server-card";
     div.innerHTML=`
-      <b>${s.name}</b><br>
-      Versión: ${s.version} | Modo: ${s.mode} | Slots: ${s.slots} | Jugadores: ${s.players} | Estado: ${s.status}
-      <br>
-      <button class="btn-power" onclick="toggleServer(${i})">Encender/Apagar</button>
-      <button class="btn-delete" onclick="deleteServer(${i})">🗑 Eliminar</button>
+      <div class="block ${s.block}"></div>
+      <div class="server-info">
+        <b>${s.name}</b> ${s.favorite?'★':''}<br>
+        Versión: ${s.version} | Modo: ${s.mode}<br>
+        Slots: ${s.slots} | Jugadores: ${s.players} | Estado: ${s.status}
+        <div class="progress-bar"><div class="progress-fill" style="width:${(s.players/s.slots*100)}%"></div></div>
+      </div>
+      <div>
+        <button class="btn-power" onclick="toggleServer(${i})">Encender/Apagar</button><br>
+        <button class="btn-restart" onclick="restartServer(${i})">Reiniciar</button><br>
+        <button class="btn-delete" onclick="deleteServer(${i})">🗑 Eliminar</button><br>
+        <button class="btn-create" onclick="toggleFavorite(${i})">⭐ Favorito</button>
+      </div>
     `;
     listDiv.appendChild(div);
   });
 }
 
+// Funciones servidor
+function playSound(id){ document.getElementById(id).play(); }
+
 function toggleServer(index){
-  let user = localStorage.getItem("loggedUser");
-  let servers = JSON.parse(localStorage.getItem("servers_" + user)) || [];
-  let s = servers[index];
-  if(s.status==="🟢 Online"){
-    s.status="🔴 Offline"; s.players=0;
-    notify(`Servidor "${s.name}" apagado`,"#ff9800");
-  } else {
+  let user=localStorage.getItem("loggedUser");
+  let servers=JSON.parse(localStorage.getItem("servers_"+user))||[];
+  let s=servers[index];
+  if(s.status==="🟢 Online"){ s.status="🔴 Offline"; s.players=0; notify(`${s.name} apagado`,"#ff9800"); addLog(`${s.name} se apagó.`); playSound("soundOff"); }
+  else{ s.status="🟢 Online"; s.players=Math.floor(Math.random()*s.slots); notify(`${s.name} encendido`); addLog(`${s.name} se encendió.`); playSound("soundOn"); }
+  servers[index]=s; localStorage.setItem("servers_"+user,JSON.stringify(servers)); renderServers();
+}
+
+function restartServer(index){
+  let user=localStorage.getItem("loggedUser");
+  let servers=JSON.parse(localStorage.getItem("servers_"+user))||[];
+  let s=servers[index]; s.status="🔴 Offline"; s.players=0;
+  renderServers(); addLog(`${s.name} se está reiniciando...`); notify(`${s.name} reiniciando...`,"#2196f3"); playSound("soundRestart");
+  setTimeout(()=>{
     s.status="🟢 Online"; s.players=Math.floor(Math.random()*s.slots);
-    notify(`Servidor "${s.name}" encendido`);
-  }
-  servers[index]=s;
-  localStorage.setItem("servers_" + user, JSON.stringify(servers));
-  renderServers();
+    servers[index]=s; localStorage.setItem("servers_"+user,JSON.stringify(servers));
+    renderServers(); addLog(`${s.name} se ha reiniciado.`); notify(`${s.name} reiniciado ✔️`); createParticle(Math.random()*window.innerWidth,Math.random()*window.innerHeight,"#00ffff");
+  },2000);
 }
 
 function deleteServer(index){
-  let user = localStorage.getItem("loggedUser");
-  let servers = JSON.parse(localStorage.getItem("servers_" + user)) || [];
-  notify(`Servidor "${servers[index].name}" eliminado`,"#ff9800");
-  servers.splice(index,1);
-  localStorage.setItem("servers_" + user, JSON.stringify(servers));
+  let user=localStorage.getItem("loggedUser");
+  let servers=JSON.parse(localStorage.getItem("servers_"+user))||[];
+  notify(`${servers[index].name} eliminado`,"#ff9800"); addLog(`${servers[index].name} se eliminó.`);
+  createParticle(Math.random()*window.innerWidth,Math.random()*window.innerHeight,"#ff0000");
+  servers.splice(index,1); localStorage.setItem("servers_"+user,JSON.stringify(servers)); renderServers();
+}
+
+function toggleFavorite(index){
+  let user=localStorage.getItem("loggedUser");
+  let servers=JSON.parse(localStorage.getItem("servers_"+user))||[];
+  servers[index].favorite=!servers[index].favorite;
+  localStorage.setItem("servers_"+user,JSON.stringify(servers));
   renderServers();
 }
 
@@ -230,11 +277,9 @@ function logout(){
   notify("Sesión cerrada","#ff9800");
 }
 
-// Mantener sesión
-window.onload=()=>{
-  let loggedUser = localStorage.getItem("loggedUser");
-  if(loggedUser) showPanel(loggedUser);
-}
+function toggleTheme(){ document.body.classList.toggle("dark"); notify("Tema cambiado","#00ffff"); }
+
+window.onload=()=>{ let loggedUser=localStorage.getItem("loggedUser"); if(loggedUser) showPanel(loggedUser); }
 </script>
 </body>
 </html>
