@@ -39,8 +39,9 @@
 </head>
 <body>
   <h1>MiniHost 🌍</h1>
-  <p>Crea y administra tu servidor de Minecraft gratis</p>
+  <p>Crea y administra tu servidor de Minecraft (demo en GitHub Pages)</p>
 
+  <!-- Login / Registro -->
   <div class="card" id="auth-card">
     <h2>Iniciar Sesión</h2>
     <input type="text" id="username" placeholder="Usuario"><br>
@@ -49,6 +50,7 @@
     <p>¿No tienes cuenta? <a href="#" onclick="register()">Regístrate</a></p>
   </div>
 
+  <!-- Panel -->
   <div class="card" id="panel" style="display:none;">
     <h2>Bienvenido, <span id="user"></span></h2>
     <button onclick="createServer()">🚀 Crear servidor</button>
@@ -58,23 +60,56 @@
       <p>Versión: 1.20.1</p>
       <p>Estado: 🟢 En línea</p>
     </div>
+    <button onclick="logout()">Cerrar sesión</button>
   </div>
 
   <script>
+    // Guardar usuarios en localStorage (solo demo)
+    function register() {
+      let user = document.getElementById("username").value;
+      let pass = document.getElementById("password").value;
+      if(user && pass) {
+        localStorage.setItem("user_" + user, pass);
+        alert("Usuario registrado con éxito");
+      } else {
+        alert("Ingresa usuario y contraseña");
+      }
+    }
+
     function login() {
       let user = document.getElementById("username").value;
-      if(user.trim() === "") return alert("Ingresa un usuario válido");
+      let pass = document.getElementById("password").value;
+      let savedPass = localStorage.getItem("user_" + user);
+      if(savedPass && savedPass === pass) {
+        localStorage.setItem("loggedUser", user);
+        showPanel(user);
+      } else {
+        alert("Usuario o contraseña incorrectos");
+      }
+    }
+
+    function showPanel(user) {
       document.getElementById("auth-card").style.display = "none";
       document.getElementById("panel").style.display = "block";
       document.getElementById("user").innerText = user;
     }
 
-    function register() {
-      alert("Aquí iría el sistema de registro real (pendiente).");
-    }
-
     function createServer() {
       document.getElementById("server-info").style.display = "block";
+    }
+
+    function logout() {
+      localStorage.removeItem("loggedUser");
+      document.getElementById("panel").style.display = "none";
+      document.getElementById("auth-card").style.display = "block";
+    }
+
+    // Mantener sesión
+    window.onload = () => {
+      let loggedUser = localStorage.getItem("loggedUser");
+      if(loggedUser) {
+        showPanel(loggedUser);
+      }
     }
   </script>
 </body>
