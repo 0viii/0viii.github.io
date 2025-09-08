@@ -3,120 +3,335 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mi Netflix Ultra Pro</title>
+<title>Galactic Stream</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
+:root {
+  --neon-cyan: #0ff;
+  --neon-pink: #f0f;
+  --neon-green: #0f0;
+  --dark-space: #0a0a16;
+  --deep-space: #15152b;
+  --star-light: #ffffff;
+}
+
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #111;
-    color: #fff;
+  margin: 0;
+  font-family: 'Exo 2', sans-serif;
+  background: linear-gradient(135deg, var(--dark-space) 0%, var(--deep-space) 100%);
+  color: #fff;
+  overflow-x: hidden;
+  position: relative;
 }
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 5px),
+    radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 3px),
+    radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 4px);
+  background-size: 550px 550px, 350px 350px, 250px 250px;
+  background-position: 0 0, 40px 60px, 130px 270px;
+  z-index: -1;
+}
+
 h1 {
-    margin: 20px;
-    text-align: center;
-    font-size: 2.2em;
+  margin: 20px;
+  text-align: center;
+  font-size: 2.8em;
+  font-family: 'Orbitron', sans-serif;
+  color: #fff;
+  text-shadow: 
+    0 0 5px var(--neon-cyan),
+    0 0 10px var(--neon-cyan),
+    0 0 20px var(--neon-cyan),
+    0 0 30px var(--neon-cyan);
+  letter-spacing: 2px;
+  animation: pulsate 2s infinite alternate;
 }
+
+@keyframes pulsate {
+  0% { text-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan), 0 0 30px var(--neon-cyan); }
+  100% { text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan), 0 0 30px var(--neon-cyan), 0 0 40px var(--neon-cyan); }
+}
+
 #filtros {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 0 20px;
 }
+
+#buscar, #categoria {
+  background: rgba(10, 10, 30, 0.7);
+  border: 1px solid var(--neon-cyan);
+  border-radius: 20px;
+  padding: 10px 20px;
+  color: white;
+  font-family: 'Exo 2', sans-serif;
+  box-shadow: 0 0 10px var(--neon-cyan);
+  outline: none;
+}
+
+#buscar::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
 #catalogo {
-    display: flex;
-    overflow-x: auto;
-    gap: 15px;
-    padding: 20px;
+  display: flex;
+  overflow-x: auto;
+  gap: 25px;
+  padding: 30px 20px;
+  scroll-behavior: smooth;
 }
+
 .card {
-    position: relative;
-    min-width: 220px;
-    transition: transform 0.3s;
-    cursor: pointer;
-    border-radius: 8px;
-    overflow: hidden;
+  position: relative;
+  min-width: 240px;
+  height: 340px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+  transform-style: preserve-3d;
 }
+
 .card img, .card video {
-    width: 100%;
-    display: block;
-    border-radius: 8px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 12px;
+  transition: all 0.5s ease;
 }
-.card:hover { transform: scale(1.15); z-index:2;}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  z-index: -1;
+  background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink), var(--neon-green), var(--neon-pink), var(--neon-cyan));
+  border-radius: 14px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.card:hover { 
+  transform: scale(1.15) translateY(-10px) rotateY(5deg); 
+  z-index: 2;
+  box-shadow: 0 0 25px var(--neon-cyan), 0 0 50px var(--neon-pink);
+}
+
+.card:hover::before {
+  opacity: 1;
+  animation: border-glow 1.5s linear infinite;
+}
+
+@keyframes border-glow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .card h3 {
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    margin: 0;
-    background: rgba(0,0,0,0.6);
-    padding: 5px 8px;
-    border-radius: 4px;
-    font-size: 1em;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 1em;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+  border-left: 3px solid var(--neon-cyan);
 }
+
 .fav {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    font-size: 28px;
-    color: yellow;
-    cursor: pointer;
-    transition: transform 0.3s;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 28px;
+  color: yellow;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 10px yellow;
+  z-index: 3;
 }
-.fav:hover { transform: scale(1.3);}
+
+.fav:hover { 
+  transform: scale(1.4) rotate(15deg);
+  text-shadow: 0 0 20px yellow;
+}
+
 #player-container {
-    position: fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background: rgba(0,0,0,0.95);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    display: none;
-    z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 5, 15, 0.98);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  display: none;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
 }
-#player { width: 85%; max-width: 1000px; border-radius: 10px; }
+
+#player { 
+  width: 85%; 
+  max-width: 1000px; 
+  border-radius: 12px;
+  box-shadow: 0 0 30px var(--neon-cyan), 0 0 60px var(--neon-pink);
+}
+
 #cerrar {
-    margin-bottom: 10px;
-    padding: 10px 20px;
-    background: #e50914;
-    border: none;
-    color: #fff;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background 0.3s;
+  margin-bottom: 20px;
+  padding: 12px 25px;
+  background: linear-gradient(45deg, #ff0080, #8000ff);
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 1px;
+  box-shadow: 0 0 15px rgba(255, 0, 128, 0.7);
 }
-#cerrar:hover { background: #b00710; }
-::-webkit-scrollbar { height: 10px; }
-::-webkit-scrollbar-thumb { background: #e50914; border-radius: 5px; }
-::-webkit-scrollbar-track { background: #222; border-radius: 5px; }
+
+#cerrar:hover { 
+  transform: translateY(-3px);
+  box-shadow: 0 0 25px rgba(255, 0, 128, 1);
+}
+
+::-webkit-scrollbar { 
+  height: 10px; 
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb { 
+  background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
+  border-radius: 10px; 
+  box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+::-webkit-scrollbar-track { 
+  background: rgba(0, 0, 0, 0.2); 
+  border-radius: 10px; 
+  margin: 0 20px;
+}
+
+.categoria-titulo {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--neon-green);
+  margin-left: 30px;
+  margin-bottom: 15px;
+  text-shadow: 0 0 10px var(--neon-green);
+  font-size: 1.5em;
+}
+
+.seccion-categoria {
+  margin-bottom: 40px;
+}
+
+/* Efectos de luz adicionales */
+.luz-flotante {
+  position: fixed;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--neon-pink) 0%, transparent 70%);
+  opacity: 0.1;
+  animation: flotar 15s infinite linear;
+  z-index: -1;
+}
+
+.luz-flotante:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, var(--neon-cyan) 0%, transparent 70%);
+}
+
+.luz-flotante:nth-child(2) {
+  top: 60%;
+  right: 15%;
+  animation-delay: -5s;
+  background: radial-gradient(circle, var(--neon-green) 0%, transparent 70%);
+}
+
+.luz-flotante:nth-child(3) {
+  bottom: 10%;
+  left: 20%;
+  animation-delay: -10s;
+  width: 100px;
+  height: 100px;
+}
+
+@keyframes flotar {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(20px, 40px) rotate(90deg); }
+  50% { transform: translate(0, 80px) rotate(180deg); }
+  75% { transform: translate(-20px, 40px) rotate(270deg); }
+  100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  h1 { font-size: 2em; }
+  #catalogo { gap: 15px; padding: 20px 15px; }
+  .card { min-width: 200px; height: 300px; }
+  #filtros { flex-direction: column; align-items: center; }
+  #buscar, #categoria { width: 80%; }
+}
 </style>
 </head>
 <body>
 
-<h1>Mi Netflix Ultra Pro</h1>
+<!-- Efectos de luz de fondo -->
+<div class="luz-flotante"></div>
+<div class="luz-flotante"></div>
+<div class="luz-flotante"></div>
+
+<h1>GALACTIC STREAM</h1>
 
 <div id="filtros">
-    <input type="text" id="buscar" placeholder="Buscar película..." />
+    <input type="text" id="buscar" placeholder="Buscar contenido interdimensional..." />
     <select id="categoria">
-        <option value="todas">Todas las categorías</option>
+        <option value="todas">Todos los universos</option>
     </select>
 </div>
 
 <div id="catalogo"></div>
 
 <div id="player-container">
-    <button id="cerrar">Cerrar</button>
+    <button id="cerrar">VOLVER A LA GALERÍA</button>
     <video id="player" controls></video>
 </div>
 
 <script>
 const peliculas = [
-    { titulo: "Película 1", categoria: "Acción", portada: "images/pelicula1.jpg", trailer:"videos/trailer1.mp4", video: "videos/pelicula1.mp4" },
-    { titulo: "Película 2", categoria: "Drama", portada: "images/pelicula2.jpg", trailer:"videos/trailer2.mp4", video: "videos/pelicula2.mp4" },
-    { titulo: "Película 3", categoria: "Comedia", portada: "images/pelicula3.jpg", trailer:"videos/trailer3.mp4", video: "videos/pelicula3.mp4" }
+    { titulo: "Nebulosa Prohibida", categoria: "Ciencia Ficción", portada: "https://placehold.co/400x600/15152b/0ff?text=Nebulosa+Prohibida", trailer:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" },
+    { titulo: "Androide Destiny", categoria: "Cyberpunk", portada: "https://placehold.co/400x600/15152b/f0f?text=Androide+Destiny", trailer:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" },
+    { titulo: "Xenomorfos", categoria: "Terror Espacial", portada: "https://placehold.co/400x600/15152b/0f0?text=Xenomorfos", trailer:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" },
+    { titulo: "Crystal Planet", categoria: "Aventura", portada: "https://placehold.co/400x600/15152b/ff0?text=Crystal+Planet", trailer:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" },
+    { titulo: "Quantum Drift", categoria: "Cyberpunk", portada: "https://placehold.co/400x600/15152b/f0f?text=Quantum+Drift", trailer:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4" },
+    { titulo: "Cybernetic Revolution", categoria: "Ciencia Ficción", portada: "https://placehold.co/400x600/15152b/0ff?text=Cybernetic+Revolution", trailer:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4" }
 ];
 
 const catalogo = document.getElementById("catalogo");
@@ -133,36 +348,70 @@ function mostrarCatalogo() {
     const busqueda = buscar.value.toLowerCase();
     const categoria = categoriaSelect.value;
 
-    peliculas.forEach(p => {
-        if((p.titulo.toLowerCase().includes(busqueda)) && (categoria === "todas" || p.categoria === categoria)){
-            const card = document.createElement("div");
-            card.className = "card";
-            card.innerHTML = `
-                <img src="${p.portada}" alt="${p.titulo}">
-                <video src="${p.trailer}" muted loop style="display:none;"></video>
-                <span class="fav">${favoritos.includes(p.titulo) ? "★" : "☆"}</span>
-                <h3>${p.titulo}</h3>
-            `;
+    // Agrupar por categorías
+    const categoriasUnicas = [...new Set(peliculas.map(p => p.categoria))];
+    
+    categoriasUnicas.forEach(cat => {
+        const peliculasFiltradas = peliculas.filter(p => 
+            p.categoria === cat && 
+            (p.titulo.toLowerCase().includes(busqueda)) && 
+            (categoria === "todas" || p.categoria === categoria)
+        );
+        
+        if (peliculasFiltradas.length > 0) {
+            const seccionTitulo = document.createElement("h2");
+            seccionTitulo.className = "categoria-titulo";
+            seccionTitulo.textContent = cat;
+            catalogo.appendChild(seccionTitulo);
+            
+            const seccionContenedor = document.createElement("div");
+            seccionContenedor.className = "seccion-categoria";
+            seccionContenedor.style.display = "flex";
+            seccionContenedor.style.overflowX = "auto";
+            seccionContenedor.style.gap = "25px";
+            seccionContenedor.style.padding = "10px 5px";
+            
+            peliculasFiltradas.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+                    <img src="${p.portada}" alt="${p.titulo}">
+                    <video src="${p.trailer}" muted loop style="display:none;"></video>
+                    <span class="fav">${favoritos.includes(p.titulo) ? "★" : "☆"}</span>
+                    <h3>${p.titulo}</h3>
+                `;
 
-            const img = card.querySelector("img");
-            const vid = card.querySelector("video");
-            const fav = card.querySelector(".fav");
+                const img = card.querySelector("img");
+                const vid = card.querySelector("video");
+                const fav = card.querySelector(".fav");
 
-            // Hover trailer
-            card.addEventListener("mouseenter", () => { img.style.display="none"; vid.style.display="block"; vid.play(); });
-            card.addEventListener("mouseleave", () => { vid.pause(); vid.style.display="none"; img.style.display="block"; });
+                // Hover trailer
+                card.addEventListener("mouseenter", () => { 
+                    img.style.display="none"; 
+                    vid.style.display="block"; 
+                    vid.play(); 
+                });
+                card.addEventListener("mouseleave", () => { 
+                    vid.pause(); 
+                    vid.currentTime = 0;
+                    vid.style.display="none"; 
+                    img.style.display="block"; 
+                });
 
-            card.addEventListener("click", (e) => {
-                if(e.target === fav){
-                    toggleFavorito(p.titulo, fav);
-                } else {
-                    player.src = p.video;
-                    playerContainer.style.display = "flex";
-                    player.play();
-                }
+                card.addEventListener("click", (e) => {
+                    if(e.target === fav){
+                        toggleFavorito(p.titulo, fav);
+                    } else {
+                        player.src = p.video;
+                        playerContainer.style.display = "flex";
+                        player.play();
+                    }
+                });
+
+                seccionContenedor.appendChild(card);
             });
-
-            catalogo.appendChild(card);
+            
+            catalogo.appendChild(seccionContenedor);
         }
     });
 }
