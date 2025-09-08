@@ -1,47 +1,40 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Película TikTok</title>
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      flex-direction: column;
-      text-align: center;
-    }
-    .video-container {
-      max-width: 605px;
-      min-width: 325px;
-      margin: 20px auto;
-    }
-    a {
-      color: #1da1f2;
-      text-decoration: none;
-      margin-top: 20px;
-      display: inline-block;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Web de Películas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 40px;
+        }
+        .video-container {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
 </head>
 <body>
-  <h1>Mi Película de TikTok</h1>
+    <h1>Mi Video de TikTok Favorito</h1>
+    
+    <div class="video-container">
+        <!-- Código de inserción del video de TikTok -->
+        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@pelis.tok.completas/video/7547442278848072967" data-video-id="7547442278848072967" style="max-width: 605px;min-width: 325px;">
+            <section>
+                <a target="_blank" title="@pelis.tok.completas" href="https://www.tiktok.com/@pelis.tok.completas?refer=embed">@pelis.tok.completas</a>
+                <p>Descripción del video</p>
+                <a target="_blank" title="♬ sonido original - @pelis.tok.completas" href="https://www.tiktok.com/music/original-sound-7547442278848072967?refer=embed">♬ sonido original - @pelis.tok.completas</a>
+            </section>
+        </blockquote>
+    </div>
 
-  <div class="video-container">
-    <!-- Embed oficial de TikTok -->
-    <blockquote class="tiktok-embed" cite="https://vm.tiktok.com/ZMAhX8VKU/" style="max-width: 605px;min-width: 325px;">
-      <section></section>
-    </blockquote>
-  </div>
-
-  <p>Si el video no carga, puedes verlo directamente en TikTok:</p>
-  <a href="https://vm.tiktok.com/ZMAhX8VKU/" target="_blank">Ver video en TikTok</a>
-
-  <script async src="https://www.tiktok.com/embed.js"></script>
+    <script async src="https://www.tiktok.com/embed.js"></script>
 </body>
 </html>
