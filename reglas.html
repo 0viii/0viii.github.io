@@ -1,26 +1,142 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video TikTok Solo</title>
-    <style>
-        body {
-            margin: 0;
-            background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        iframe {
-            border: none;
-            width: 360px; /* Ajusta el tamaño del video */
-            height: 640px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake 🐍 Móvil</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    canvas {
+      background: #222;
+      border: 3px solid #0f0;
+      touch-action: none;
+    }
+    h1 {
+      margin: 10px 0;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: 80px 80px 80px;
+      grid-template-rows: 80px 80px 80px;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #333;
+      color: white;
+      font-size: 24px;
+      border-radius: 12px;
+      user-select: none;
+      cursor: pointer;
+    }
+    .btn:active {
+      background: #0f0;
+    }
+  </style>
 </head>
 <body>
-    <iframe src="https://www.tiktok.com/embed/v2/7547442278848072967" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  <h1>🐍 Snake Móvil</h1>
+  <canvas id="gameCanvas" width="300" height="300"></canvas>
+  <div class="controls">
+    <div></div>
+    <div class="btn" id="up">⬆️</div>
+    <div></div>
+    <div class="btn" id="left">⬅️</div>
+    <div></div>
+    <div class="btn" id="right">➡️</div>
+    <div></div>
+    <div class="btn" id="down">⬇️</div>
+    <div></div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const box = 15;
+    let snake = [{ x: 9 * box, y: 10 * box }];
+    let direction = null;
+    let score = 0;
+
+    let food = {
+      x: Math.floor(Math.random() * (canvas.width / box)) * box,
+      y: Math.floor(Math.random() * (canvas.height / box)) * box
+    };
+
+    // controles táctiles
+    document.getElementById("up").onclick = () => { if (direction !== "DOWN") direction = "UP"; };
+    document.getElementById("down").onclick = () => { if (direction !== "UP") direction = "DOWN"; };
+    document.getElementById("left").onclick = () => { if (direction !== "RIGHT") direction = "LEFT"; };
+    document.getElementById("right").onclick = () => { if (direction !== "LEFT") direction = "RIGHT"; };
+
+    function draw() {
+      ctx.fillStyle = "#222";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // comida
+      ctx.fillStyle = "red";
+      ctx.fillRect(food.x, food.y, box, box);
+
+      // serpiente
+      for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = i === 0 ? "lime" : "green";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+      }
+
+      let snakeX = snake[0].x;
+      let snakeY = snake[0].y;
+
+      if (direction === "LEFT") snakeX -= box;
+      if (direction === "UP") snakeY -= box;
+      if (direction === "RIGHT") snakeX += box;
+      if (direction === "DOWN") snakeY += box;
+
+      // comer comida
+      if (snakeX === food.x && snakeY === food.y) {
+        score++;
+        food = {
+          x: Math.floor(Math.random() * (canvas.width / box)) * box,
+          y: Math.floor(Math.random() * (canvas.height / box)) * box
+        };
+      } else {
+        snake.pop();
+      }
+
+      let newHead = { x: snakeX, y: snakeY };
+
+      // colisión
+      if (
+        snakeX < 0 || snakeY < 0 ||
+        snakeX >= canvas.width || snakeY >= canvas.height ||
+        snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)
+      ) {
+        clearInterval(game);
+        alert("💀 Perdiste! Puntos: " + score);
+      }
+
+      snake.unshift(newHead);
+
+      // puntuación
+      ctx.fillStyle = "white";
+      ctx.font = "16px Arial";
+      ctx.fillText("Puntos: " + score, 10, 20);
+    }
+
+    const game = setInterval(draw, 150);
+  </script>
 </body>
 </html>
+
