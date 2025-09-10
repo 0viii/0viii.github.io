@@ -82,6 +82,17 @@
     document.getElementById("left").onclick = () => { if (direction !== "RIGHT") direction = "LEFT"; };
     document.getElementById("right").onclick = () => { if (direction !== "LEFT") direction = "RIGHT"; };
 
+    let lastTime = 0;
+    const speed = 8; // velocidad (frames por segundo aprox.)
+
+    function gameLoop(timestamp) {
+      if (timestamp - lastTime > 1000 / speed) {
+        draw();
+        lastTime = timestamp;
+      }
+      requestAnimationFrame(gameLoop);
+    }
+
     function draw() {
       ctx.fillStyle = "#222";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -123,8 +134,8 @@
         snakeX >= canvas.width || snakeY >= canvas.height ||
         snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)
       ) {
-        clearInterval(game);
         alert("💀 Perdiste! Puntos: " + score);
+        document.location.reload();
       }
 
       snake.unshift(newHead);
@@ -135,8 +146,7 @@
       ctx.fillText("Puntos: " + score, 10, 20);
     }
 
-    const game = setInterval(draw, 150);
+    requestAnimationFrame(gameLoop);
   </script>
 </body>
 </html>
-
