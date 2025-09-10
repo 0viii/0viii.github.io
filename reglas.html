@@ -1,152 +1,286 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Snake 🐍 Móvil</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>Flappy Phaser - Móvil</title>
   <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background: #111;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-    canvas {
-      background: #222;
-      border: 3px solid #0f0;
-      touch-action: none;
-    }
-    h1 {
-      margin: 10px 0;
-    }
-    .controls {
-      display: grid;
-      grid-template-columns: 80px 80px 80px;
-      grid-template-rows: 80px 80px 80px;
-      gap: 10px;
-      margin-top: 15px;
-    }
-    .btn {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #333;
-      color: white;
-      font-size: 24px;
-      border-radius: 12px;
-      user-select: none;
-      cursor: pointer;
-    }
-    .btn:active {
-      background: #0f0;
-    }
+    html,body { height:100%; margin:0; background:#87CEEB; } /* cielo */
+    #game-container { width:100%; height:100vh; display:flex; align-items:center; justify-content:center; }
+    /* Opcional: mensaje pequeño abajo */
+    .hint { position: absolute; bottom: 8px; width:100%; text-align:center; font-family: Arial, sans-serif; color:#033; pointer-events:none; }
   </style>
 </head>
 <body>
-  <h1>🐍 Snake Móvil</h1>
-  <canvas id="gameCanvas" width="300" height="300"></canvas>
-  <div class="controls">
-    <div></div>
-    <div class="btn" id="up">⬆️</div>
-    <div></div>
-    <div class="btn" id="left">⬅️</div>
-    <div></div>
-    <div class="btn" id="right">➡️</div>
-    <div></div>
-    <div class="btn" id="down">⬇️</div>
-    <div></div>
-  </div>
+  <div id="game-container"></div>
+  <div class="hint">Toca la pantalla o pulsa ESPACIO para volar ✈️</div>
+
+  <!-- Phaser 3 (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
 
   <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-
-    const box = 15;
-    let snake = [{ x: 9 * box, y: 10 * box }];
-    let direction = null;
-    let score = 0;
-
-    let food = {
-      x: Math.floor(Math.random() * (canvas.width / box)) * box,
-      y: Math.floor(Math.random() * (canvas.height / box)) * box
+    // Configuración del juego (responsive)
+    const config = {
+      type: Phaser.AUTO,
+      parent: 'game-container',
+      width: 480,           // resolución base (escalará)
+      height: 640,
+      backgroundColor: 0x87CEEB, // mismo color que body
+      scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+      },
+      physics: {
+        default: 'arcade',
+        arcade: {
+          gravity: { y: 900 }, // gravedad principal
+          debug: false
+        }
+      },
+      scene: {
+        preload,
+        create,
+        update
+      }
     };
 
-    // controles táctiles
-    document.getElementById("up").onclick = () => { if (direction !== "DOWN") direction = "UP"; };
-    document.getElementById("down").onclick = () => { if (direction !== "UP") direction = "DOWN"; };
-    document.getElementById("left").onclick = () => { if (direction !== "RIGHT") direction = "LEFT"; };
-    document.getElementById("right").onclick = () => { if (direction !== "LEFT") direction = "RIGHT"; };
+    const game = new Phaser.Game(config);
 
-    let lastTime = 0;
-    const speed = 8; // velocidad (frames por segundo aprox.)
+    function preload() {
+      // generamos texturas simples (pájaro y tubo) con graphics para que no dependamos de imágenes externas
+      // Pájaro: círculo amarillo
+      this.graphics = this.add.graphics();
+      this.graphics.fillStyle(0xFFDD33, 1);
+      this.graphics.fillCircle(16, 16, 16);
+      this.graphics.generateTexture('bird', 32, 32);
+      this.graphics.clear();
 
-    function gameLoop(timestamp) {
-      if (timestamp - lastTime > 1000 / speed) {
-        draw();
-        lastTime = timestamp;
-      }
-      requestAnimationFrame(gameLoop);
+      // Tubo: rectángulo verde
+      this.graphics.fillStyle(0x2E8B57, 1);
+      this.graphics.fillRect(0, 0, 52, 400);
+      this.graphics.generateTexture('pipe', 52, 400);
+      this.graphics.clear();
+
+      // Suelo para colisión (invisible)
+      this.graphics.fillStyle(0x000000, 1);
+      this.graphics.fillRect(0, 0, 10, 10);
+      this.graphics.generateTexture('pixel', 1, 1);
+      this.graphics.destroy();
     }
 
-    function draw() {
-      ctx.fillStyle = "#222";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    function create() {
+      const scene = this;
 
-      // comida
-      ctx.fillStyle = "red";
-      ctx.fillRect(food.x, food.y, box, box);
+      // Variables del juego
+      this.gameSpeed = 160;      // velocidad de los tubos
+      this.pipeGap = 150;        // hueco entre tubos
+      this.pipeInterval = 1400;  // ms entre tubos (se puede ajustar)
+      this.isRunning = false;
+      this.score = 0;
 
-      // serpiente
-      for (let i = 0; i < snake.length; i++) {
-        ctx.fillStyle = i === 0 ? "lime" : "green";
-        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+      // Fondo simple con nube/montaña (opcional): solo color ya usado
+
+      // Suelo (para choque)
+      this.ground = this.physics.add.staticGroup();
+      // un rectángulo invisible al fondo que hace de suelo
+      const groundHeight = 24;
+      this.ground.create(config.width/2, config.height - groundHeight/2, 'pixel').setScale(config.width, groundHeight).refreshBody().setVisible(false);
+
+      // Pájaro
+      this.bird = this.physics.add.sprite(100, config.height / 2, 'bird');
+      this.bird.setCollideWorldBounds(true);
+      this.bird.setCircle(14);             // colisión circular
+      this.bird.setBounce(0);              // nada de rebote
+      this.bird.body.setAllowGravity(true);
+      this.bird.setDepth(2);
+
+      // Grupo de tubos
+      this.pipes = this.physics.add.group();
+
+      // Colisiones: con suelo o tubos => fin
+      this.physics.add.collider(this.bird, this.ground, hitPipeOrGround, null, this);
+      this.physics.add.overlap(this.bird, this.pipes, hitPipeOrGround, null, this);
+
+      // Input: cuando tocas o presionas
+      this.input.on('pointerdown', flap, this);
+      this.input.keyboard.on('keydown-SPACE', flap, this);
+
+      // Texto score
+      this.scoreText = this.add.text(20, 20, 'Puntos: 0', { font: '22px Arial', fill: '#033' }).setDepth(3);
+
+      // Mensaje inicio
+      this.startText = this.add.text(config.width/2, config.height/2 - 40, 'Toca para empezar', { font: '28px Arial', fill: '#033' }).setOrigin(0.5);
+
+      // Temporizador para crear tubos (lo activamos al iniciar)
+      this.pipeTimer = null;
+
+      // Ajuste en resize: cuando el canvas se escala, las físicas siguen la resolución base (480x640),
+      // por eso posicionamos elementos basados en config.width/config.height.
+      // Reinicio por defecto
+      this.gameOver = false;
+
+      // Para un movimiento más suave rotamos el pájaro según su velocidad
+      this.birdRotationTween = null;
+
+      // función auxiliar: iniciar el juego
+      this.startGame = function() {
+        if (this.isRunning) return;
+        this.isRunning = true;
+        this.startText.setVisible(false);
+        this.score = 0;
+        this.scoreText.setText('Puntos: 0');
+        this.bird.setPosition(100, config.height/2);
+        this.bird.setVelocity(0, 0);
+        this.bird.setActive(true);
+        this.bird.setAngularVelocity(0);
+        this.gameOver = false;
+
+        // eliminar tubos antiguos
+        this.pipes.clear(true, true);
+
+        // generar tubos periódicamente
+        this.pipeTimer = this.time.addEvent({
+          delay: this.pipeInterval,
+          callback: spawnPipes,
+          callbackScope: this,
+          loop: true
+        });
+      }.bind(this);
+
+      // función para terminar el juego
+      function hitPipeOrGround() {
+        if (scene.gameOver) return;
+        scene.gameOver = true;
+        scene.isRunning = false;
+        // detener tubos
+        if (scene.pipeTimer) scene.pipeTimer.remove(false);
+        // congelar tubos existentes
+        scene.pipes.children.iterate(pipe => {
+          pipe.body.setVelocityX(0);
+        });
+        // detener el pájaro
+        scene.bird.setTint(0xff4444);
+        scene.bird.body.setVelocityY(0);
+        scene.bird.body.setAllowGravity(false);
+
+        // mensaje de reinicio
+        scene.time.delayedCall(300, () => {
+          const restartText = scene.add.text(config.width/2, config.height/2, 'Perdiste 😢\nToca para reiniciar', { font: '26px Arial', fill: '#033', align: 'center' }).setOrigin(0.5);
+          restartText.setDepth(5);
+          scene.input.once('pointerdown', () => {
+            restartText.destroy();
+            scene.startText.setVisible(true);
+            scene.bird.clearTint();
+            scene.physics.world.gravity.y = 900;
+            scene.startGame();
+          }, scene);
+        });
       }
 
-      let snakeX = snake[0].x;
-      let snakeY = snake[0].y;
-
-      if (direction === "LEFT") snakeX -= box;
-      if (direction === "UP") snakeY -= box;
-      if (direction === "RIGHT") snakeX += box;
-      if (direction === "DOWN") snakeY += box;
-
-      // comer comida
-      if (snakeX === food.x && snakeY === food.y) {
-        score++;
-        food = {
-          x: Math.floor(Math.random() * (canvas.width / box)) * box,
-          y: Math.floor(Math.random() * (canvas.height / box)) * box
-        };
-      } else {
-        snake.pop();
+      // flapp (salto)
+      function flap() {
+        // si no empezó, iniciamos
+        if (!scene.isRunning) {
+          scene.startGame();
+        }
+        if (scene.gameOver) return;
+        // impulso hacia arriba
+        scene.bird.setVelocityY(-330);
+        // rotación rápida hacia arriba
+        scene.tweens.killTweensOf(scene.bird);
+        scene.tweens.add({
+          targets: scene.bird,
+          angle: -20,
+          duration: 100,
+          ease: 'Power1'
+        });
       }
 
-      let newHead = { x: snakeX, y: snakeY };
+      // crear tubos
+      function spawnPipes() {
+        const gap = scene.pipeGap;
+        const pipeTopHeight = Phaser.Math.Between(50, config.height - gap - 120);
+        const pipeX = config.width + 30;
 
-      // colisión
-      if (
-        snakeX < 0 || snakeY < 0 ||
-        snakeX >= canvas.width || snakeY >= canvas.height ||
-        snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)
-      ) {
-        alert("💀 Perdiste! Puntos: " + score);
-        document.location.reload();
+        // tubo superior (invertido)
+        const top = scene.pipes.create(pipeX, pipeTopHeight - 200, 'pipe').setOrigin(0, 1);
+        top.body.allowGravity = false;
+        top.body.immovable = true;
+        top.body.setVelocityX(-scene.gameSpeed - Phaser.Math.Between(0, 30));
+
+        // tubo inferior
+        const bottomY = pipeTopHeight + gap;
+        const bottom = scene.pipes.create(pipeX, bottomY + 200, 'pipe').setOrigin(0, 0);
+        bottom.body.allowGravity = false;
+        bottom.body.immovable = true;
+        bottom.body.setVelocityX(-scene.gameSpeed - Phaser.Math.Between(0, 30));
+
+        // marcar cuando el pájaro pasa entre tubos para aumentar score
+        // usaremos una zona invisible entre tubos
+        const scoreZone = scene.add.zone(pipeX + 26, pipeTopHeight + gap/2, 2, gap);
+        scene.physics.world.enable(scoreZone);
+        scoreZone.body.allowGravity = false;
+        scoreZone.body.setVelocityX(-scene.gameSpeed - 30);
+        scoreZone.scored = false;
+
+        // overlap entre pájaro y zone -> sumar puntos
+        scene.physics.add.overlap(scene.bird, scoreZone, function(bird, zone) {
+          if (!zone.scored && !scene.gameOver) {
+            zone.scored = true;
+            scene.score++;
+            scene.scoreText.setText('Puntos: ' + scene.score);
+          }
+        });
+
+        // limpiar tubos fuera de pantalla regularmente
+        // (tubos y scoreZone se eliminarán en update cuando x < -100)
       }
 
-      snake.unshift(newHead);
-
-      // puntuación
-      ctx.fillStyle = "white";
-      ctx.font = "16px Arial";
-      ctx.fillText("Puntos: " + score, 10, 20);
+      // limpia objetos que salieron de pantalla
+      this.cleanup = function() {
+        this.pipes.children.iterate(pipe => {
+          if (pipe.x < -100) {
+            pipe.destroy();
+          }
+        });
+        // limpiar zonas (no son parte del grupo)
+        this.children.list.forEach(child => {
+          if (child.body && child.body.velocity && child.x < -200 && child.width > 2 && child.height > 2 && child.texture.key === '__DEFAULT') {
+            // ignore
+          }
+        });
+      };
     }
 
-    requestAnimationFrame(gameLoop);
+    function update(time, delta) {
+      // inclinación natural hacia abajo
+      if (this.isRunning && !this.gameOver) {
+        // rotar en función de la velocidad Y
+        const velY = this.bird.body.velocity.y;
+        const targetAngle = Phaser.Math.Clamp((velY / 600) * 90, -20, 60);
+        this.bird.angle = Phaser.Math.Interpolation.Linear([this.bird.angle, targetAngle], 0.1);
+      }
+
+      // desmontar objetos viejos (pipes y zones)
+      // buscar pipes y zones que estén fuera de la pantalla y destruirlos
+      this.pipes.children.iterate(pipe => {
+        if (pipe && pipe.x < -100) pipe.destroy();
+      });
+
+      // también destruimos zonas (objetos con body y size pequeña)
+      this.children.list.forEach(child => {
+        if (child && child.body && child.body.velocity && child.x < -100 && (child.width <= 4 || child.height <= 4)) {
+          child.destroy();
+        }
+      });
+
+      // Si no se inició, el pájaro puede moverse ligeramente (lean) para verse vivo
+      if (!this.isRunning && !this.gameOver) {
+        // leve flotación
+        this.bird.y = config.height/2 + Math.sin(time / 400) * 8;
+      }
+    }
   </script>
 </body>
 </html>
+
