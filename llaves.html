@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Agenda PRO de Citas</title>
+<title>Agenda PRO Móvil</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   body {
@@ -17,16 +18,17 @@
   }
   .container {
     background: #fff;
-    border-radius: 15px;
-    padding: 30px;
-    margin: 20px;
+    border-radius: 20px;
+    padding: 25px;
+    margin: 15px;
     width: 100%;
-    max-width: 600px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    max-width: 400px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
   }
   h1,h2 {
     text-align: center;
     color: #444;
+    font-size: 1.5em;
   }
   form {
     display: flex;
@@ -35,15 +37,15 @@
     margin-bottom: 20px;
   }
   input, button {
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 8px;
+    padding: 14px;
+    font-size: 18px;
+    border-radius: 12px;
     border: 1px solid #ccc;
   }
   input:focus {
     outline: none;
     border-color: #2575fc;
-    box-shadow: 0 0 5px rgba(37,117,252,0.5);
+    box-shadow: 0 0 8px rgba(37,117,252,0.4);
   }
   button {
     background: #2575fc;
@@ -56,12 +58,20 @@
   button:hover {
     background: #6a11cb;
   }
+  button:active {
+    transform: scale(0.97);
+  }
   .card {
     background: #f9f9f9;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 18px;
+    margin-bottom: 12px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: 0.3s;
+  }
+  .card:hover {
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
   }
   #adminSection, #userCita { display: none; }
   .label { font-weight: 500; color: #555; }
@@ -80,7 +90,6 @@ const firebaseConfig = {
   appId: "1:326973939527:web:32a464ab6f63262cc6b662"
 };
 
-// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -94,7 +103,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let usuarioNombre = "";
 
-  // Agendar cita
   citaForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const nombre = document.getElementById("nombre").value.trim();
@@ -114,7 +122,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Mostrar solo la cita del usuario
   const mostrarCitaUsuario = (nombre) => {
     const q = query(collection(db, "citas"), where("nombre", "==", nombre), orderBy("timestamp", "desc"));
     onSnapshot(q, (snapshot) => {
@@ -126,7 +133,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  // Mostrar todas las citas (admin)
   const mostrarCitasAdmin = () => {
     const q = query(collection(db, "citas"), orderBy("fecha", "asc"), orderBy("hora", "asc"));
     onSnapshot(q, (snapshot) => {
@@ -142,11 +148,10 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  // Login admin simple
   adminPassForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const password = document.getElementById("adminPassword").value;
-    if(password === "admin123"){  // <- Cambia tu contraseña aquí
+    if(password === "admin123"){  // <- Cambia la contraseña
       adminSection.style.display = "block";
       document.getElementById("userSection").style.display = "none";
       userCita.style.display = "none";
@@ -161,9 +166,8 @@ window.addEventListener('DOMContentLoaded', () => {
 <body>
 
 <div class="container">
-  <h1>Agenda PRO de Citas</h1>
+  <h1>Agenda PRO Móvil</h1>
 
-  <!-- Sección usuario -->
   <div id="userSection">
     <form id="citaForm">
       <input type="text" id="nombre" placeholder="Tu nombre" required>
@@ -179,17 +183,16 @@ window.addEventListener('DOMContentLoaded', () => {
     </form>
   </div>
 
-  <!-- Sección cita usuario -->
   <div id="userCita">
     <h2>Tu cita agendada</h2>
     <div class="card" id="userCitaContent"></div>
   </div>
 
-  <!-- Sección admin -->
   <div id="adminSection">
     <h2>Citas agendadas</h2>
     <div id="listaCitas"></div>
   </div>
+
 </div>
 </body>
 </html>
