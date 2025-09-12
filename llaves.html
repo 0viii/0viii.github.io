@@ -3,79 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agenda de Citas PRO</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<title>Agenda PRO Ultra</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+  /* Reset y base */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
+    font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #6a11cb, #2575fc);
     display: flex;
     justify-content: center;
     min-height: 100vh;
     color: #333;
   }
+
+  /* Contenedor central */
   .container {
-    background: #fff;
-    border-radius: 25px;
-    padding: 30px 20px;
-    margin: 20px;
     width: 100%;
     max-width: 420px;
-    box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    padding: 25px;
+    margin: 20px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
   }
-  h1 { text-align: center; color: #444; margin-bottom: 20px; }
+
+  h1 {
+    text-align: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 2em;
+    margin-bottom: 10px;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+
   form { display: flex; flex-direction: column; gap: 15px; }
+
   input {
-    padding: 14px;
+    padding: 16px;
     font-size: 16px;
-    border-radius: 12px;
-    border: 1px solid #ccc;
+    border-radius: 20px;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    backdrop-filter: blur(10px);
     transition: 0.3s;
   }
+  input::placeholder { color: rgba(255,255,255,0.7); }
   input:focus {
     outline: none;
-    border-color: #6a11cb;
-    box-shadow: 0 0 8px rgba(106,17,203,0.3);
+    background: rgba(255,255,255,0.3);
+    box-shadow: 0 0 10px rgba(255,255,255,0.5);
   }
+
   button {
-    padding: 14px;
-    font-size: 16px;
-    border-radius: 12px;
+    padding: 16px;
+    font-size: 18px;
+    border-radius: 25px;
     border: none;
-    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    background: linear-gradient(90deg,#ff6ec4,#7873f5);
     color: white;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: 500;
     transition: 0.3s;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
   }
   button:hover {
-    transform: scale(1.03);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
   }
+
+  /* Tarjetas estilo premium */
   .card {
-    background: #f8f9fa;
-    padding: 18px;
-    border-radius: 18px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+    padding: 20px;
+    border-radius: 25px;
+    color: #fff;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     transition: 0.3s;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s forwards;
   }
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+  @keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
   }
+
+  .label { font-weight: 600; }
+
   #adminSection, #userCita { display: none; }
-  .label { font-weight: 500; color: #555; }
+
 </style>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-// Configuración Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDR6PNPfJDmQYv9uXUgedmozkngdk3bKDQ",
   authDomain: "minidavid-134d1.firebaseapp.com",
@@ -98,7 +125,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let usuarioNombre = "";
 
-  // Agendar cita
   citaForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const nombre = document.getElementById("nombre").value.trim();
@@ -118,7 +144,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Mostrar cita solo del usuario
   const mostrarCitaUsuario = (nombre) => {
     const q = query(collection(db, "citas"), where("nombre","==",nombre), orderBy("timestamp","desc"));
     onSnapshot(q, snapshot => {
@@ -130,7 +155,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  // Mostrar todas las citas (admin)
   const mostrarCitasAdmin = () => {
     const q = query(collection(db, "citas"), orderBy("timestamp","desc"));
     onSnapshot(q, snapshot => {
@@ -146,7 +170,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  // Login admin
   adminPassForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const password = document.getElementById("adminPassword").value;
@@ -164,7 +187,7 @@ window.addEventListener('DOMContentLoaded', () => {
 </head>
 <body>
 <div class="container">
-  <h1>Agenda de Citas PRO</h1>
+  <h1>Agenda PRO Ultra</h1>
 
   <div id="userSection">
     <form id="citaForm">
@@ -174,7 +197,7 @@ window.addEventListener('DOMContentLoaded', () => {
       <button type="submit">Agendar</button>
     </form>
 
-    <h2>Administrador</h2>
+    <h2 style="color:#fff;text-align:center;">Administrador</h2>
     <form id="adminPassForm">
       <input type="password" id="adminPassword" placeholder="Contraseña admin" required>
       <button type="submit">Ingresar</button>
@@ -182,12 +205,12 @@ window.addEventListener('DOMContentLoaded', () => {
   </div>
 
   <div id="userCita">
-    <h2>Tu cita agendada</h2>
+    <h2 style="color:#fff;text-align:center;">Tu cita agendada</h2>
     <div class="card" id="userCitaContent"></div>
   </div>
 
   <div id="adminSection">
-    <h2>Citas agendadas</h2>
+    <h2 style="color:#fff;text-align:center;">Citas agendadas</h2>
     <div id="listaCitas"></div>
   </div>
 </div>
