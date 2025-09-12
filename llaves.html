@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agenda de Citas Moderna</title>
+<title>Agenda de Citas PRO</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   body {
@@ -11,10 +11,10 @@
     margin: 0;
     padding: 0;
     background: linear-gradient(135deg, #6a11cb, #2575fc);
-    color: #333;
     display: flex;
     justify-content: center;
     min-height: 100vh;
+    color: #333;
   }
   .container {
     background: #fff;
@@ -28,16 +28,8 @@
     flex-direction: column;
     gap: 15px;
   }
-  h1 {
-    text-align: center;
-    color: #444;
-    margin-bottom: 20px;
-  }
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
+  h1 { text-align: center; color: #444; margin-bottom: 20px; }
+  form { display: flex; flex-direction: column; gap: 15px; }
   input {
     padding: 14px;
     font-size: 16px;
@@ -81,8 +73,9 @@
 </style>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+// Configuración Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDR6PNPfJDmQYv9uXUgedmozkngdk3bKDQ",
   authDomain: "minidavid-134d1.firebaseapp.com",
@@ -105,6 +98,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let usuarioNombre = "";
 
+  // Agendar cita
   citaForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const nombre = document.getElementById("nombre").value.trim();
@@ -114,7 +108,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if(!nombre || !fecha || !hora) return alert("Completa todos los campos");
 
     try {
-      await addDoc(collection(db, "citas"), { nombre, fecha, hora, timestamp: new Date() });
+      await addDoc(collection(db, "citas"), { nombre, fecha, hora, timestamp: serverTimestamp() });
       usuarioNombre = nombre;
       citaForm.reset();
       mostrarCitaUsuario(nombre);
@@ -124,9 +118,10 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Mostrar cita solo del usuario
   const mostrarCitaUsuario = (nombre) => {
-    const q = query(collection(db, "citas"), where("nombre", "==", nombre), orderBy("timestamp", "desc"));
-    onSnapshot(q, (snapshot) => {
+    const q = query(collection(db, "citas"), where("nombre","==",nombre), orderBy("timestamp","desc"));
+    onSnapshot(q, snapshot => {
       if(snapshot.empty) return;
       const doc = snapshot.docs[0].data();
       userCitaContent.textContent = `Nombre: ${doc.nombre} | Fecha: ${doc.fecha} | Hora: ${doc.hora}`;
@@ -135,9 +130,10 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   };
 
+  // Mostrar todas las citas (admin)
   const mostrarCitasAdmin = () => {
-    const q = query(collection(db, "citas"), orderBy("fecha", "asc"), orderBy("hora", "asc"));
-    onSnapshot(q, (snapshot) => {
+    const q = query(collection(db, "citas"), orderBy("timestamp","desc"));
+    onSnapshot(q, snapshot => {
       listaCitas.innerHTML = "";
       snapshot.forEach(doc => {
         const data = doc.data();
@@ -150,6 +146,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   };
 
+  // Login admin
   adminPassForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const password = document.getElementById("adminPassword").value;
@@ -167,7 +164,7 @@ window.addEventListener('DOMContentLoaded', () => {
 </head>
 <body>
 <div class="container">
-  <h1>Agenda de Citas</h1>
+  <h1>Agenda de Citas PRO</h1>
 
   <div id="userSection">
     <form id="citaForm">
