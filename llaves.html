@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Agenda de Citas</title>
+<title>Agenda PRO de Citas</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   body {
@@ -21,7 +21,7 @@
     padding: 30px;
     margin: 20px;
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   }
   h1,h2 {
@@ -63,13 +63,14 @@
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   }
-  #adminSection { display: none; }
+  #adminSection, #userCita { display: none; }
+  .label { font-weight: 500; color: #555; }
 </style>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-// Configuración de Firebase
+// Configuración Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDR6PNPfJDmQYv9uXUgedmozkngdk3bKDQ",
   authDomain: "minidavid-134d1.firebaseapp.com",
@@ -88,33 +89,54 @@ window.addEventListener('DOMContentLoaded', () => {
   const listaCitas = document.getElementById("listaCitas");
   const adminSection = document.getElementById("adminSection");
   const adminPassForm = document.getElementById("adminPassForm");
+  const userCita = document.getElementById("userCita");
+  const userCitaContent = document.getElementById("userCitaContent");
 
-  // Guardar cita
+  let usuarioNombre = "";
+
+  // Agendar cita
   citaForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const nombre = document.getElementById("nombre").value;
+    const nombre = document.getElementById("nombre").value.trim();
     const fecha = document.getElementById("fecha").value;
     const hora = document.getElementById("hora").value;
 
+    if(!nombre || !fecha || !hora) return alert("Completa todos los campos");
+
     try {
       await addDoc(collection(db, "citas"), { nombre, fecha, hora, timestamp: new Date() });
+      usuarioNombre = nombre;
       citaForm.reset();
-      alert("Cita agendada correctamente!");
+      mostrarCitaUsuario(nombre);
     } catch (error) {
       console.error("Error al guardar la cita:", error);
       alert("Error al guardar la cita. Intenta de nuevo.");
     }
   });
 
-  // Mostrar citas en tiempo real (solo admin)
+  // Mostrar solo la cita del usuario
+  const mostrarCitaUsuario = (nombre) => {
+    const q = query(collection(db, "citas"), where("nombre", "==", nombre), orderBy("timestamp", "desc"));
+    onSnapshot(q, (snapshot) => {
+      if(snapshot.empty) return;
+      const doc = snapshot.docs[0].data();
+      userCitaContent.textContent = `Nombre: ${doc.nombre} | Fecha: ${doc.fecha} | Hora: ${doc.hora}`;
+      document.getElementById("userSection").style.display = "none";
+      userCita.style.display = "block";
+    });
+  };
+
+  // Mostrar todas las citas (admin)
   const mostrarCitasAdmin = () => {
-    onSnapshot(collection(db, "citas"), (snapshot) => {
+    const q = query(collection(db, "citas"), orderBy("fecha", "asc"), orderBy("hora", "asc"));
+    onSnapshot(q, (snapshot) => {
       listaCitas.innerHTML = "";
-      snapshot.forEach((doc) => {
+      snapshot.forEach(doc => {
         const data = doc.data();
         const card = document.createElement("div");
         card.classList.add("card");
-        card.textContent = `${data.nombre} - ${data.fecha} a las ${data.hora}`;
+        card.innerHTML = `<span class="label">Nombre:</span> ${data.nombre}<br>
+                          <span class="label">Fecha:</span> ${data.fecha} <span class="label">Hora:</span> ${data.hora}`;
         listaCitas.appendChild(card);
       });
     });
@@ -124,9 +146,10 @@ window.addEventListener('DOMContentLoaded', () => {
   adminPassForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const password = document.getElementById("adminPassword").value;
-    if(password === "admin123"){  // <- Cambia la contraseña aquí
+    if(password === "admin123"){  // <- Cambia tu contraseña aquí
       adminSection.style.display = "block";
       document.getElementById("userSection").style.display = "none";
+      userCita.style.display = "none";
       mostrarCitasAdmin();
     } else {
       alert("Contraseña incorrecta");
@@ -138,8 +161,7 @@ window.addEventListener('DOMContentLoaded', () => {
 <body>
 
 <div class="container">
-
-  <h1>Agenda de Citas</h1>
+  <h1>Agenda PRO de Citas</h1>
 
   <!-- Sección usuario -->
   <div id="userSection">
@@ -157,12 +179,17 @@ window.addEventListener('DOMContentLoaded', () => {
     </form>
   </div>
 
+  <!-- Sección cita usuario -->
+  <div id="userCita">
+    <h2>Tu cita agendada</h2>
+    <div class="card" id="userCitaContent"></div>
+  </div>
+
   <!-- Sección admin -->
   <div id="adminSection">
     <h2>Citas agendadas</h2>
     <div id="listaCitas"></div>
   </div>
-
 </div>
 </body>
 </html>
