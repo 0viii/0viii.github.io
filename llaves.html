@@ -1,847 +1,113 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Stream - Contenido Interdimensional</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --alien-primary: #a832fa;
-            --alien-secondary: #32faf4;
-            --alien-accent: #fa32a0;
-            --alien-bg: #0a0515;
-            --alien-card: #160a28;
-            --alien-text: #ffffff;
-            --alien-glow: 0 0 15px currentColor;
-            --animation-color: #ff7be5;
-            --animation-glow: 0 0 20px #ff7be5;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: var(--alien-bg);
-            color: var(--alien-text);
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* Efecto de partículas de fondo */
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        /* Header con diseño orgánico */
-        header {
-            padding: 1.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(10, 5, 21, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(168, 50, 250, 0.3);
-            position: relative;
-            z-index: 10;
-        }
-
-        .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: var(--alien-primary);
-            text-shadow: var(--alien-glow);
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-        }
-
-        .logo::before {
-            content: "◇";
-            margin-right: 10px;
-            color: var(--alien-secondary);
-            animation: pulse 3s infinite alternate;
-        }
-
-        /* Navegación orgánica */
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        nav a {
-            color: var(--alien-text);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        nav a:hover {
-            color: var(--alien-secondary);
-            background: rgba(50, 250, 244, 0.1);
-        }
-
-        nav a::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(50, 250, 244, 0.2), transparent);
-            transition: all 0.5s ease;
-        }
-
-        nav a:hover::before {
-            left: 100%;
-        }
-
-        /* Filtros mejorados */
-        .filters {
-            padding: 2rem;
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            position: relative;
-            width: 300px;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 12px 20px;
-            background: rgba(22, 10, 40, 0.7);
-            border: 2px solid var(--alien-primary);
-            border-radius: 30px;
-            color: var(--alien-text);
-            font-family: 'Montserrat', sans-serif;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-box input:focus {
-            border-color: var(--alien-secondary);
-            box-shadow: 0 0 15px var(--alien-secondary);
-        }
-
-        .search-box::after {
-            content: "🔍";
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--alien-primary);
-        }
-
-        .category-filter {
-            position: relative;
-        }
-
-        .category-filter select {
-            padding: 12px 45px 12px 20px;
-            background: rgba(22, 10, 40, 0.7);
-            border: 2px solid var(--alien-primary);
-            border-radius: 30px;
-            color: var(--alien-text);
-            font-family: 'Montserrat', sans-serif;
-            outline: none;
-            appearance: none;
-            transition: all 0.3s ease;
-        }
-
-        .category-filter select:focus {
-            border-color: var(--alien-secondary);
-            box-shadow: 0 0 15px var(--alien-secondary);
-        }
-
-        .category-filter::after {
-            content: "▼";
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--alien-primary);
-            pointer-events: none;
-        }
-
-        /* Contenedor principal */
-        .main-content {
-            padding: 0 2rem 3rem;
-        }
-
-        .category-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            margin: 2rem 0 1.5rem;
-            padding-left: 1rem;
-            border-left: 4px solid;
-            display: flex;
-            align-items: center;
-        }
-
-        .sci-fi-title {
-            color: var(--alien-secondary);
-            text-shadow: var(--alien-glow);
-            border-color: var(--alien-secondary);
-        }
-
-        .cyberpunk-title {
-            color: var(--alien-primary);
-            text-shadow: 0 0 15px var(--alien-primary);
-            border-color: var(--alien-primary);
-        }
-
-        .animation-title {
-            color: var(--animation-color);
-            text-shadow: var(--animation-glow);
-            border-color: var(--animation-color);
-        }
-
-        .animation-title::before {
-            content: "✧";
-            margin-right: 10px;
-            font-size: 1.5rem;
-            animation: spin 4s infinite linear;
-        }
-
-        /* Catalogo con diseño orgánico */
-        .catalog {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .card {
-            background: var(--alien-card);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            position: relative;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            transform-style: preserve-3d;
-            perspective: 1000px;
-        }
-
-        .animation-card {
-            background: linear-gradient(to bottom, #250235, #160a28);
-            box-shadow: 0 5px 15px rgba(255, 123, 229, 0.2);
-        }
-
-        .animation-card:hover {
-            box-shadow: 0 15px 30px rgba(255, 123, 229, 0.4);
-        }
-
-        .card:hover {
-            transform: translateY(-10px) rotateX(5deg);
-            box-shadow: 0 15px 30px rgba(168, 50, 250, 0.3);
-        }
-
-        .animation-card:hover {
-            transform: translateY(-10px) rotate(2deg);
-        }
-
-        .card-media {
-            position: relative;
-            width: 100%;
-            height: 320px;
-            overflow: hidden;
-        }
-
-        .card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: all 0.5s ease;
-        }
-
-        .card video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .card:hover img {
-            transform: scale(1.1);
-        }
-
-        .card:hover video {
-            opacity: 1;
-        }
-
-        .card-content {
-            padding: 1.2rem;
-        }
-
-        .card-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-
-        .card-category {
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            padding: 3px 10px;
-            border-radius: 12px;
-            display: inline-block;
-        }
-
-        .sci-fi-category {
-            background: rgba(50, 250, 244, 0.2);
-            color: var(--alien-secondary);
-        }
-
-        .cyberpunk-category {
-            background: rgba(168, 50, 250, 0.2);
-            color: var(--alien-primary);
-        }
-
-        .animation-category {
-            background: rgba(255, 123, 229, 0.2);
-            color: var(--animation-color);
-        }
-
-        .card-actions {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .play-btn, .fav-btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 20px;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .play-btn {
-            background: var(--alien-primary);
-            color: white;
-        }
-
-        .play-btn:hover {
-            background: var(--alien-accent);
-            box-shadow: 0 0 15px var(--alien-accent);
-        }
-
-        .animation-card .play-btn {
-            background: var(--animation-color);
-            color: white;
-        }
-
-        .animation-card .play-btn:hover {
-            background: #ff48d0;
-            box-shadow: 0 0 15px var(--animation-color);
-        }
-
-        .fav-btn {
-            background: transparent;
-            color: var(--alien-text);
-            border: 1px solid var(--alien-primary);
-        }
-
-        .fav-btn.active {
-            background: var(--alien-accent);
-            border-color: var(--alien-accent);
-            color: white;
-        }
-
-        .fav-btn:hover {
-            background: var(--alien-accent);
-            border-color: var(--alien-accent);
-            box-shadow: 0 0 15px var(--alien-accent);
-        }
-
-        .animation-card .fav-btn {
-            border: 1px solid var(--animation-color);
-        }
-
-        .animation-card .fav-btn:hover {
-            background: var(--animation-color);
-            border-color: var(--animation-color);
-            box-shadow: 0 0 15px var(--animation-color);
-        }
-
-        /* Reproductor mejorado */
-        .player-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 2, 15, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .player-container.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .player-content {
-            width: 85%;
-            max-width: 1000px;
-            position: relative;
-        }
-
-        #player {
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 0 30px var(--alien-primary);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: -50px;
-            right: 0;
-            padding: 12px 25px;
-            background: var(--alien-accent);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .close-btn:hover {
-            background: var(--alien-primary);
-            box-shadow: 0 0 15px var(--alien-primary);
-        }
-
-        /* Animaciones */
-        @keyframes pulse {
-            0% { opacity: 0.6; transform: scale(0.95); }
-            50% { opacity: 1; transform: scale(1.1); }
-            100% { opacity: 0.6; transform: scale(0.95); }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            nav ul {
-                gap: 1rem;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .catalog {
-                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-                gap: 1.5rem;
-            }
-            
-            .filters {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .search-box {
-                width: 100%;
-                max-width: 300px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Agenda de Citas</title>
+<style>
+body { font-family: Arial; max-width: 600px; margin: 20px auto; text-align: center; }
+h1,h2 { color: #333; }
+form { margin-bottom: 20px; }
+input, button { padding: 8px; margin: 5px; font-size: 16px; }
+button { background: #007bff; color: white; border: none; cursor: pointer; }
+button:hover { background: #0056b3; }
+ul { list-style-type: none; padding: 0; }
+li { padding: 6px 0; border-bottom: 1px solid #ccc; }
+#adminSection { display: none; }
+</style>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+// Configuración de Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDR6PNPfJDmQYv9uXUgedmozkngdk3bKDQ",
+  authDomain: "minidavid-134d1.firebaseapp.com",
+  projectId: "minidavid-134d1",
+  storageBucket: "minidavid-134d1.firebasestorage.app",
+  messagingSenderId: "326973939527",
+  appId: "1:326973939527:web:32a464ab6f63262cc6b662"
+};
+
+// Inicializar Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.addEventListener('DOMContentLoaded', () => {
+  const citaForm = document.getElementById("citaForm");
+  const listaCitas = document.getElementById("listaCitas");
+  const adminSection = document.getElementById("adminSection");
+  const adminPassForm = document.getElementById("adminPassForm");
+
+  // Guardar cita
+  citaForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const nombre = document.getElementById("nombre").value;
+    const fecha = document.getElementById("fecha").value;
+    const hora = document.getElementById("hora").value;
+
+    try {
+      await addDoc(collection(db, "citas"), { nombre, fecha, hora, timestamp: new Date() });
+      citaForm.reset();
+      alert("Cita agendada correctamente!");
+    } catch (error) {
+      console.error("Error al guardar la cita:", error);
+      alert("Error al guardar la cita. Intenta de nuevo.");
+    }
+  });
+
+  // Mostrar citas en tiempo real (solo admin)
+  const mostrarCitasAdmin = () => {
+    onSnapshot(collection(db, "citas"), (snapshot) => {
+      listaCitas.innerHTML = "";
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const li = document.createElement("li");
+        li.textContent = `${data.nombre} - ${data.fecha} a las ${data.hora}`;
+        listaCitas.appendChild(li);
+      });
+    });
+  };
+
+  // Login admin simple
+  adminPassForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const password = document.getElementById("adminPassword").value;
+    if(password === "admin123"){  // <- Cambia la contraseña aquí
+      adminSection.style.display = "block";
+      document.getElementById("userSection").style.display = "none";
+      mostrarCitasAdmin();
+    } else {
+      alert("Contraseña incorrecta");
+    }
+  });
+});
+</script>
 </head>
 <body>
-    <!-- Partículas de fondo -->
-    <div id="particles-js"></div>
 
-    <header>
-        <div class="logo">NEXUS STREAM</div>
-        <nav>
-            <ul>
-                <li><a href="#">Inicio</a></li>
-                <li><a href="#">Series</a></li>
-                <li><a href="#">Películas</a></li>
-                <li><a href="#">Animación</a></li>
-                <li><a href="#">Mi Lista</a></li>
-            </ul>
-        </nav>
-    </header>
+<h1>Agenda de Citas</h1>
 
-    <div class="filters">
-        <div class="search-box">
-            <input type="text" id="search" placeholder="Buscar contenido interdimensional...">
-        </div>
-        <div class="category-filter">
-            <select id="category">
-                <option value="all">Todos los universos</option>
-                <option value="Sci-Fi">Ciencia Ficción</option>
-                <option value="Cyberpunk">Cyberpunk</option>
-                <option value="Animation">Animación</option>
-                <option value="Alien">Terror Alienígena</option>
-                <option value="Adventure">Aventura Espacial</option>
-            </select>
-        </div>
-    </div>
+<!-- Sección usuario -->
+<div id="userSection">
+  <form id="citaForm">
+    <input type="text" id="nombre" placeholder="Tu nombre" required>
+    <input type="date" id="fecha" required>
+    <input type="time" id="hora" required>
+    <button type="submit">Agendar</button>
+  </form>
 
-    <div class="main-content">
-        <h2 class="category-title sci-fi-title">Ciencia Ficción</h2>
-        <div class="catalog" id="sci-fi-content">
-            <!-- Las tarjetas se generarán con JavaScript -->
-        </div>
+  <h2>Administrador</h2>
+  <form id="adminPassForm">
+    <input type="password" id="adminPassword" placeholder="Contraseña admin" required>
+    <button type="submit">Ingresar</button>
+  </form>
+</div>
 
-        <h2 class="category-title cyberpunk-title">Cyberpunk</h2>
-        <div class="catalog" id="cyberpunk-content">
-            <!-- Las tarjetas se generarán con JavaScript -->
-        </div>
+<!-- Sección admin -->
+<div id="adminSection">
+  <h2>Citas agendadas</h2>
+  <ul id="listaCitas"></ul>
+</div>
 
-        <h2 class="category-title animation-title">Mundo Animado</h2>
-        <div class="catalog" id="animation-content">
-            <!-- Las tarjetas se generarán con JavaScript -->
-        </div>
-    </div>
-
-    <div class="player-container" id="player-container">
-        <div class="player-content">
-            <button class="close-btn" id="close-player">Cerrar</button>
-            <video id="player" controls></video>
-        </div>
-    </div>
-
-    <script>
-        // Datos de contenido
-        const content = [
-            { 
-                id: 1, 
-                title: "Nebulosa Prohibida", 
-                category: "Sci-Fi", 
-                image: "https://placehold.co/400x600/160a28/32faf4?text=Nebulosa+Prohibida", 
-                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                featured: true
-            },
-            { 
-                id: 2, 
-                title: "Androide Destiny", 
-                category: "Cyberpunk", 
-                image: "https://placehold.co/400x600/160a28/fa32a0?text=Androide+Destiny", 
-                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-                featured: true
-            },
-            { 
-                id: 3, 
-                title: "Xenomorfos", 
-                category: "Sci-Fi", 
-                image: "https://placehold.co/400x600/160a28/a832fa?text=Xenomorfos", 
-                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-                featured: true
-            },
-            { 
-                id: 4, 
-                title: "Crystal Planet", 
-                category: "Adventure", 
-                image: "https://placehold.co/400x600/160a28/32faf4?text=Crystal+Planet", 
-                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-                featured: true
-            },
-            { 
-                id: 5, 
-                title: "Quantum Drift", 
-                category: "Cyberpunk", 
-                image: "https://placehold.co/400x600/160a28/fa32a0?text=Quantum+Drift", 
-                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-                featured: true
-            },
-            { 
-                id: 6, 
-                title: "Cybernetic Revolution", 
-                category: "Sci-Fi", 
-                image: "https://placehold.co/400x600/160a28/a832fa?text=Cybernetic+Revolution", 
-                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-                featured: true
-            },
-            // Películas animadas
-            { 
-                id: 7, 
-                title: "Galaxy Rangers", 
-                category: "Animation", 
-                image: "https://placehold.co/400x600/250235/ff7be5?text=Galaxy+Rangers", 
-                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                featured: true
-            },
-            { 
-                id: 8, 
-                title: "Stellar Academy", 
-                category: "Animation", 
-                image: "https://placehold.co/400x600/250235/ff7be5?text=Stellar+Academy", 
-                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-                featured: true
-            },
-            { 
-                id: 9, 
-                title: "Cosmic Friends", 
-                category: "Animation", 
-                image: "https://placehold.co/400x600/250235/ff7be5?text=Cosmic+Friends", 
-                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-                featured: true
-            },
-            { 
-                id: 10, 
-                title: "Robot Dreams", 
-                category: "Animation", 
-                image: "https://placehold.co/400x600/250235/ff7be5?text=Robot+Dreams", 
-                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-                featured: true
-            },
-            { 
-                id: 11, 
-                title: "Moonlight Tales", 
-                category: "Animation", 
-                image: "https://placehold.co/400x600/250235/ff7be5?text=Moonlight+Tales", 
-                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-                featured: true
-            },
-            { 
-                id: 12, 
-                title: "Space Adventures", 
-                category: "Animation", 
-                image: "https://placehold.co/400x600/250235/ff7be5?text=Space+Adventures", 
-                trailer: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-                featured: true
-            }
-        ];
-
-        // Inicialización
-        document.addEventListener('DOMContentLoaded', () => {
-            // Inicializar partículas
-            particlesJS("particles-js", {
-                particles: {
-                    number: { value: 30, density: { enable: true, value_area: 800 } },
-                    color: { value: "#a832fa" },
-                    shape: { type: "circle" },
-                    opacity: { value: 0.5, random: true },
-                    size: { value: 3, random: true },
-                    line_linked: { enable: true, distance: 150, color: "#32faf4", opacity: 0.4, width: 1 },
-                    move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
-                },
-                interactivity: {
-                    detect_on: "canvas",
-                    events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } }
-                }
-            });
-
-            // Cargar contenido
-            renderContent();
-            
-            // Configurar event listeners
-            document.getElementById('search').addEventListener('input', filterContent);
-            document.getElementById('category').addEventListener('change', filterContent);
-            document.getElementById('close-player').addEventListener('click', closePlayer);
-        });
-
-        // Renderizar contenido
-        function renderContent() {
-            const sciFiEl = document.getElementById('sci-fi-content');
-            const cyberpunkEl = document.getElementById('cyberpunk-content');
-            const animationEl = document.getElementById('animation-content');
-            
-            // Limpiar contenedores
-            sciFiEl.innerHTML = '';
-            cyberpunkEl.innerHTML = '';
-            animationEl.innerHTML = '';
-            
-            // Filtrar contenido por categoría
-            const sciFiContent = content.filter(item => item.category === "Sci-Fi");
-            const cyberpunkContent = content.filter(item => item.category === "Cyberpunk");
-            const animationContent = content.filter(item => item.category === "Animation");
-            
-            // Renderizar contenido
-            sciFiContent.forEach(item => {
-                sciFiEl.appendChild(createCard(item));
-            });
-            
-            cyberpunkContent.forEach(item => {
-                cyberpunkEl.appendChild(createCard(item));
-            });
-            
-            animationContent.forEach(item => {
-                animationEl.appendChild(createCard(item));
-            });
-        }
-
-        // Crear tarjeta de contenido
-        function createCard(item) {
-            const card = document.createElement('div');
-            card.className = 'card';
-            if (item.category === "Animation") {
-                card.classList.add('animation-card');
-            }
-            
-            card.innerHTML = `
-                <div class="card-media">
-                    <img src="${item.image}" alt="${item.title}">
-                    <video src="${item.trailer}" muted loop></video>
-                </div>
-                <div class="card-content">
-                    <h3 class="card-title">${item.title}</h3>
-                    <span class="card-category ${getCategoryClass(item.category)}">${item.category}</span>
-                    <div class="card-actions">
-                        <button class="play-btn" data-id="${item.id}">▶ Reproducir</button>
-                        <button class="fav-btn" data-id="${item.id}">❤ Favorito</button>
-                    </div>
-                </div>
-            `;
-            
-            // Event listeners para la tarjeta
-            const playBtn = card.querySelector('.play-btn');
-            const favBtn = card.querySelector('.fav-btn');
-            
-            playBtn.addEventListener('click', () => playContent(item.video));
-            favBtn.addEventListener('click', () => toggleFavorite(item.id, favBtn));
-            
-            return card;
-        }
-
-        // Obtener clase CSS para la categoría
-        function getCategoryClass(category) {
-            switch(category) {
-                case "Sci-Fi": return "sci-fi-category";
-                case "Cyberpunk": return "cyberpunk-category";
-                case "Animation": return "animation-category";
-                default: return "";
-            }
-        }
-
-        // Filtrar contenido
-        function filterContent() {
-            const searchTerm = document.getElementById('search').value.toLowerCase();
-            const category = document.getElementById('category').value;
-            
-            const sciFiEl = document.getElementById('sci-fi-content');
-            const cyberpunkEl = document.getElementById('cyberpunk-content');
-            const animationEl = document.getElementById('animation-content');
-            
-            // Limpiar contenedores
-            sciFiEl.innerHTML = '';
-            cyberpunkEl.innerHTML = '';
-            animationEl.innerHTML = '';
-            
-            // Filtrar contenido
-            const filteredSciFi = content.filter(item => {
-                return item.category === "Sci-Fi" && 
-                    (item.title.toLowerCase().includes(searchTerm)) &&
-                    (category === 'all' || item.category === category);
-            });
-            
-            const filteredCyberpunk = content.filter(item => {
-                return item.category === "Cyberpunk" && 
-                    (item.title.toLowerCase().includes(searchTerm)) &&
-                    (category === 'all' || item.category === category);
-            });
-            
-            const filteredAnimation = content.filter(item => {
-                return item.category === "Animation" && 
-                    (item.title.toLowerCase().includes(searchTerm)) &&
-                    (category === 'all' || item.category === category);
-            });
-            
-            // Renderizar contenido filtrado
-            filteredSciFi.forEach(item => {
-                sciFiEl.appendChild(createCard(item));
-            });
-            
-            filteredCyberpunk.forEach(item => {
-                cyberpunkEl.appendChild(createCard(item));
-            });
-            
-            filteredAnimation.forEach(item => {
-                animationEl.appendChild(createCard(item));
-            });
-        }
-
-        // Reproducir contenido
-        function playContent(videoUrl) {
-            const playerContainer = document.getElementById('player-container');
-            const player = document.getElementById('player');
-            
-            player.src = videoUrl;
-            playerContainer.classList.add('active');
-            player.play();
-        }
-
-        // Cerrar reproductor
-        function closePlayer() {
-            const playerContainer = document.getElementById('player-container');
-            const player = document.getElementById('player');
-            
-            player.pause();
-            playerContainer.classList.remove('active');
-        }
-
-        // Alternar favorito
-        function toggleFavorite(id, button) {
-            button.classList.toggle('active');
-            // Aquí se podría agregar lógica para guardar en localStorage
-        }
-    </script>
-    
-    <!-- Librería de partículas -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </body>
 </html>
