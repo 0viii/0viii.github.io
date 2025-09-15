@@ -1,150 +1,123 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Pixel Game Móvil</title>
-<style>
-body{margin:0;background:#111;overflow:hidden;font-family:sans-serif;}
-canvas{display:block;margin:0 auto;background:#222;border:3px solid #fff;}
-#controls{position:absolute;bottom:20px;width:100%;display:flex;justify-content:space-around;}
-.ctrlBtn{width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,0.2);font-size:30px;text-align:center;line-height:70px;user-select:none;}
-</style>
+  <meta charset="UTF-8">
+  <title>Sistema de Tickets</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f6f9; }
+    h1, h2 { color: #333; }
+    form, .ticket { 
+      background: #fff; 
+      border: 1px solid #ddd; 
+      padding: 15px; 
+      margin-bottom: 20px; 
+      border-radius: 8px; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    input, textarea, select, button { 
+      width: 100%; 
+      margin: 8px 0; 
+      padding: 10px; 
+      border: 1px solid #ccc; 
+      border-radius: 5px; 
+      font-size: 14px;
+    }
+    button { background: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    .ticket { background: #fafafa; }
+    .estado { font-weight: bold; margin-top: 10px; }
+  </style>
 </head>
 <body>
+  <h1>📩 Sistema de Tickets</h1>
 
-<canvas id="game" width="800" height="400"></canvas>
+  <!-- Formulario -->
+  <form id="ticketForm">
+    <input type="text" id="nombre" placeholder="Tu nombre" required>
+    <input type="email" id="correo" placeholder="Tu correo" required>
+    <input type="text" id="asunto" placeholder="Asunto" required>
+    <textarea id="descripcion" placeholder="Describe tu problema" required></textarea>
+    <button type="submit">Enviar Ticket</button>
+  </form>
 
-<div id="controls">
-  <div class="ctrlBtn" id="leftBtn">←</div>
-  <div class="ctrlBtn" id="upBtn">↑</div>
-  <div class="ctrlBtn" id="rightBtn">→</div>
-</div>
+  <h2>🎫 Tickets</h2>
+  <div id="listaTickets"></div>
 
-<script>
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
+  <!-- Firebase + Lógica -->
+  <script type="module">
+    // Importa Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, doc } 
+      from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-const groundHeight = 370;
+    // Configuración de tu Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDR6PNPfJDmQYv9uXUgedmozkngdk3bKDQ",
+      authDomain: "minidavid-134d1.firebaseapp.com",
+      projectId: "minidavid-134d1",
+      storageBucket: "minidavid-134d1.firebasestorage.app",
+      messagingSenderId: "326973939527",
+      appId: "1:326973939527:web:32a464ab6f63262cc6b662"
+    };
 
-// --- Jugador ---
-const player = {x:50, y:300, w:30, h:30, dx:0, dy:0, speed:4, jumpPower:-10, gravity:0.5, grounded:false};
+    // Inicializa Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-// --- Enemigos ---
-const enemies = [{x:300, y:340, w:30, h:30, speed:2, dir:1}];
+    const ticketForm = document.getElementById("ticketForm");
+    const listaTickets = document.getElementById("listaTickets");
 
-// --- Power-ups ---
-const powerUps = [{x:200, y:340, w:20, h:20, type:"jumpBoost"}];
+    // Crear ticket
+    ticketForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nombre = document.getElementById("nombre").value;
+      const correo = document.getElementById("correo").value;
+      const asunto = document.getElementById("asunto").value;
+      const descripcion = document.getElementById("descripcion").value;
 
-// --- Meta ---
-const goal = {x:750, y:300, w:40, h:70, color:"lime"};
+      await addDoc(collection(db, "tickets"), {
+        nombre, correo, asunto, descripcion,
+        estado: "Abierto",
+        fecha: new Date()
+      });
 
-// --- Controles ---
-const keys = {left:false, right:false, up:false};
+      alert("✅ Ticket creado!");
+      ticketForm.reset();
+      cargarTickets();
+    });
 
-document.addEventListener("keydown", e => {
-  if(e.key === "ArrowLeft") keys.left = true;
-  if(e.key === "ArrowRight") keys.right = true;
-  if(e.key === "ArrowUp") keys.up = true;
-});
-document.addEventListener("keyup", e => {
-  if(e.key === "ArrowLeft") keys.left = false;
-  if(e.key === "ArrowRight") keys.right = false;
-  if(e.key === "ArrowUp") keys.up = false;
-});
-
-// Botones táctiles
-["leftBtn","rightBtn","upBtn"].forEach(id=>{
-  const key = id.replace("Btn","");
-  const el = document.getElementById(id);
-  el.addEventListener("touchstart", e => { e.preventDefault(); keys[key]=true; });
-  el.addEventListener("touchend", e => { e.preventDefault(); keys[key]=false; });
-});
-
-// --- Funciones ---
-function rectCollision(r1,r2){
-  return r1.x<r2.x+r2.w && r1.x+r1.w>r2.x && r1.y<r2.y+r2.h && r1.y+r1.h>r2.y;
-}
-
-function resetPlayer(){
-  player.x = 50;
-  player.y = 300;
-  player.dx = 0;
-  player.dy = 0;
-  player.grounded = false;
-}
-
-// --- Update ---
-function update(){
-  // Movimiento
-  player.dx = 0;
-  if(keys.left) player.dx = -player.speed;
-  if(keys.right) player.dx = player.speed;
-  if(keys.up && player.grounded){ player.dy = player.jumpPower; player.grounded=false; }
-
-  player.dy += player.gravity;
-  player.x += player.dx;
-  player.y += player.dy;
-
-  // Suelo
-  if(player.y + player.h > groundHeight){ player.y = groundHeight - player.h; player.dy=0; player.grounded=true; }
-
-  // Limites de pantalla
-  if(player.x < 0) player.x = 0;
-  if(player.x + player.w > canvas.width) player.x = canvas.width - player.w;
-
-  // Enemigos
-  enemies.forEach(e => {
-    e.x += e.speed * e.dir;
-    if(e.x<0 || e.x+e.w>canvas.width) e.dir *= -1;
-    if(rectCollision(player, e)) resetPlayer();
-  });
-
-  // Power-ups
-  for(let i = powerUps.length - 1; i >=0; i--){
-    const p = powerUps[i];
-    if(rectCollision(player,p)){
-      if(p.type==="jumpBoost") player.jumpPower=-15;
-      powerUps.splice(i,1);
+    // Cargar tickets
+    async function cargarTickets() {
+      listaTickets.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "tickets"));
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const div = document.createElement("div");
+        div.className = "ticket";
+        div.innerHTML = `
+          <p><b>Asunto:</b> ${data.asunto}</p>
+          <p><b>Descripción:</b> ${data.descripcion}</p>
+          <p><b>Usuario:</b> ${data.nombre} (${data.correo})</p>
+          <p class="estado">Estado: ${data.estado}</p>
+          <select onchange="actualizarEstado('${docSnap.id}', this.value)">
+            <option value="Abierto" ${data.estado==="Abierto"?"selected":""}>Abierto</option>
+            <option value="En Proceso" ${data.estado==="En Proceso"?"selected":""}>En Proceso</option>
+            <option value="Cerrado" ${data.estado==="Cerrado"?"selected":""}>Cerrado</option>
+          </select>
+        `;
+        listaTickets.appendChild(div);
+      });
     }
-  }
 
-  // Meta
-  if(rectCollision(player, goal)){
-    alert("¡Nivel completado!");
-    resetPlayer();
-  }
-}
+    // Cambiar estado
+    window.actualizarEstado = async (id, nuevoEstado) => {
+      const ticketRef = doc(db, "tickets", id);
+      await updateDoc(ticketRef, { estado: nuevoEstado });
+      cargarTickets();
+    };
 
-// --- Draw ---
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  // Fondo
-  ctx.fillStyle="#555"; ctx.fillRect(0,groundHeight,canvas.width,canvas.height-groundHeight);
-
-  // Jugador
-  ctx.fillStyle="white"; ctx.fillRect(player.x,player.y,player.w,player.h);
-
-  // Enemigos
-  ctx.fillStyle="red"; enemies.forEach(e=>ctx.fillRect(e.x,e.y,e.w,e.h));
-
-  // Power-ups
-  powerUps.forEach(p=>{ ctx.fillStyle=p.type==="jumpBoost"?"yellow":"orange"; ctx.fillRect(p.x,p.y,p.w,p.h); });
-
-  // Meta
-  ctx.fillStyle=goal.color; ctx.fillRect(goal.x,goal.y,goal.w,goal.h);
-}
-
-// --- Loop ---
-function gameLoop(){
-  update();
-  draw();
-  requestAnimationFrame(gameLoop);
-}
-
-gameLoop();
-</script>
-
+    // Inicial
+    cargarTickets();
+  </script>
 </body>
 </html>
