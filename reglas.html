@@ -1,202 +1,87 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-  <title>Flappy Phaser - Móvil</title>
+  <meta charset="UTF-8">
+  <title>Panel Admin - Tickets</title>
   <style>
-    html, body { height: 100%; margin: 0; background: #87CEEB; }
-    #game-container { width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; }
-    .hint { position: absolute; bottom: 8px; width: 100%; text-align: center; font-family: Arial, sans-serif; color: #033; pointer-events: none; }
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    h1 { color: #222; }
+    .ticket { background: #fff; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+    textarea, select, button { width: 100%; margin: 8px 0; padding: 8px; border-radius: 5px; }
+    button { background: #28a745; color: white; border: none; cursor: pointer; }
+    button:hover { background: #218838; }
+    .respuesta { margin-top: 10px; font-style: italic; }
   </style>
 </head>
 <body>
-  <div id="game-container"></div>
-  <div class="hint">Toca la pantalla o pulsa ESPACIO para volar ✈️</div>
+  <h1>🎫 Panel de Tickets (Admin)</h1>
+  <div id="listaTickets"></div>
 
-  <!-- Phaser 3 CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, updateDoc, doc } 
+      from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  <script>
-    const config = {
-      type: Phaser.AUTO,
-      parent: 'game-container',
-      width: 480,
-      height: 640,
-      backgroundColor: 0x87CEEB,
-      scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
-      physics: { default: 'arcade', arcade: { gravity: { y: 900 }, debug: false } },
-      scene: { preload, create, update }
+    const firebaseConfig = {
+      apiKey: "AIzaSyDR6PNPfJDmQYv9uXUgedmozkngdk3bKDQ",
+      authDomain: "minidavid-134d1.firebaseapp.com",
+      projectId: "minidavid-134d1",
+      storageBucket: "minidavid-134d1.firebasestorage.app",
+      messagingSenderId: "326973939527",
+      appId: "1:326973939527:web:32a464ab6f63262cc6b662"
     };
 
-    const game = new Phaser.Game(config);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    function preload() {
-      // Pájaro (círculo amarillo)
-      this.graphics = this.add.graphics();
-      this.graphics.fillStyle(0xFFDD33, 1);
-      this.graphics.fillCircle(16,16,16);
-      this.graphics.generateTexture('bird',32,32);
-      this.graphics.clear();
+    const listaTickets = document.getElementById("listaTickets");
 
-      // Tubos (rectángulo verde)
-      this.graphics.fillStyle(0x2E8B57,1);
-      this.graphics.fillRect(0,0,52,400);
-      this.graphics.generateTexture('pipe',52,400);
-      this.graphics.clear();
+    // Cargar todos los tickets
+    async function cargarTickets() {
+      listaTickets.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "tickets"));
 
-      // Pixel (para suelo)
-      this.graphics.fillStyle(0x000000,1);
-      this.graphics.fillRect(0,0,10,10);
-      this.graphics.generateTexture('pixel',1,1);
-      this.graphics.destroy();
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const div = document.createElement("div");
+        div.className = "ticket";
+        div.innerHTML = `
+          <p><b>Usuario:</b> ${data.nombre} (${data.correo})</p>
+          <p><b>Asunto:</b> ${data.asunto}</p>
+          <p><b>Descripción:</b> ${data.descripcion}</p>
+          <p><b>Estado:</b> ${data.estado}</p>
+          <label>Actualizar estado:</label>
+          <select onchange="actualizarEstado('${docSnap.id}', this.value)">
+            <option value="Abierto" ${data.estado==="Abierto"?"selected":""}>Abierto</option>
+            <option value="En Proceso" ${data.estado==="En Proceso"?"selected":""}>En Proceso</option>
+            <option value="Cerrado" ${data.estado==="Cerrado"?"selected":""}>Cerrado</option>
+          </select>
+          <label>Responder:</label>
+          <textarea id="respuesta-${docSnap.id}" placeholder="Escribe una respuesta...">${data.respuesta || ""}</textarea>
+          <button onclick="responderTicket('${docSnap.id}')">Enviar Respuesta</button>
+          ${data.respuesta ? `<div class="respuesta">Respuesta actual: ${data.respuesta}</div>` : ""}
+        `;
+        listaTickets.appendChild(div);
+      });
     }
 
-    function create() {
-      const scene = this;
-      this.gameSpeed = 160;
-      this.pipeGap = 150;
-      this.pipeInterval = 1400;
-      this.isRunning = false;
-      this.score = 0;
+    // Cambiar estado
+    window.actualizarEstado = async (id, nuevoEstado) => {
+      const ticketRef = doc(db, "tickets", id);
+      await updateDoc(ticketRef, { estado: nuevoEstado });
+      cargarTickets();
+    };
 
-      // Suelo
-      this.ground = this.physics.add.staticGroup();
-      const groundHeight = 24;
-      this.ground.create(config.width/2, config.height - groundHeight/2,'pixel')
-        .setScale(config.width, groundHeight).refreshBody().setVisible(false);
+    // Responder ticket
+    window.responderTicket = async (id) => {
+      const texto = document.getElementById(`respuesta-${id}`).value;
+      const ticketRef = doc(db, "tickets", id);
+      await updateDoc(ticketRef, { respuesta: texto });
+      alert("✅ Respuesta enviada!");
+      cargarTickets();
+    };
 
-      // Pájaro
-      this.bird = this.physics.add.sprite(100, config.height/2,'bird');
-      this.bird.setCollideWorldBounds(true);
-      this.bird.setCircle(14);
-      this.bird.setBounce(0);
-      this.bird.body.setAllowGravity(true);
-
-      // Tubos
-      this.pipes = this.physics.add.group();
-
-      // Colisiones
-      this.physics.add.collider(this.bird,this.ground,hitPipeOrGround,null,this);
-      this.physics.add.overlap(this.bird,this.pipes,hitPipeOrGround,null,this);
-
-      // Controles
-      this.input.on('pointerdown',flap,this);
-      this.input.keyboard.on('keydown-SPACE',flap,this);
-
-      // Texto puntuación
-      this.scoreText = this.add.text(20,20,'Puntos: 0',{font:'22px Arial',fill:'#033'}).setDepth(3);
-      this.startText = this.add.text(config.width/2, config.height/2-40,'Toca para empezar',{font:'28px Arial',fill:'#033'}).setOrigin(0.5);
-
-      this.pipeTimer = null;
-      this.gameOver = false;
-
-      // Función iniciar juego
-      this.startGame = function() {
-        if(this.isRunning) return;
-        this.isRunning = true;
-        this.startText.setVisible(false);
-        this.score = 0;
-        this.scoreText.setText('Puntos: 0');
-
-        // Reset pájaro
-        this.bird.setPosition(100, config.height/2);
-        this.bird.setVelocity(0,0);
-        this.bird.setAcceleration(0,0);
-        this.bird.setAngle(0);
-        this.bird.clearTint();
-        this.bird.body.setAllowGravity(true);
-
-        this.gameOver = false;
-        this.pipes.clear(true,true);
-
-        // Generar tubos
-        this.pipeTimer = this.time.addEvent({
-          delay: this.pipeInterval,
-          callback: spawnPipes,
-          callbackScope: this,
-          loop:true
-        });
-      }.bind(this);
-
-      // Función perder
-      function hitPipeOrGround() {
-        if(scene.gameOver) return;
-        scene.gameOver = true;
-        scene.isRunning = false;
-
-        if(scene.pipeTimer) scene.pipeTimer.remove(false);
-
-        scene.pipes.children.iterate(pipe=>pipe.body.setVelocityX(0));
-        scene.bird.setTint(0xff4444);
-        scene.bird.body.setVelocityY(0);
-        scene.bird.body.setAllowGravity(false);
-
-        scene.time.delayedCall(300,()=>{
-          const restartText = scene.add.text(config.width/2, config.height/2,'Perdiste 😢\nToca para reiniciar',{font:'26px Arial',fill:'#033',align:'center'}).setOrigin(0.5);
-          restartText.setDepth(5);
-          scene.input.once('pointerdown',()=>{
-            restartText.destroy();
-            scene.startText.setVisible(true);
-            scene.bird.clearTint();
-            scene.startGame();
-          },scene);
-        });
-      }
-
-      // Flap
-      function flap(){
-        if(!scene.isRunning){scene.startGame();}
-        if(scene.gameOver) return;
-        scene.bird.setVelocityY(-330);
-      }
-
-      // Crear tubos
-      function spawnPipes() {
-        const gap = scene.pipeGap;
-        const pipeTopHeight = Phaser.Math.Between(50, config.height - gap - 120);
-        const pipeX = config.width + 30;
-
-        // Superior
-        const top = scene.pipes.create(pipeX, pipeTopHeight-200,'pipe').setOrigin(0,1);
-        top.body.allowGravity=false;
-        top.body.immovable=true;
-        top.body.setVelocityX(-scene.gameSpeed-Phaser.Math.Between(0,30));
-
-        // Inferior
-        const bottomY = pipeTopHeight+gap;
-        const bottom = scene.pipes.create(pipeX,bottomY+200,'pipe').setOrigin(0,0);
-        bottom.body.allowGravity=false;
-        bottom.body.immovable=true;
-        bottom.body.setVelocityX(-scene.gameSpeed-Phaser.Math.Between(0,30));
-
-        // Zona puntuación
-        const scoreZone = scene.add.zone(pipeX+26, pipeTopHeight+gap/2,2,gap);
-        scene.physics.world.enable(scoreZone);
-        scoreZone.body.allowGravity=false;
-        scoreZone.body.setVelocityX(-scene.gameSpeed-30);
-        scoreZone.scored=false;
-        scene.physics.add.overlap(scene.bird, scoreZone, function(bird,zone){
-          if(!zone.scored && !scene.gameOver){
-            zone.scored=true;
-            scene.score++;
-            scene.scoreText.setText('Puntos: '+scene.score);
-          }
-        });
-      }
-    }
-
-    function update() {
-      // Inclinar pájaro según velocidad
-      if(this.isRunning && !this.gameOver){
-        const velY = this.bird.body.velocity.y;
-        const targetAngle = Phaser.Math.Clamp((velY/600)*90,-20,60);
-        this.bird.angle = Phaser.Math.Interpolation.Linear([this.bird.angle,targetAngle],0.1);
-      }
-
-      // Limpiar tubos fuera de pantalla
-      this.pipes.children.iterate(pipe=>{if(pipe && pipe.x<-100) pipe.destroy();});
-    }
+    cargarTickets();
   </script>
 </body>
 </html>
