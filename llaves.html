@@ -2,36 +2,20 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Sistema de Tickets</title>
+  <title>Soporte - Crear Ticket</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; background: #f4f6f9; }
     h1, h2 { color: #333; }
-    form, .ticket { 
-      background: #fff; 
-      border: 1px solid #ddd; 
-      padding: 15px; 
-      margin-bottom: 20px; 
-      border-radius: 8px; 
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    input, textarea, select, button { 
-      width: 100%; 
-      margin: 8px 0; 
-      padding: 10px; 
-      border: 1px solid #ccc; 
-      border-radius: 5px; 
-      font-size: 14px;
-    }
+    form, .ticket { background: #fff; border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+    input, textarea, button { width: 100%; margin: 8px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
     button { background: #007bff; color: white; border: none; cursor: pointer; }
     button:hover { background: #0056b3; }
-    .ticket { background: #fafafa; }
-    .estado { font-weight: bold; margin-top: 10px; }
+    .respuesta { background: #eef; padding: 8px; border-radius: 5px; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <h1>📩 Sistema de Tickets</h1>
+  <h1>📩 Crear Ticket</h1>
 
-  <!-- Formulario -->
   <form id="ticketForm">
     <input type="text" id="nombre" placeholder="Tu nombre" required>
     <input type="email" id="correo" placeholder="Tu correo" required>
@@ -40,17 +24,16 @@
     <button type="submit">Enviar Ticket</button>
   </form>
 
-  <h2>🎫 Tickets</h2>
-  <div id="listaTickets"></div>
+  <h2>🎫 Tus Tickets</h2>
+  <input type="email" id="buscarCorreo" placeholder="Ingresa tu correo para ver tus tickets">
+  <button onclick="cargarTicketsUsuario()">Ver mis tickets</button>
+  <div id="misTickets"></div>
 
-  <!-- Firebase + Lógica -->
   <script type="module">
-    // Importa Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, updateDoc, doc } 
+    import { getFirestore, collection, addDoc, getDocs, query, where } 
       from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // Configuración de tu Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDR6PNPfJDmQYv9uXUgedmozkngdk3bKDQ",
       authDomain: "minidavid-134d1.firebaseapp.com",
@@ -60,12 +43,11 @@
       appId: "1:326973939527:web:32a464ab6f63262cc6b662"
     };
 
-    // Inicializa Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     const ticketForm = document.getElementById("ticketForm");
-    const listaTickets = document.getElementById("listaTickets");
+    const misTickets = document.getElementById("misTickets");
 
     // Crear ticket
     ticketForm.addEventListener("submit", async (e) => {
@@ -78,18 +60,23 @@
       await addDoc(collection(db, "tickets"), {
         nombre, correo, asunto, descripcion,
         estado: "Abierto",
+        respuesta: "",
         fecha: new Date()
       });
 
       alert("✅ Ticket creado!");
       ticketForm.reset();
-      cargarTickets();
     });
 
-    // Cargar tickets
-    async function cargarTickets() {
-      listaTickets.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "tickets"));
+    // Cargar tickets de un usuario
+    async function cargarTicketsUsuario() {
+      misTickets.innerHTML = "";
+      const correoBuscado = document.getElementById("buscarCorreo").value;
+      if (!correoBuscado) { alert("Ingresa un correo"); return; }
+
+      const q = query(collection(db, "tickets"), where("correo", "==", correoBuscado));
+      const querySnapshot = await getDocs(q);
+
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data();
         const div = document.createElement("div");
@@ -97,27 +84,18 @@
         div.innerHTML = `
           <p><b>Asunto:</b> ${data.asunto}</p>
           <p><b>Descripción:</b> ${data.descripcion}</p>
-          <p><b>Usuario:</b> ${data.nombre} (${data.correo})</p>
-          <p class="estado">Estado: ${data.estado}</p>
-          <select onchange="actualizarEstado('${docSnap.id}', this.value)">
-            <option value="Abierto" ${data.estado==="Abierto"?"selected":""}>Abierto</option>
-            <option value="En Proceso" ${data.estado==="En Proceso"?"selected":""}>En Proceso</option>
-            <option value="Cerrado" ${data.estado==="Cerrado"?"selected":""}>Cerrado</option>
-          </select>
+          <p><b>Estado:</b> ${data.estado}</p>
+          ${data.respuesta ? `<div class="respuesta"><b>Respuesta:</b> ${data.respuesta}</div>` : ""}
         `;
-        listaTickets.appendChild(div);
+        misTickets.appendChild(div);
       });
+
+      if (misTickets.innerHTML === "") {
+        misTickets.innerHTML = "<p>No se encontraron tickets con ese correo.</p>";
+      }
     }
 
-    // Cambiar estado
-    window.actualizarEstado = async (id, nuevoEstado) => {
-      const ticketRef = doc(db, "tickets", id);
-      await updateDoc(ticketRef, { estado: nuevoEstado });
-      cargarTickets();
-    };
-
-    // Inicial
-    cargarTickets();
+    window.cargarTicketsUsuario = cargarTicketsUsuario;
   </script>
 </body>
 </html>
