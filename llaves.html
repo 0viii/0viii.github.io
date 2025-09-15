@@ -1,235 +1,272 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agenda Móvil PRO</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-/* Reset básico */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'Poppins', sans-serif;
-  background: #f2f4f7;
-  display: flex;
-  justify-content: center;
-  min-height: 100vh;
-  color: #333;
-}
-
-/* Contenedor principal */
-.container {
-  width: 100%;
-  max-width: 420px;
-  padding: 25px;
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* Header */
-header {
-  text-align: center;
-  font-weight: 700;
-  font-size: 2em;
-  color: #4b4bff;
-  margin-bottom: 15px;
-}
-
-/* Formularios */
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  background: #fff;
-  padding: 20px;
-  border-radius: 25px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
-input {
-  padding: 14px;
-  font-size: 16px;
-  border-radius: 12px;
-  border: 1px solid #ccc;
-  transition: 0.3s;
-}
-
-input:focus {
-  outline: none;
-  border-color: #4b4bff;
-  box-shadow: 0 0 8px rgba(75,75,255,0.3);
-}
-
-button {
-  padding: 14px;
-  font-size: 16px;
-  border-radius: 18px;
-  border: none;
-  background: #4b4bff;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-button:hover {
-  transform: scale(1.03);
-  box-shadow: 0 6px 15px rgba(75,75,255,0.3);
-}
-
-/* Tarjetas de cita */
-.card {
-  background: #fff;
-  padding: 18px;
-  border-radius: 25px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-  transition: 0.3s;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 0.5s forwards;
-}
-
-.card.upcoming { border-left: 6px solid #4b4bff; }
-.card.past { border-left: 6px solid #ff4b4b; }
-
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.label { font-weight: 600; }
-
-/* Secciones ocultas */
-#adminSection, #userCita { display: none; }
-
-</style>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-// Config Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyDR6PNPfJDmQYv9uXUgedmozkngdk3bKDQ",
-  authDomain: "minidavid-134d1.firebaseapp.com",
-  projectId: "minidavid-134d1",
-  storageBucket: "minidavid-134d1.firebasestorage.app",
-  messagingSenderId: "326973939527",
-  appId: "1:326973939527:web:32a464ab6f63262cc6b662"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-window.addEventListener('DOMContentLoaded', () => {
-  const citaForm = document.getElementById("citaForm");
-  const listaCitas = document.getElementById("listaCitas");
-  const adminSection = document.getElementById("adminSection");
-  const adminPassForm = document.getElementById("adminPassForm");
-  const userCita = document.getElementById("userCita");
-  const userCitaContent = document.getElementById("userCitaContent");
-
-  let usuarioNombre = "";
-
-  // Agendar cita
-  citaForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const nombre = document.getElementById("nombre").value.trim();
-    const fecha = document.getElementById("fecha").value;
-    const hora = document.getElementById("hora").value;
-
-    if(!nombre || !fecha || !hora) return alert("Completa todos los campos");
-
-    try {
-      await addDoc(collection(db, "citas"), { nombre, fecha, hora, timestamp: serverTimestamp() });
-      usuarioNombre = nombre;
-      citaForm.reset();
-      mostrarCitaUsuario(nombre);
-    } catch (error) {
-      console.error("Error al guardar la cita:", error);
-      alert("Error al guardar la cita. Intenta de nuevo.");
+  <meta charset="UTF-8">
+  <title>El Guardián del Tiempo</title>
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      color: white;
+      font-family: sans-serif;
     }
-  });
 
-  // Mostrar cita usuario
-  const mostrarCitaUsuario = (nombre) => {
-    const q = query(collection(db, "citas"), where("nombre","==",nombre), orderBy("timestamp","desc"));
-    onSnapshot(q, snapshot => {
-      if(snapshot.empty) return;
-      const doc = snapshot.docs[0].data();
-      userCitaContent.className = "card upcoming";
-      userCitaContent.textContent = `Nombre: ${doc.nombre} | Fecha: ${doc.fecha} | Hora: ${doc.hora}`;
-      document.getElementById("userSection").style.display = "none";
-      userCita.style.display = "block";
-    });
-  };
-
-  // Mostrar todas las citas admin
-  const mostrarCitasAdmin = () => {
-    const q = query(collection(db, "citas"), orderBy("timestamp","desc"));
-    onSnapshot(q, snapshot => {
-      listaCitas.innerHTML = "";
-      const now = new Date();
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const card = document.createElement("div");
-        const fechaHora = new Date(data.fecha + "T" + data.hora);
-        card.classList.add("card");
-        card.classList.add(fechaHora < now ? "past" : "upcoming");
-        card.innerHTML = `<span class="label">Nombre:</span> ${data.nombre}<br>
-                          <span class="label">Fecha:</span> ${data.fecha} <span class="label">Hora:</span> ${data.hora}`;
-        listaCitas.appendChild(card);
-      });
-    });
-  };
-
-  // Login admin
-  adminPassForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const password = document.getElementById("adminPassword").value;
-    if(password === "admin123"){
-      adminSection.style.display = "block";
-      document.getElementById("userSection").style.display = "none";
-      userCita.style.display = "none";
-      mostrarCitasAdmin();
-    } else {
-      alert("Contraseña incorrecta");
+    canvas {
+      background: #222;
+      border: 3px solid #fff;
     }
-  });
 
-});
-</script>
+    #info {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.6);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <header>Agenda Móvil PRO</header>
+  <div id="info">← → moverse | ↑ saltar | ESPACIO cambiar tiempo</div>
+  <canvas id="game" width="800" height="400"></canvas>
 
-  <div id="userSection">
-    <form id="citaForm">
-      <input type="text" id="nombre" placeholder="Tu nombre" required>
-      <input type="date" id="fecha" required>
-      <input type="time" id="hora" required>
-      <button type="submit">Agendar Cita</button>
-    </form>
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
 
-    <h2 style="text-align:center;">Administrador</h2>
-    <form id="adminPassForm">
-      <input type="password" id="adminPassword" placeholder="Contraseña admin" required>
-      <button type="submit">Ingresar</button>
-    </form>
-  </div>
+    // Suelo
+    const groundHeight = 370;
 
-  <div id="userCita">
-    <h2 style="text-align:center;">Tu cita agendada</h2>
-    <div class="card" id="userCitaContent"></div>
-  </div>
+    // Jugador
+    const player = {
+      x: 50,
+      y: 300,
+      w: 30,
+      h: 30,
+      dx: 0,
+      dy: 0,
+      speed: 4,
+      jumpPower: -10,
+      gravity: 0.5,
+      grounded: false
+    };
 
-  <div id="adminSection">
-    <h2 style="text-align:center;">Citas agendadas</h2>
-    <div id="listaCitas"></div>
-  </div>
+    // Tiempo y partículas
+    let timeState = "past";
+    let particles = [];
 
-</div>
+    // Sonidos
+    const sounds = {
+      jump: new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"),
+      swap: new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"),
+      winLevel: new Audio("https://actions.google.com/sounds/v1/cartoon/concussive_drum_hit.ogg"),
+      victory: new Audio("https://actions.google.com/sounds/v1/cartoon/crowd_cheer.ogg")
+    };
+
+    // Niveles
+    const levels = [
+      {
+        past: [{x:200,y:320,w:100,h:50,color:"red"},{x:500,y:270,w:120,h:100,color:"red"}],
+        future:[{x:350,y:320,w:100,h:50,color:"orange"},{x:650,y:270,w:100,h:100,color:"orange"}],
+        goal: {x:750,y:300,w:40,h:70,color:"lime"}
+      },
+      {
+        past: [{x:150,y:300,w:80,h:70,color:"red"},{x:400,y:250,w:80,h:120,color:"red"},{x:600,y:320,w:100,h:50,color:"red"}],
+        future:[{x:250,y:320,w:100,h:50,color:"orange"},{x:500,y:290,w:100,h:80,color:"orange"}],
+        goal: {x:750,y:300,w:40,h:70,color:"lime"}
+      },
+      {
+        past: [{x:200,y:320,w:80,h:50,color:"red"},{x:400,y:280,w:120,h:90,color:"red"},{x:600,y:230,w:100,h:140,color:"red"}],
+        future:[{x:300,y:320,w:80,h:50,color:"orange"},{x:500,y:270,w:120,h:100,color:"orange"},{x:700,y:320,w:60,h:50,color:"orange"}],
+        goal: {x:750,y:300,w:40,h:70,color:"lime"}
+      }
+    ];
+
+    let currentLevel = 0;
+    let gameWon = false;
+
+    // Puntaje y tiempo
+    let startTime = Date.now();
+    let score = 0;
+
+    // Teclas
+    const keys = {};
+    document.addEventListener("keydown", (e) => {
+      keys[e.key] = true;
+      if (e.key === " ") {
+        timeState = (timeState === "past") ? "future" : "past";
+        sounds.swap.play();
+        spawnParticles(player.x + player.w/2, player.y + player.h/2);
+      }
+    });
+    document.addEventListener("keyup", (e) => keys[e.key] = false);
+
+    // Colisión
+    function rectCollision(r1, r2) {
+      return (
+        r1.x < r2.x + r2.w &&
+        r1.x + r1.w > r2.x &&
+        r1.y < r2.y + r2.h &&
+        r1.y + r1.h > r2.y
+      );
+    }
+
+    // Reset jugador
+    function resetPlayer() {
+      player.x = 50;
+      player.y = 300;
+      player.dx = 0;
+      player.dy = 0;
+    }
+
+    // Partículas
+    function spawnParticles(x, y) {
+      for (let i=0; i<20; i++) {
+        particles.push({
+          x: x, y: y,
+          dx: (Math.random()-0.5)*5,
+          dy: (Math.random()-0.5)*5,
+          life: 50
+        });
+      }
+    }
+
+    function updateParticles() {
+      particles.forEach(p => {
+        p.x += p.dx;
+        p.y += p.dy;
+        p.life--;
+      });
+      particles = particles.filter(p => p.life > 0);
+    }
+
+    // Actualizar
+    function update() {
+      if (gameWon) return;
+
+      // Movimiento
+      if (keys["ArrowLeft"]) player.dx = -player.speed;
+      else if (keys["ArrowRight"]) player.dx = player.speed;
+      else player.dx = 0;
+
+      // Salto
+      if (keys["ArrowUp"] && player.grounded) {
+        player.dy = player.jumpPower;
+        player.grounded = false;
+        sounds.jump.play();
+      }
+
+      // Física
+      player.dy += player.gravity;
+      player.x += player.dx;
+      player.y += player.dy;
+
+      // Suelo
+      if (player.y + player.h > groundHeight) {
+        player.y = groundHeight - player.h;
+        player.dy = 0;
+        player.grounded = true;
+      }
+
+      // Obstáculos
+      const currentObstacles = (timeState === "past") ? levels[currentLevel].past : levels[currentLevel].future;
+      player.grounded = (player.y + player.h >= groundHeight);
+      currentObstacles.forEach(o => {
+        if (rectCollision(player, o)) {
+          if (player.y + player.h > o.y && player.dy >= 0 && player.y < o.y) {
+            player.y = o.y - player.h;
+            player.dy = 0;
+            player.grounded = true;
+          }
+        }
+      });
+
+      // Pantalla
+      if (player.x < 0) player.x = 0;
+      if (player.x + player.w > canvas.width) player.x = canvas.width - player.w;
+
+      // Meta
+      const goal = levels[currentLevel].goal;
+      if (rectCollision(player, goal)) {
+        sounds.winLevel.play();
+        let elapsed = Math.floor((Date.now()-startTime)/1000);
+        score += Math.max(100 - elapsed, 10); // menos tiempo, más puntos
+        startTime = Date.now();
+
+        if (currentLevel < levels.length - 1) {
+          currentLevel++;
+          resetPlayer();
+        } else {
+          gameWon = true;
+          sounds.victory.play();
+        }
+      }
+
+      updateParticles();
+    }
+
+    // Dibujar
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Fondo
+      ctx.fillStyle = (timeState === "past") ? "#334" : "#443";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Suelo
+      ctx.fillStyle = "#555";
+      ctx.fillRect(0, groundHeight, canvas.width, canvas.height - groundHeight);
+
+      // Obstáculos
+      const currentObstacles = (timeState === "past") ? levels[currentLevel].past : levels[currentLevel].future;
+      currentObstacles.forEach(o => {
+        ctx.fillStyle = o.color;
+        ctx.fillRect(o.x, o.y, o.w, o.h);
+      });
+
+      // Meta
+      const goal = levels[currentLevel].goal;
+      ctx.fillStyle = goal.color;
+      ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
+
+      // Jugador
+      ctx.fillStyle = (player.dx !== 0) ? ((timeState === "past") ? "cyan" : "yellow") : "white";
+      ctx.fillRect(player.x, player.y, player.w, player.h);
+
+      // Partículas
+      particles.forEach(p => {
+        ctx.fillStyle = "rgba(255,255,0,0.7)";
+        ctx.fillRect(p.x, p.y, 4, 4);
+      });
+
+      // HUD
+      ctx.fillStyle = "white";
+      ctx.font = "18px sans-serif";
+      if (!gameWon) {
+        ctx.fillText("Nivel: " + (currentLevel + 1) + "/" + levels.length, 10, 20);
+        ctx.fillText("Tiempo: " + (timeState === "past" ? "Pasado" : "Futuro"), 10, 40);
+        let elapsed = Math.floor((Date.now()-startTime)/1000);
+        ctx.fillText("Tiempo nivel: " + elapsed + "s", 10, 60);
+        ctx.fillText("Puntos: " + score, 10, 80);
+      } else {
+        ctx.font = "28px sans-serif";
+        ctx.fillStyle = "yellow";
+        ctx.fillText("🎉 ¡Victoria! Puntaje total: " + score, 180, 200);
+      }
+    }
+
+    // Loop
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+    gameLoop();
+  </script>
 </body>
 </html>
