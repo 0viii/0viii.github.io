@@ -2,174 +2,149 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>El Guardián del Tiempo - Fase 8</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Pixel Game Móvil</title>
 <style>
-body{margin:0;background:#111;color:white;font-family:sans-serif;overflow:hidden;}
-canvas{display:block;margin:0 auto;border:3px solid #fff;background:#222;}
-#menu{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;background:rgba(0,0,0,0.85);color:white;transition:0.5s;}
-button{padding:15px 25px;margin:10px;font-size:20px;cursor:pointer;transition:0.3s;border-radius:10px;}
-button:hover{background:rgba(255,255,255,0.2);}
-#info{position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.6);padding:8px 12px;border-radius:8px;}
-#controls{position:absolute;bottom:20px;left:0;width:100%;display:flex;justify-content:space-around;}
+body{margin:0;background:#111;overflow:hidden;font-family:sans-serif;}
+canvas{display:block;margin:0 auto;background:#222;border:3px solid #fff;}
+#controls{position:absolute;bottom:20px;width:100%;display:flex;justify-content:space-around;}
 .ctrlBtn{width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,0.2);font-size:30px;text-align:center;line-height:70px;user-select:none;}
-.powerUpIcon{position:absolute;width:50px;height:50px;top:10px;right:10px;display:none;}
 </style>
 </head>
 <body>
-<div id="menu">
-  <h1>El Guardián del Tiempo</h1>
-  <button id="startBtn">Jugar</button>
-  <button id="rankingBtn">Ranking</button>
-</div>
+
 <canvas id="game" width="800" height="400"></canvas>
-<div id="info">Controles táctiles</div>
+
 <div id="controls">
   <div class="ctrlBtn" id="leftBtn">←</div>
   <div class="ctrlBtn" id="upBtn">↑</div>
   <div class="ctrlBtn" id="rightBtn">→</div>
-  <div class="ctrlBtn" id="swapBtn">⏳</div>
 </div>
-<img id="powerUpIcon" class="powerUpIcon" src="">
 
 <script>
-// --- Variables ---
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-const menu = document.getElementById("menu");
-const startBtn = document.getElementById("startBtn");
-const rankingBtn = document.getElementById("rankingBtn");
-const powerUpIcon = document.getElementById("powerUpIcon");
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
 
 const groundHeight = 370;
-const player = {x:50,y:300,w:30,h:30,dx:0,dy:0,speed:4,jumpPower:-10,gravity:0.5,grounded:false,lives:3,activePower:null};
-let timeState = "past";
-let particles = [];
-let currentLevel = 0;
-let gameWon = false;
-let startTime = Date.now();
-let score = 0;
-let highScore = localStorage.getItem('highScore')||0;
-let unlockedLevels = JSON.parse(localStorage.getItem('unlockedLevels')) || [true,false,false];
 
-// --- Música y sonidos ---
-const music = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_0b4bb47c7b.mp3?filename=relaxing-background-music-11067.mp3");
-music.loop = true; music.volume = 0.3;
+// --- Jugador ---
+const player = {x:50, y:300, w:30, h:30, dx:0, dy:0, speed:4, jumpPower:-10, gravity:0.5, grounded:false};
 
-const sounds = {
-  jump: new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"),
-  swap: new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"),
-  hit: new Audio("https://actions.google.com/sounds/v1/cartoon/boing.ogg"),
-  winLevel: new Audio("https://actions.google.com/sounds/v1/cartoon/concussive_drum_hit.ogg"),
-  victory: new Audio("https://actions.google.com/sounds/v1/cartoon/crowd_cheer.ogg"),
-  power: new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg")
-};
+// --- Enemigos ---
+const enemies = [{x:300, y:340, w:30, h:30, speed:2, dir:1}];
 
-// --- Niveles ---
-const levels = [
-  {past:[{x:200,y:320,w:100,h:50,color:"red"}],
-   future:[{x:350,y:320,w:100,h:50,color:"orange"}],
-   enemies:[{x:400,y:340,w:30,h:30,speed:2,dir:1}],
-   goal:{x:750,y:300,w:40,h:70,color:"lime"},
-   powerUps:[{x:300,y:300,type:"jumpBoost"}]},
-  {past:[{x:150,y:300,w:80,h:70,color:"red"},{x:400,y:250,w:80,h:120,color:"red"}],
-   future:[{x:250,y:320,w:100,h:50,color:"orange"},{x:500,y:290,w:100,h:80,color:"orange"}],
-   enemies:[{x:200,y:340,w:30,h:30,speed:1.5,dir:1},{x:500,y:310,w:30,h:30,speed:2,dir:-1}],
-   goal:{x:750,y:300,w:40,h:70,color:"lime"},
-   powerUps:[{x:450,y:260,type:"speedBoost"}]}
-];
+// --- Power-ups ---
+const powerUps = [{x:200, y:340, w:20, h:20, type:"jumpBoost"}];
+
+// --- Meta ---
+const goal = {x:750, y:300, w:40, h:70, color:"lime"};
 
 // --- Controles ---
-const keys = {left:false,right:false,up:false,swap:false};
-document.addEventListener("keydown",(e)=>{if(e.key==="ArrowLeft")keys.left=true;if(e.key==="ArrowRight")keys.right=true;if(e.key==="ArrowUp")keys.up=true;if(e.key===" ")keys.swap=true;});
-document.addEventListener("keyup",(e)=>{if(e.key==="ArrowLeft")keys.left=false;if(e.key==="ArrowRight")keys.right=false;if(e.key==="ArrowUp")keys.up=false;if(e.key===" ")keys.swap=false;});
-["leftBtn","rightBtn","upBtn","swapBtn"].forEach(id=>{
-  let key = id.replace("Btn","");
-  document.getElementById(id).addEventListener("touchstart",()=>keys[key]=true);
-  document.getElementById(id).addEventListener("touchend",()=>keys[key]=false);
+const keys = {left:false, right:false, up:false};
+
+document.addEventListener("keydown", e => {
+  if(e.key === "ArrowLeft") keys.left = true;
+  if(e.key === "ArrowRight") keys.right = true;
+  if(e.key === "ArrowUp") keys.up = true;
+});
+document.addEventListener("keyup", e => {
+  if(e.key === "ArrowLeft") keys.left = false;
+  if(e.key === "ArrowRight") keys.right = false;
+  if(e.key === "ArrowUp") keys.up = false;
+});
+
+// Botones táctiles
+["leftBtn","rightBtn","upBtn"].forEach(id=>{
+  const key = id.replace("Btn","");
+  const el = document.getElementById(id);
+  el.addEventListener("touchstart", e => { e.preventDefault(); keys[key]=true; });
+  el.addEventListener("touchend", e => { e.preventDefault(); keys[key]=false; });
 });
 
 // --- Funciones ---
-function spawnParticles(x,y){for(let i=0;i<20;i++){particles.push({x,y,dx:(Math.random()-0.5)*5,dy:(Math.random()-0.5)*5,life:50});}}
-function updateParticles(){particles.forEach(p=>{p.x+=p.dx;p.y+=p.dy;p.life--;});particles = particles.filter(p=>p.life>0);}
-function resetPlayer(){player.x=50;player.y=300;player.dx=0;player.dy=0;startTime=Date.now();player.activePower=null;powerUpIcon.style.display="none";}
-function rectCollision(r1,r2){return r1.x<r2.x+r2.w && r1.x+r1.w>r2.x && r1.y<r2.y+r2.h && r1.y+r1.h>r2.y;}
+function rectCollision(r1,r2){
+  return r1.x<r2.x+r2.w && r1.x+r1.w>r2.x && r1.y<r2.y+r2.h && r1.y+r1.h>r2.y;
+}
+
+function resetPlayer(){
+  player.x = 50;
+  player.y = 300;
+  player.dx = 0;
+  player.dy = 0;
+  player.grounded = false;
+}
 
 // --- Update ---
 function update(){
-  if(gameWon) return;
-  player.dx=0;
-  if(keys.left)player.dx=-player.speed;
-  if(keys.right)player.dx=player.speed;
-  if(keys.up && player.grounded){player.dy=player.jumpPower;player.grounded=false;sounds.jump.play();}
-  if(keys.swap){timeState=(timeState==="past")?"future":"past";spawnParticles(player.x+player.w/2,player.y+player.h/2);sounds.swap.play();keys.swap=false;}
-  if(player.activePower==="speedBoost")player.dx*=1.5;
+  // Movimiento
+  player.dx = 0;
+  if(keys.left) player.dx = -player.speed;
+  if(keys.right) player.dx = player.speed;
+  if(keys.up && player.grounded){ player.dy = player.jumpPower; player.grounded=false; }
 
-  player.dy+=player.gravity;
-  player.x+=player.dx; player.y+=player.dy;
+  player.dy += player.gravity;
+  player.x += player.dx;
+  player.y += player.dy;
 
-  if(player.y+player.h>groundHeight){player.y=groundHeight-player.h;player.dy=0;player.grounded=true;}
+  // Suelo
+  if(player.y + player.h > groundHeight){ player.y = groundHeight - player.h; player.dy=0; player.grounded=true; }
 
-  const currentObstacles = (timeState==="past")?levels[currentLevel].past:levels[currentLevel].future;
-  currentObstacles.forEach(o=>{if(rectCollision(player,o)){if(player.y+player.h>o.y && player.dy>=0 && player.y<o.y){player.y=o.y-player.h;player.dy=0;player.grounded=true;}}});
+  // Limites de pantalla
+  if(player.x < 0) player.x = 0;
+  if(player.x + player.w > canvas.width) player.x = canvas.width - player.w;
 
-  const enemies = levels[currentLevel].enemies;
-  enemies.forEach(e=>{e.x+=e.speed*e.dir;if(e.x<0||e.x+e.w>canvas.width)e.dir*=-1;if(rectCollision(player,e)){player.lives--;sounds.hit.play();resetPlayer();}});
+  // Enemigos
+  enemies.forEach(e => {
+    e.x += e.speed * e.dir;
+    if(e.x<0 || e.x+e.w>canvas.width) e.dir *= -1;
+    if(rectCollision(player, e)) resetPlayer();
+  });
 
-  const powerUps = levels[currentLevel].powerUps;
-  powerUps.forEach((p,i)=>{if(rectCollision(player,p)){player.activePower=p.type;sounds.power.play();powerUpIcon.src="https://cdn-icons-png.flaticon.com/512/3524/3524381.png";powerUpIcon.style.display="block";powerUps.splice(i,1);}});
-
-  const goal = levels[currentLevel].goal;
-  if(rectCollision(player,goal)){
-    sounds.winLevel.play();
-    let elapsed = Math.floor((Date.now()-startTime)/1000);
-    score += Math.max(100-elapsed,10);
-    if(currentLevel<levels.length-1){currentLevel++;resetPlayer();unlockedLevels[currentLevel]=true;localStorage.setItem('unlockedLevels',JSON.stringify(unlockedLevels));}
-    else{gameWon=true;sounds.victory.play();if(score>highScore){highScore=score;localStorage.setItem('highScore',highScore);}}
+  // Power-ups
+  for(let i = powerUps.length - 1; i >=0; i--){
+    const p = powerUps[i];
+    if(rectCollision(player,p)){
+      if(p.type==="jumpBoost") player.jumpPower=-15;
+      powerUps.splice(i,1);
+    }
   }
 
-  updateParticles();
+  // Meta
+  if(rectCollision(player, goal)){
+    alert("¡Nivel completado!");
+    resetPlayer();
+  }
 }
 
 // --- Draw ---
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle=(timeState==="past")?"#334":"#443";ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle="#555";ctx.fillRect(0,groundHeight,canvas.width,canvas.height-groundHeight);
 
-  const currentObstacles = (timeState==="past")?levels[currentLevel].past:levels[currentLevel].future;
-  currentObstacles.forEach(o=>{ctx.fillStyle=o.color;ctx.fillRect(o.x,o.y,o.w,o.h);});
+  // Fondo
+  ctx.fillStyle="#555"; ctx.fillRect(0,groundHeight,canvas.width,canvas.height-groundHeight);
 
-  levels[currentLevel].enemies.forEach(e=>{ctx.fillStyle="magenta";ctx.fillRect(e.x,e.y,e.w,e.h);});
+  // Jugador
+  ctx.fillStyle="white"; ctx.fillRect(player.x,player.y,player.w,player.h);
 
-  ctx.fillStyle=goal.color;ctx.fillRect(levels[currentLevel].goal.x,levels[currentLevel].goal.y,levels[currentLevel].goal.w,levels[currentLevel].goal.h);
+  // Enemigos
+  ctx.fillStyle="red"; enemies.forEach(e=>ctx.fillRect(e.x,e.y,e.w,e.h));
 
-  ctx.fillStyle=(player.activePower==="jumpBoost")?"cyan":"white";
-  ctx.fillRect(player.x,player.y,player.w,player.h);
+  // Power-ups
+  powerUps.forEach(p=>{ ctx.fillStyle=p.type==="jumpBoost"?"yellow":"orange"; ctx.fillRect(p.x,p.y,p.w,p.h); });
 
-  particles.forEach(p=>{ctx.fillStyle="rgba(255,255,0,0.7)";ctx.fillRect(p.x,p.y,4,4);});
-
-  ctx.fillStyle="white";ctx.font="18px sans-serif";
-  if(!gameWon){
-    ctx.fillText("Nivel: "+(currentLevel+1)+"/"+levels.length,10,20);
-    ctx.fillText("Tiempo: "+(timeState==="past"?"Pasado":"Futuro"),10,40);
-    ctx.fillText("Vidas: "+player.lives,10,60);
-    ctx.fillText("Puntos: "+score,10,80);
-    ctx.fillText("Récord: "+highScore,10,100);
-  } else {
-    ctx.font="28px sans-serif";ctx.fillStyle="yellow";
-    ctx.fillText("🎉 ¡Victoria! Puntaje: "+score,180,180);
-    ctx.fillText("Récord: "+highScore,300,220);
-  }
+  // Meta
+  ctx.fillStyle=goal.color; ctx.fillRect(goal.x,goal.y,goal.w,goal.h);
 }
 
 // --- Loop ---
-function gameLoop(){update();draw();requestAnimationFrame(gameLoop);}
-gameLoop();
+function gameLoop(){
+  update();
+  draw();
+  requestAnimationFrame(gameLoop);
+}
 
-// --- Menú ---
-startBtn.addEventListener("click",()=>{menu.style.display="none";music.play();});
-rankingBtn.addEventListener("click",()=>{alert("Récord: "+highScore);});
+gameLoop();
 </script>
+
 </body>
 </html>
