@@ -10,7 +10,9 @@
     input, textarea, button { width: 100%; margin: 8px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
     button { background: #007bff; color: white; border: none; cursor: pointer; }
     button:hover { background: #0056b3; }
-    .respuesta { background: #eef; padding: 8px; border-radius: 5px; margin-top: 10px; }
+    .mensaje { background: #eef; padding: 8px; border-radius: 5px; margin: 5px 0; }
+    .usuario { background: #d4f1f9; }
+    .admin { background: #ffd4d4; }
   </style>
 </head>
 <body>
@@ -31,7 +33,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, where } 
+    import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc, arrayUnion } 
       from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -58,9 +60,11 @@
       const descripcion = document.getElementById("descripcion").value;
 
       await addDoc(collection(db, "tickets"), {
-        nombre, correo, asunto, descripcion,
+        nombre, correo, asunto,
         estado: "Abierto",
-        respuesta: "",
+        mensajes: [
+          { autor: "Usuario", texto: descripcion, fecha: new Date().toLocaleString() }
+        ],
         fecha: new Date()
       });
 
@@ -68,7 +72,7 @@
       ticketForm.reset();
     });
 
-    // Cargar tickets de un usuario
+    // Cargar tickets de usuario
     async function cargarTicketsUsuario() {
       misTickets.innerHTML = "";
       const correoBuscado = document.getElementById("buscarCorreo").value;
@@ -81,11 +85,21 @@
         const data = docSnap.data();
         const div = document.createElement("div");
         div.className = "ticket";
+
+        // Mostrar mensajes como chat
+        let mensajesHTML = "";
+        data.mensajes.forEach(m => {
+          mensajesHTML += `<div class="mensaje ${m.autor === 'Usuario' ? 'usuario' : 'admin'}">
+            <b>${m.autor}:</b> ${m.texto} <br><small>${m.fecha}</small>
+          </div>`;
+        });
+
         div.innerHTML = `
           <p><b>Asunto:</b> ${data.asunto}</p>
-          <p><b>Descripción:</b> ${data.descripcion}</p>
           <p><b>Estado:</b> ${data.estado}</p>
-          ${data.respuesta ? `<div class="respuesta"><b>Respuesta:</b> ${data.respuesta}</div>` : ""}
+          <div>${mensajesHTML}</div>
+          <textarea id="respuesta-${docSnap.id}" placeholder="Escribe tu respuesta..."></textarea>
+          <button onclick="responderTicket('${docSnap.id}')">Responder</button>
         `;
         misTickets.appendChild(div);
       });
@@ -94,6 +108,20 @@
         misTickets.innerHTML = "<p>No se encontraron tickets con ese correo.</p>";
       }
     }
+
+    // Responder ticket (usuario)
+    window.responderTicket = async (id) => {
+      const texto = document.getElementById(`respuesta-${id}`).value;
+      if (!texto) return alert("Escribe un mensaje primero");
+
+      const ticketRef = doc(db, "tickets", id);
+      await updateDoc(ticketRef, {
+        mensajes: arrayUnion({ autor: "Usuario", texto, fecha: new Date().toLocaleString() })
+      });
+
+      alert("✅ Respuesta enviada!");
+      cargarTicketsUsuario();
+    };
 
     window.cargarTicketsUsuario = cargarTicketsUsuario;
   </script>
