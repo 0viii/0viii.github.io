@@ -3,1126 +3,912 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini David 👻</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css ">
+    <title>Didi Clone - Servicio de Transporte</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: 'Montserrat', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #4776E6, #8E54E9);
-            color: #fff;
-            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
         }
 
-        .player-container {
-            background: rgba(25, 20, 20, 0.95);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-            transition: all 0.3s ease;
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            background-color: #ff6600;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            color: #ff6600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             position: relative;
         }
 
-        .title-container {
+        #map {
+            flex: 1;
+            z-index: 1;
+        }
+
+        .search-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .search-inputs {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 32px;
-            font-weight: 700;
-            background: linear-gradient(to right, #4776E6, #8E54E9);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .ghost-emoji {
-            font-size: 32px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .heart-btn {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            background: none;
-            border: none;
-            color: #ff4d4d;
-            font-size: 24px;
-            cursor: pointer;
-            animation: heartbeat 1.2s infinite;
-        }
-
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            25% { transform: scale(1.1); }
-            50% { transform: scale(1); }
-            75% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .song-info {
-            margin-bottom: 25px;
-        }
-
-        #song-title {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        #song-artist {
-            font-size: 16px;
-            color: #b3b3b3;
-            font-weight: 400;
-        }
-
-        .album-art {
-            width: 220px;
-            height: 220px;
-            border-radius: 10px;
-            margin: 0 auto 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-        }
-
-        .album-art img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .album-art i {
-            font-size: 60px;
-            color: rgba(255, 255, 255, 0.2);
-        }
-
-        .progress-container {
-            width: 100%;
-            height: 6px; /* Puede ser un poco más delgado */
-            background: transparent; /* Fondo transparente */
-            border-radius: 10px;
-            margin: 20px 0;
-            cursor: pointer;
-            overflow: hidden;
-            position: relative; /* Importante para el pseudo-elemento */
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); /* Sombra interna para profundidad */
-        }
-
-        .progress {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(to right, #4776E6, #8E54E9); /* Tu gradiente */
-            border-radius: 10px;
-            transition: width 0.1s linear; /* Transición lineal */
-            position: relative; /* Para que el pseudo-elemento esté contenido */
-        }
-
-        .progress-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.15); /* Color para la pista vacía */
-            border-radius: 10px;
-            z-index: -1; /* Detrás del progreso real */
-        }
-
-        .time-display {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: #b3b3b3;
-        }
-
-        .main-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px; /* Mantén o ajusta el espacio */
-            margin: 20px 0;
-        }
-
-        .control-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.2s ease; /* Transición para todos los cambios */
-            padding: 12px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 45px;
-            height: 45px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil por defecto */
-        }
-
-        .control-btn:hover {
-            background: linear-gradient(135deg, #4776E6, #8E54E9); /* Gradiente al hacer hover */
-            transform: scale(1.15); /* Escalado más pronunciado */
-            box-shadow: 0 5px 15px rgba(71, 118, 230, 0.6); /* Sombra más intensa */
-        }
-
-        .control-btn:active {
-            transform: scale(0.95); /* Efecto de presión */
-        }
-
-        .play-pause {
-            background: linear-gradient(135deg, #4776E6, #8E54E9);
-            width: 60px;
-            height: 60px;
-            font-size: 20px;
-            box-shadow: 0 5px 15px rgba(71, 118, 230, 0.4); /* Sombra inicial */
-            transition: all 0.2s ease; /* Asegura la transición también aquí */
-        }
-
-        .play-pause:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(71, 118, 230, 0.7); /* Sombra aún más intensa */
-        }
-
-        .play-pause:active {
-            transform: scale(0.98); /* Efecto de presión */
-        }
-
-        .secondary-controls {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 15px 0;
-        }
-
-        .volume-container {
-            display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 10px;
-            margin-top: 10px;
+            margin-bottom: 15px;
         }
 
-        .volume-slider {
-            width: 100px;
-            -webkit-appearance: none;
-            height: 5px;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.2);
+        .input-group {
+            display: flex;
+            align-items: center;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .input-group.error {
+            border-color: #ff3333;
+        }
+
+        .input-group i {
+            margin-right: 10px;
+            color: #666;
+        }
+
+        .input-group input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            font-size: 16px;
             outline: none;
         }
 
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            background: #4776E6;
-            cursor: pointer;
-            transition: all 0.2s ease;
+        .error-message {
+            color: #ff3333;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
         }
 
-        .volume-slider::-webkit-slider-thumb:hover {
-            background: #8E54E9;
-            transform: scale(1.2);
-        }
-
-        .playlist-toggle {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 30px;
-            padding: 10px 20px;
-            color: #fff;
-            margin: 20px 0 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 500;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil */
-        }
-
-        .playlist-toggle:hover {
-            background: linear-gradient(135deg, #4776E6, #8E54E9); /* Gradiente al hover */
-            box-shadow: 0 5px 15px rgba(71, 118, 230, 0.6); /* Sombra más intensa */
-            transform: scale(1.05); /* Escalado leve */
-        }
-
-        .playlist-container {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
-            text-align: left;
-            margin-top: 15px;
-        }
-
-        .playlist-container.show {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .playlist {
-            list-style: none;
+        .service-options {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
             padding: 10px 0;
         }
 
-        .playlist li {
-            padding: 12px 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        .service-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+            padding: 10px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border-radius: 5px;
-            margin: 5px 0;
+            transition: background-color 0.3s;
+        }
+
+        .service-option:hover {
+            background-color: #f5f5f5;
+        }
+
+        .service-option.active {
+            background-color: #ffefe5;
+        }
+
+        .service-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #ff6600;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            color: white;
+            margin-bottom: 5px;
         }
 
-        .playlist li:hover {
-            background: rgba(255, 255, 255, 0.1);
+        .service-name {
+            font-size: 12px;
+            text-align: center;
         }
 
-        .playlist li.playing {
-            background: rgba(71, 118, 230, 0.2);
-            color: #8E54E9;
-            font-weight: 600;
-        }
-
-        .playlist li .song-number {
+        .service-price {
             font-size: 14px;
-            color: #b3b3b3;
-            width: 20px;
+            font-weight: bold;
+            margin-top: 5px;
         }
 
-        .playlist li.playing .song-number {
-            color: #8E54E9;
-        }
-
-        .active-mode {
-            background: linear-gradient(135deg, #8E54E9, #4776E6) !important; /* Gradiente inverso o diferente */
-            color: #fff !important; /* Color del icono */
-            transform: scale(1.1); /* Ligeramente más grande */
-            box-shadow: 0 0 10px rgba(142, 84, 233, 0.5); /* Sombra activa */
-        }
-
-        /* Notificación estilo Spotify */
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #2d2d2d; /* Fondo oscuro como Spotify */
-            border-left: 4px solid #1DB954; /* Color de acento de Spotify */
-            border-radius: 8px;
+        .confirm-button {
+            background-color: #ff6600;
+            color: white;
+            border: none;
             padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .confirm-button:hover {
+            background-color: #e55a00;
+        }
+
+        .confirm-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .booking-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
+            display: none;
+        }
+
+        .driver-info {
             display: flex;
             align-items: center;
-            gap: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Sombra más definida */
-            transform: translateX(120%); /* Comienza fuera de la pantalla */
-            transition: transform 0.4s ease;
-            z-index: 1000;
-            max-width: 350px;
-            font-family: 'Montserrat', sans-serif; /* Usa la fuente del body */
-            color: #ffffff; /* Texto blanco */
+            margin-bottom: 20px;
         }
 
-        .notification.show {
-            transform: translateX(0); /* Se desliza hacia adentro */
+        .driver-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #666;
         }
 
-        .notification img {
-            width: 50px;
-            height: 50px;
-            border-radius: 5px;
-            object-fit: cover;
-            border: 1px solid rgba(255, 255, 255, 0.1); /* Borde sutil opcional */
-        }
-
-        .notification-content {
+        .driver-details {
             flex: 1;
         }
 
-        .notification-title {
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 4px;
-            white-space: nowrap; /* Evita que el texto se rompa */
-            overflow: hidden;
-            text-overflow: ellipsis; /* Agrega "..." si es necesario */
+        .driver-name {
+            font-weight: bold;
+            font-size: 18px;
         }
 
-        .notification-artist {
+        .car-info {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .rating {
+            color: #ff6600;
+            font-weight: bold;
+        }
+
+        .trip-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .trip-detail {
+            text-align: center;
+        }
+
+        .trip-value {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .trip-label {
             font-size: 12px;
-            color: #b3b3b3; /* Gris claro */
+            color: #666;
         }
 
-        .notification-close {
-            background: none;
+        .trip-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .start-button {
+            background-color: #ff6600;
+            color: white;
             border: none;
-            color: #ffffff; /* Color del botón de cierre */
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            flex: 1;
             cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .start-button:hover {
+            background-color: #e55a00;
+        }
+
+        .cancel-button {
+            background-color: #f5f5f5;
+            color: #ff6600;
+            border: 1px solid #ff6600;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            flex: 1;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .cancel-button:hover {
+            background-color: #ffefe5;
+        }
+
+        .trip-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
+            display: none;
+        }
+
+        .trip-progress {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #ff6600;
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
             font-size: 14px;
-            opacity: 0.7;
-            transition: opacity 0.2s;
-            padding: 0; /* Elimina padding por defecto */
-            margin-left: 10px; /* Espacio a la izquierda del botón */
+            color: #666;
         }
 
-        .notification-close:hover {
-            opacity: 1;
+        .trip-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
 
-        @media (max-width: 500px) {
-            .player-container {
-                padding: 20px;
-            }
+        .trip-actions {
+            display: flex;
+            gap: 10px;
+        }
 
-            .main-controls {
-                gap: 10px;
-            }
+        .action-button {
+            background-color: #f5f5f5;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            flex: 1;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
 
-            .control-btn {
-                padding: 10px;
-                font-size: 16px;
-                width: 40px;
-                height: 40px;
-            }
+        .action-button i {
+            font-size: 20px;
+        }
 
-            .play-pause {
-                width: 55px;
-                height: 55px;
-            }
+        .end-trip-button {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+        }
 
-            h1 {
-                font-size: 28px;
-            }
+        footer {
+            background-color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+        }
 
-            #song-title {
-                font-size: 19px;
-            }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px 10px;
+            cursor: pointer;
+            color: #666;
+        }
 
-            .album-art {
-                width: 180px;
-                height: 180px;
-            }
+        .nav-item.active {
+            color: #ff6600;
+        }
 
-            .notification {
-                max-width: 300px;
-                right: 10px;
-                bottom: 10px;
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .nav-label {
+            font-size: 12px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-button.cancel {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .modal-button.confirm {
+            background-color: #ff6600;
+            color: white;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 400px;
+                margin: 0 auto;
+                height: 90vh;
+                margin-top: 5vh;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 0 20px rgba(0,0,0,0.2);
             }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <div class="logo">DIDI</div>
+            <div class="user-menu">
+                <span>Hola, Usuario</span>
+                <div class="user-icon">U</div>
+            </div>
+        </header>
 
-<div class="player-container">
-    <button class="heart-btn" id="heart-btn">
-        <i class="fas fa-heart"></i>
-    </button>
+        <main>
+            <div id="map"></div>
+            
+            <div class="search-panel" id="searchPanel">
+                <div class="search-inputs">
+                    <div class="input-group" id="originGroup">
+                        <i>📍</i>
+                        <input type="text" id="origin" placeholder="¿Dónde estás?" value="Mi ubicación actual">
+                    </div>
+                    <div class="error-message" id="originError">Debes permitir el acceso a tu ubicación</div>
+                    
+                    <div class="input-group" id="destinationGroup">
+                        <i>🎯</i>
+                        <input type="text" id="destination" placeholder="¿A dónde vas?">
+                    </div>
+                    <div class="error-message" id="destinationError">Debes ingresar un destino</div>
+                </div>
+                
+                <div class="service-options">
+                    <div class="service-option active" data-service="economy">
+                        <div class="service-icon">E</div>
+                        <div class="service-name">Económico</div>
+                        <div class="service-price">$15.000</div>
+                    </div>
+                    <div class="service-option" data-service="comfort">
+                        <div class="service-icon">C</div>
+                        <div class="service-name">Confort</div>
+                        <div class="service-price">$20.000</div>
+                    </div>
+                    <div class="service-option" data-service="premium">
+                        <div class="service-icon">P</div>
+                        <div class="service-name">Premium</div>
+                        <div class="service-price">$30.000</div>
+                    </div>
+                </div>
+                
+                <button class="confirm-button" id="confirmRide" disabled>Confirmar Viaje</button>
+            </div>
+            
+            <div class="booking-panel" id="bookingPanel">
+                <div class="driver-info">
+                    <div class="driver-photo">👨</div>
+                    <div class="driver-details">
+                        <div class="driver-name">Carlos Martínez</div>
+                        <div class="car-info">Toyota Corolla • ABC123</div>
+                        <div class="rating">⭐ 4.8</div>
+                    </div>
+                </div>
+                
+                <div class="trip-info">
+                    <div class="trip-detail">
+                        <div class="trip-value">5 min</div>
+                        <div class="trip-label">Tiempo de llegada</div>
+                    </div>
+                    <div class="trip-detail">
+                        <div class="trip-value">1.2 km</div>
+                        <div class="trip-label">Distancia</div>
+                    </div>
+                    <div class="trip-detail">
+                        <div class="trip-value">$15.000</div>
+                        <div class="trip-label">Precio estimado</div>
+                    </div>
+                </div>
+                
+                <div class="trip-controls">
+                    <button class="start-button" id="startRide">Iniciar Viaje</button>
+                    <button class="cancel-button" id="cancelRide">Cancelar</button>
+                </div>
+            </div>
 
-    <div class="title-container">
-        <h1>Mini David</h1>
-        <div class="ghost-emoji">👻</div>
+            <div class="trip-panel" id="tripPanel">
+                <div class="trip-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-labels">
+                        <span>Origen</span>
+                        <span>Destino</span>
+                    </div>
+                </div>
+                
+                <div class="trip-details">
+                    <div class="trip-detail">
+                        <div class="trip-value" id="tripTime">10 min</div>
+                        <div class="trip-label">Tiempo restante</div>
+                    </div>
+                    <div class="trip-detail">
+                        <div class="trip-value" id="tripDistance">1.2 km</div>
+                        <div class="trip-label">Distancia restante</div>
+                    </div>
+                </div>
+                
+                <div class="trip-actions">
+                    <button class="action-button">
+                        <i>📞</i>
+                        <span>Llamar</span>
+                    </button>
+                    <button class="action-button">
+                        <i>💬</i>
+                        <span>Mensaje</span>
+                    </button>
+                    <button class="action-button">
+                        <i>⚠️</i>
+                        <span>Emergencia</span>
+                    </button>
+                </div>
+                
+                <button class="end-trip-button" id="endTrip">Finalizar Viaje</button>
+            </div>
+        </main>
+
+        <footer>
+            <div class="nav-item active">
+                <div class="nav-icon">🚗</div>
+                <div class="nav-label">Viajar</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Historial</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">Mensajes</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👤</div>
+                <div class="nav-label">Perfil</div>
+            </div>
+        </footer>
     </div>
 
-    <div class="album-art" id="album-art">
-        <i class="fas fa-music"></i>
-    </div>
-
-    <div class="song-info">
-        <div id="song-title">A AP ROCKY LVL</div>
-        <div id="song-artist">ASAP Rocky</div>
-    </div>
-
-    <div class="progress-container" id="progress-container">
-        <div class="progress" id="progress"></div>
-    </div>
-
-    <div class="time-display">
-        <span id="current-time">0:00</span>
-        <span id="duration">0:00</span>
-    </div>
-
-    <div class="main-controls">
-        <button class="control-btn" id="shuffle" title="Modo aleatorio">
-            <i class="fas fa-random"></i>
-        </button>
-
-        <button class="control-btn" id="prev" title="Anterior">
-            <i class="fas fa-step-backward"></i>
-        </button>
-
-        <button class="control-btn play-pause" id="play" title="Reproducir">
-            <i class="fas fa-play"></i>
-        </button>
-
-        <button class="control-btn" id="next" title="Siguiente">
-            <i class="fas fa-step-forward"></i>
-        </button>
-
-        <button class="control-btn" id="repeat" title="Repetir">
-            <i class="fas fa-redo"></i>
-        </button>
-    </div>
-
-    <div class="secondary-controls">
-        <div class="volume-container">
-            <i class="fas fa-volume-up" id="volume-icon"></i>
-            <input type="range" class="volume-slider" id="volume" min="0" max="1" step="0.01" value="1">
+    <div class="modal" id="cancelModal">
+        <div class="modal-content">
+            <div class="modal-title">¿Cancelar viaje?</div>
+            <p>Si cancelas el viaje, podrías incurrir en cargos por cancelación.</p>
+            <div class="modal-buttons">
+                <button class="modal-button cancel" id="cancelNo">No, continuar</button>
+                <button class="modal-button confirm" id="cancelYes">Sí, cancelar</button>
+            </div>
         </div>
     </div>
 
-    <button class="playlist-toggle" id="playlist-toggle">
-        <i class="fas fa-list"></i> Lista de reproducción
-    </button>
-
-    <div class="playlist-container" id="playlist-container">
-        <ul class="playlist" id="playlist"></ul>
+    <div class="modal" id="endTripModal">
+        <div class="modal-content">
+            <div class="modal-title">¿Finalizar viaje?</div>
+            <p>El viaje ha llegado a su destino. ¿Deseas finalizarlo?</p>
+            <div class="modal-buttons">
+                <button class="modal-button cancel" id="endTripNo">Cancelar</button>
+                <button class="modal-button confirm" id="endTripYes">Sí, finalizar</button>
+            </div>
+        </div>
     </div>
 
-    <audio id="player"></audio>
-</div>
-
-<!-- Notificación de música -->
-<div class="notification" id="notification">
-    <div id="notification-image">
-        <i class="fas fa-music"></i>
-    </div>
-    <div class="notification-content">
-        <div class="notification-title" id="notification-title">Canción</div>
-        <div class="notification-artist" id="notification-artist">Artista</div>
-    </div>
-    <button class="notification-close" id="notification-close">
-        <i class="fas fa-times"></i>
-    </button>
-</div>
-
-<script>
-    const songs = [
-    { 
-        title: "After Hours", 
-        artist: "The Weeknd", 
-        url: " https://raw.githubusercontent.com/poxynext/mp3-host/main/AfterHours.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/3.jpg " 
-    },
-    { 
-        title: "A AP ROCKY LVL", 
-        artist: "ASAP Rocky", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/LVL.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/2.jpg " 
-    },
-    { 
-        title: "Acid Drip", 
-        artist: "ASAP Rocky", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/AcidDrip.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/2.jpg " 
-    },
-    { 
-        title: "Salvatore", 
-        artist: "Lana Del Rey", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Salvatore.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/lana.jpg " 
-    },
-    { 
-        title: "GroupieLove", 
-        artist: "Lana Del Rey", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/GroupieLove.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/lana.jpg " 
-    },
-    { 
-        title: "Everyday", 
-        artist: "Ariana Grande", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Everyday.mp3 ",
-        image: "https://st.depositphotos.com/1724125/4571/v/950/depositphotos_45710789-stock-illustration-cool-chicken.jpg " 
-    },
-    { 
-        title: "Doin Time", 
-        artist: "Lana Del Rey", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Doin_Time.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/lana.jpg " 
-    },
-    { 
-        title: "Cinnamon Girl", 
-        artist: "Lana Del Rey", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/CinnamonGirl.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/lana.jpg " 
-    },
-    { 
-        title: "BlueJeans", 
-        artist: "Lana Del Rey", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/BlueJeans.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/lana.jpg " 
-    },
-    // 🎵 Nuevas canciones
-    { 
-        title: "Young and Beautiful", 
-        artist: "Lana Del Rey", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/YoungandBeautiful.mp3 ",
-        image: "https://i.scdn.co/image/ab67616d0000b2735bb0c47721e2a8dfe2a5d7a2 " 
-    },
-    { 
-        title: "Ultraviolence", 
-        artist: "Lana Del Rey", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Ultraviolence.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/lana.jpg " 
-    },
-    { 
-        title: "SanLucas", 
-        artist: "Kevin Kaarl", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/SanLucas.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/1.jpg " 
-    },
-    { 
-        title: "Esta Dañada",
-        artist: "Lana Del Rey", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Est áDañada.mp3",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/lana.jpg " 
-    },
-    { 
-        title: "Bathroom", 
-        artist: "Lana Del Rey", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Bathroom.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/lana.jpg " 
-    },
-    { 
-        title: "Drugs/Hoes/Money/Etc", 
-        artist: "$uicideboy$", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Drugs..mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/1.jpg " 
-    },
-    { 
-        title: "Out Of My League", 
-        artist: "Fitz and The Tantrums", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/League.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/1.jpg " 
-    },
-    { 
-        title: "Everything is Embarrassing", 
-        artist: "Sky Ferreira", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Embarrassing.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/1.jpg " 
-    },
-    { 
-        title: "Dealer", 
-        artist: "Lana Del Rey", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Dealer.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/lana.jpg " 
-    },
-    { 
-        title: "Lejos De Ti", 
-        artist: "The Marias", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/LejosDeTi.mp3 ",
-        image: "" 
-    },
-    { 
-        title: "Si Me Voy ", 
-        artist: "Cuco Y The Marias", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/SiMeVoy.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/2.jpg " 
-    },
-    //////
-    { 
-        title: "Tumblr Girls", 
-        artist: "G-Eazy", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/TumblrGirls.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/1.jpg " 
-    },
-    { 
-        title: "Sundress", 
-        artist: "Asap Rocky", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Sundress.mp3 ",
-        image: "https://raw.githubusercontent.com/poxynext/mp3-host/main/lana.jpg " 
-    },
-    { 
-        title: "call it fate, call it karma", 
-        artist: "The Strokes", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/CalliitFate.mp3 ",
-        image: "https://previews.123rf.com/images/mikailain/mikailain1306/mikailain130600008/20360741-listening-to-music-a-boy-listening-to-music-with-headphones-on-his-head.jpg " 
-    },
-    { 
-        title: "My Money", 
-        artist: "Desconocido", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/MyMoney.mp3 ",
-        image: "https://previews.123rf.com/images/mikailain/mikailain1306/mikailain130600008/20360741-listening-to-music-a-boy-listening-to-music-with-headphones-on-his-head.jpg " 
-    },
-    { 
-        title: "Fall in love", 
-        artist: "Popcan", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/fallinlovewithyou.mp3 ",
-        image: "https://previews.123rf.com/images/mikailain/mikailain1306/mikailain130600008/20360741-listening-to-music-a-boy-listening-to-music-with-headphones-on-his-head.jpg " 
-    },
-    { 
-        title: "The Neighbourhood", 
-        artist: "The Neighbourhood", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/TheNeighbourhood.mp3 ",
-        image: "https://previews.123rf.com/images/mikailain/mikailain1306/mikailain130600008/20360741-listening-to-music-a-boy-listening-to-music-with-headphones-on-his-head.jpg " 
-    },
-    { 
-        title: "it's not living", 
-        artist: "The 1975", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/ItsNotLiving.mp3 ",
-        image: "https://previews.123rf.com/images/mikailain/mikailain1306/mikailain130600008/20360741-listening-to-music-a-boy-listening-to-music-with-headphones-on-his-head.jpg " 
-    },
-    { 
-        title: "The Adults are talking", 
-        artist: "The Strokes", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/TheStrokes.mp3 ",
-        image: "https://previews.123rf.com/images/mikailain/mikailain1306/mikailain130600008/20360741-listening-to-music-a-boy-listening-to-music-with-headphones-on-his-head.jpg " 
-    },
-    { 
-        title: "Solo", 
-        artist: "Future", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Solo.mp3 ",
-        image: "https://previews.123rf.com/images/mikailain/mikailain1306/mikailain130600008/20360741-listening-to-music-a-boy-listening-to-music-with-headphones-on-his-head.jpg " 
-    },
-    { 
-        title: "Hello?", 
-        artist: "Claire Cottrill", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Hello.mp3 ",
-        image: "https://previews.123rf.com/images/mikailain/mikailain1306/mikailain130600008/20360741-listening-to-music-a-boy-listening-to-music-with-headphones-on-his-head.jpg " 
-    },
-    { 
-        title: "Brooklyn Baby", 
-        artist: "Lana Del Rey", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/BrooklynBaby.mp3 ",
-        image: "https://previews.123rf.com/images/mikailain/mikailain1306/mikailain130600008/20360741-listening-to-music-a-boy-listening-to-music-with-headphones-on-his-head.jpg " 
-    },
-    { 
-        title: "Freak?", 
-        artist: "Lana Del Rey", 
-        url: "https://raw.githubusercontent.com/poxynext/mp3-host/main/Freak.mp3 ",
-        image: "https://previews.123rf.com/images/mikailain/mikailain1306/mikailain130600008/20360741-listening-to-music-a-boy-listening-to-music-with-headphones-on-his-head.jpg " 
-    },
-];
-
-
-    let current = 0;
-    let isPlaying = false;
-    let isShuffle = false;
-    let repeatMode = 0; // 0: no repeat, 1: repeat all, 2: repeat one
-
-    const player = document.getElementById('player');
-    const playBtn = document.getElementById('play');
-    const prevBtn = document.getElementById('prev');
-    const nextBtn = document.getElementById('next');
-    const shuffleBtn = document.getElementById('shuffle');
-    const repeatBtn = document.getElementById('repeat');
-    const progressContainer = document.getElementById('progress-container');
-    const progress = document.getElementById('progress');
-    const title = document.getElementById('song-title');
-    const artist = document.getElementById('song-artist');
-    const currentTimeEl = document.getElementById('current-time');
-    const durationEl = document.getElementById('duration');
-    const volumeSlider = document.getElementById('volume');
-    const volumeIcon = document.getElementById('volume-icon');
-    const playlistContainer = document.getElementById('playlist-container');
-    const playlistToggle = document.getElementById('playlist-toggle');
-    const playlistEl = document.getElementById('playlist');
-    const albumArt = document.getElementById('album-art');
-    const heartBtn = document.getElementById('heart-btn');
-    
-    // Elementos de notificación
-    const notification = document.getElementById('notification');
-    const notificationTitle = document.getElementById('notification-title');
-    const notificationArtist = document.getElementById('notification-artist');
-    const notificationImage = document.getElementById('notification-image');
-    const notificationClose = document.getElementById('notification-close');
-
-    // Función para mostrar notificación
-    function showNotification() {
-        const song = songs[current];
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Inicializar el mapa
+        const map = L.map('map').setView([4.6097, -74.0817], 13); // Coordenadas de Bogotá
         
-        notificationTitle.textContent = song.title;
-        notificationArtist.textContent = song.artist;
+        // Añadir capa de mapa (usando OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
         
-        // Establecer imagen de la notificación
-        if (song.image) {
-            notificationImage.innerHTML = `<img src="${song.image.trim()}" alt="${song.title}">`;
-        } else {
-            notificationImage.innerHTML = '<i class="fas fa-music"></i>';
-        }
+        // Variables para los marcadores y la ruta
+        let currentLocationMarker, destinationMarker, routeLine;
+        let currentLocation = [4.6097, -74.0817]; // Ubicación por defecto (Bogotá)
+        let destination = null;
         
-        notification.classList.add('show');
+        // Elementos de la interfaz
+        const searchPanel = document.getElementById('searchPanel');
+        const bookingPanel = document.getElementById('bookingPanel');
+        const tripPanel = document.getElementById('tripPanel');
+        const confirmRideButton = document.getElementById('confirmRide');
+        const startRideButton = document.getElementById('startRide');
+        const cancelRideButton = document.getElementById('cancelRide');
+        const endTripButton = document.getElementById('endTrip');
+        const cancelModal = document.getElementById('cancelModal');
+        const endTripModal = document.getElementById('endTripModal');
+        const cancelNoButton = document.getElementById('cancelNo');
+        const cancelYesButton = document.getElementById('cancelYes');
+        const endTripNoButton = document.getElementById('endTripNo');
+        const endTripYesButton = document.getElementById('endTripYes');
+        const serviceOptions = document.querySelectorAll('.service-option');
+        const destinationInput = document.getElementById('destination');
+        const originGroup = document.getElementById('originGroup');
+        const destinationGroup = document.getElementById('destinationGroup');
+        const originError = document.getElementById('originError');
+        const destinationError = document.getElementById('destinationError');
+        const progressFill = document.getElementById('progressFill');
+        const tripTime = document.getElementById('tripTime');
+        const tripDistance = document.getElementById('tripDistance');
         
-        // Ocultar automáticamente después de 5 segundos
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 5000);
-    }
-
-    // Cerrar notificación al hacer clic en la X
-    notificationClose.addEventListener('click', () => {
-        notification.classList.remove('show');
-    });
-
-    // Inicializar la lista de reproducción
-    function initPlaylist() {
-        playlistEl.innerHTML = '';
-        songs.forEach((song, index) => {
-            const li = document.createElement('li');
-            li.innerHTML = `<span class="song-number">${index + 1}</span> ${song.title} - ${song.artist}`;
-            li.dataset.index = index;
-            if (index === current) {
-                li.classList.add('playing');
-            }
-            li.addEventListener('click', () => {
-                current = parseInt(li.dataset.index);
-                loadSong(current);
-                updatePlaylist();
-                playSong();
-                
-                // Mostrar notificación al cambiar de canción
-                showNotification();
-            });
-            playlistEl.appendChild(li);
-        });
-    }
-
-    // Actualizar la lista de reproducción
-    function updatePlaylist() {
-        const items = playlistEl.querySelectorAll('li');
-        items.forEach((item, index) => {
-            if (index === current) {
-                item.classList.add('playing');
+        // Estado de la aplicación
+        let selectedService = 'economy';
+        let rideConfirmed = false;
+        let tripStarted = false;
+        let tripProgress = 0;
+        let tripInterval;
+        
+        // Obtener ubicación actual del usuario
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        currentLocation = [position.coords.latitude, position.coords.longitude];
+                        updateMap();
+                        validateForm();
+                    },
+                    function(error) {
+                        console.error("Error obteniendo la ubicación: ", error);
+                        originGroup.classList.add('error');
+                        originError.style.display = 'block';
+                        validateForm();
+                    }
+                );
             } else {
-                item.classList.remove('playing');
-            }
-        });
-    }
-
-    // Toggle lista de reproducción
-    playlistToggle.addEventListener('click', () => {
-        playlistContainer.classList.toggle('show');
-        if (playlistContainer.classList.contains('show')) {
-            playlistToggle.innerHTML = '<i class="fas fa-chevron-up"></i> Ocultar lista';
-        } else {
-            playlistToggle.innerHTML = '<i class="fas fa-list"></i> Lista de reproducción';
-        }
-    });
-
-    // Cargar canción
-    function loadSong(index) {
-        player.src = songs[index].url.trim(); // Asegurar trim aquí también
-        title.textContent = songs[index].title;
-        artist.textContent = songs[index].artist;
-        
-        // Establecer imagen de la canción
-        if (songs[index].image) {
-            albumArt.style.backgroundImage = `url('${songs[index].image.trim()}')`; // Asegurar trim aquí también
-            albumArt.innerHTML = '';
-        } else {
-            albumArt.style.backgroundImage = 'none';
-            albumArt.innerHTML = '<i class="fas fa-music"></i>';
-        }
-
-        // Animación para el arte del álbum
-        albumArt.style.transform = 'scale(0.9)';
-        setTimeout(() => {
-            albumArt.style.transform = 'scale(1)';
-        }, 300);
-
-        player.addEventListener('loadedmetadata', () => {
-            durationEl.textContent = formatTime(player.duration);
-        });
-
-        updatePlaylist();
-    }
-
-    // Formatear tiempo
-    function formatTime(seconds) {
-        if (isNaN(seconds)) return "0:00";
-        const minutes = Math.floor(seconds / 60);
-        seconds = Math.floor(seconds % 60);
-        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    }
-
-    // Actualizar barra de progreso
-    function updateProgress() {
-        const { currentTime, duration } = player;
-        if (isNaN(duration)) return;
-        
-        const progressPercent = (currentTime / duration) * 100;
-        progress.style.width = `${progressPercent}%`;
-        currentTimeEl.textContent = formatTime(currentTime);
-    }
-
-    // Establecer progreso al hacer clic en la barra
-    progressContainer.addEventListener('click', (e) => {
-        const width = progressContainer.clientWidth;
-        const clickX = e.offsetX;
-        const duration = player.duration;
-        player.currentTime = (clickX / width) * duration;
-    });
-
-    // Reproducir canción
-    function playSong() {
-        isPlaying = true;
-        player.play();
-        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        playBtn.title = "Pausar";
-        
-        // Mostrar notificación al reproducir
-        if (document.hidden) {
-            showNotification();
-        }
-    }
-
-    // Pausar canción
-    function pauseSong() {
-        isPlaying = false;
-        player.pause();
-        playBtn.innerHTML = '<i class="fas fa-play"></i>';
-        playBtn.title = "Reproducir";
-    }
-
-    // Cambiar entre play/pause
-    playBtn.addEventListener('click', () => {
-        if (isPlaying) {
-            pauseSong();
-        } else {
-            playSong();
-        }
-    });
-
-    // Canción anterior
-    prevBtn.addEventListener('click', () => {
-        current--;
-        if (current < 0) {
-            current = songs.length - 1;
-        }
-        loadSong(current);
-        playSong();
-        
-        // Mostrar notificación al cambiar de canción
-        showNotification();
-    });
-
-    // Siguiente canción
-    nextBtn.addEventListener('click', () => {
-        if (isShuffle) {
-            playRandomSong();
-        } else {
-            current++;
-            if (current > songs.length - 1) {
-                current = 0;
+                alert("Tu navegador no soporta geolocalización");
+                originGroup.classList.add('error');
+                originError.style.display = 'block';
+                validateForm();
             }
         }
-        loadSong(current);
-        playSong();
         
-        // Mostrar notificación al cambiar de canción
-        showNotification();
-    });
-
-    // Reproducir canción aleatoria
-    function playRandomSong() {
-        let newIndex;
-        do {
-            newIndex = Math.floor(Math.random() * songs.length);
-        } while (newIndex === current && songs.length > 1);
-
-        current = newIndex;
-    }
-
-    // Cambiar modo shuffle
-    shuffleBtn.addEventListener('click', () => {
-        isShuffle = !isShuffle;
-        shuffleBtn.classList.toggle('active-mode', isShuffle);
-        shuffleBtn.title = isShuffle ? "Desactivar aleatorio" : "Activar aleatorio";
-    });
-
-    // Cambiar modo repetición
-    repeatBtn.addEventListener('click', () => {
-        repeatMode = (repeatMode + 1) % 3;
-
-        if (repeatMode === 0) {
-            repeatBtn.title = "Sin repetición";
-            repeatBtn.classList.remove('active-mode');
-        } else if (repeatMode === 1) {
-            repeatBtn.title = "Repetir toda la lista";
-            repeatBtn.classList.add('active-mode');
-        } else {
-            repeatBtn.title = "Repetir una canción";
-            repeatBtn.classList.add('active-mode');
-        }
-    });
-
-    // Cuando termina una canción
-    player.addEventListener('ended', () => {
-        if (repeatMode === 2) {
-            // Repetir la misma canción
-            player.currentTime = 0;
-            playSong();
-        } else if (repeatMode === 1 || isShuffle) {
-            // Repetir toda la lista o modo shuffle
-            if (isShuffle) {
-                playRandomSong();
-            } else {
-                current++;
-                if (current > songs.length - 1) {
-                    current = 0;
-                }
-            }
-            loadSong(current);
-            playSong();
+        // Actualizar el mapa con la ubicación actual y destino
+        function updateMap() {
+            // Limpiar marcadores existentes
+            if (currentLocationMarker) map.removeLayer(currentLocationMarker);
+            if (destinationMarker) map.removeLayer(destinationMarker);
+            if (routeLine) map.removeLayer(routeLine);
             
-            // Mostrar notificación al cambiar de canción
-            showNotification();
-        } else {
-            // Sin repetición - solo pausar
-            pauseSong();
+            // Añadir marcador de ubicación actual
+            currentLocationMarker = L.marker(currentLocation).addTo(map)
+                .bindPopup('Tu ubicación actual')
+                .openPopup();
+            
+            // Si hay un destino, añadir marcador y ruta
+            if (destination) {
+                destinationMarker = L.marker(destination).addTo(map)
+                    .bindPopup('Tu destino');
+                
+                // Simular una ruta (en una app real, usarías un servicio de routing)
+                routeLine = L.polyline([currentLocation, destination], {
+                    color: '#ff6600',
+                    weight: 5,
+                    opacity: 0.7
+                }).addTo(map);
+                
+                // Ajustar el mapa para mostrar ambos puntos
+                const bounds = L.latLngBounds([currentLocation, destination]);
+                map.fitBounds(bounds, { padding: [50, 50] });
+            } else {
+                // Centrar el mapa en la ubicación actual
+                map.setView(currentLocation, 15);
+            }
         }
-    });
-
-    // Control de volumen
-    volumeSlider.addEventListener('input', () => {
-        player.volume = volumeSlider.value;
-
-        // Cambiar icono según el volumen
-        if (player.volume == 0) {
-            volumeIcon.className = 'fas fa-volume-mute';
-        } else if (player.volume < 0.5) {
-            volumeIcon.className = 'fas fa-volume-down';
-        } else {
-            volumeIcon.className = 'fas fa-volume-up';
+        
+        // Validar el formulario
+        function validateForm() {
+            const hasLocation = currentLocation !== null;
+            const hasDestination = destinationInput.value.trim() !== '';
+            
+            if (hasLocation) {
+                originGroup.classList.remove('error');
+                originError.style.display = 'none';
+            } else {
+                originGroup.classList.add('error');
+                originError.style.display = 'block';
+            }
+            
+            if (hasDestination) {
+                destinationGroup.classList.remove('error');
+                destinationError.style.display = 'none';
+            } else {
+                destinationGroup.classList.add('error');
+                destinationError.style.display = 'block';
+            }
+            
+            confirmRideButton.disabled = !(hasLocation && hasDestination);
+            
+            return hasLocation && hasDestination;
         }
-    });
-
-    // Eventos del reproductor
-    player.addEventListener('timeupdate', updateProgress);
-
-    // Mostrar notificación cuando la pestaña está en segundo plano
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden && isPlaying) {
-            showNotification();
+        
+        // Establecer un destino aleatorio cerca de la ubicación actual
+        function setRandomDestination() {
+            if (!currentLocation) return;
+            
+            // Crear un destino aleatorio a unos 2-5 km de distancia
+            const latOffset = (Math.random() * 0.05) - 0.025; // Aprox. 2.8 km
+            const lngOffset = (Math.random() * 0.05) - 0.025; // Aprox. 2.8 km
+            
+            destination = [
+                currentLocation[0] + latOffset,
+                currentLocation[1] + lngOffset
+            ];
+            
+            updateMap();
         }
-    });
-
-    // Inicializar
-    loadSong(current);
-    initPlaylist();
-     // ---- Media Session API ----
-
-     if ('mediaSession' in navigator) {
-
-         function updateMediaSession() {
-
-             const song = songs[current];
-
-             navigator.mediaSession.metadata = new MediaMetadata({
-
-                 title: song.title,
-
-                 artist: song.artist,
-
-                 album: "Mini David 👻",
-
-                 artwork: [
-
-                     { src: song.image || 'https://i.imgur.com/8Qf0R8G.png ', sizes: '512x512', type: 'image/png' }
-
-                 ]
-
-             });
-
-
-             // Acción: Play
-
-             navigator.mediaSession.setActionHandler('play', () => {
-
-                 playSong();
-
-             });
-
-
-             // Acción: Pause
-
-             navigator.mediaSession.setActionHandler('pause', () => {
-
-                 pauseSong();
-
-             });
-
-
-             // Acción: Siguiente
-
-             navigator.mediaSession.setActionHandler('nexttrack', () => {
-
-                 nextBtn.click();
-
-             });
-
-
-             // Acción: Anterior
-
-             navigator.mediaSession.setActionHandler('previoustrack', () => {
-
-                 prevBtn.click();
-
-             });
-
-
-             // Acción: Buscar hacia adelante
-
-             navigator.mediaSession.setActionHandler('seekforward', () => {
-
-                 player.currentTime = Math.min(player.currentTime + 10, player.duration);
-
-             });
-
-
-             // Acción: Buscar hacia atrás
-
-             navigator.mediaSession.setActionHandler('seekbackward', () => {
-
-                 player.currentTime = Math.max(player.currentTime - 10, 0);
-
-             });
-
-         }
-
-
-         // Actualizar al cargar canción
-
-         player.addEventListener('loadeddata', updateMediaSession);
-
-
-         // Actualizar al cambiar de canción manualmente
-
-         player.addEventListener('play', updateMediaSession);
-
-     }
-</script>
-
+        
+        // Seleccionar servicio
+        serviceOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                serviceOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                selectedService = option.getAttribute('data-service');
+            });
+        });
+        
+        // Confirmar viaje
+        confirmRideButton.addEventListener('click', () => {
+            if (!validateForm()) return;
+            
+            setRandomDestination(); // Establecer un destino aleatorio
+            searchPanel.style.display = 'none';
+            bookingPanel.style.display = 'block';
+            rideConfirmed = true;
+        });
+        
+        // Iniciar viaje
+        startRideButton.addEventListener('click', () => {
+            bookingPanel.style.display = 'none';
+            tripPanel.style.display = 'block';
+            tripStarted = true;
+            
+            // Iniciar simulación de progreso del viaje
+            startTripSimulation();
+        });
+        
+        // Simular el progreso del viaje
+        function startTripSimulation() {
+            tripProgress = 0;
+            progressFill.style.width = '0%';
+            tripTime.textContent = '10 min';
+            tripDistance.textContent = '1.2 km';
+            
+            clearInterval(tripInterval);
+            tripInterval = setInterval(() => {
+                tripProgress += 1;
+                progressFill.style.width = `${tripProgress}%`;
+                
+                // Actualizar tiempo y distancia restantes
+                const remainingTime = Math.max(0, 10 - Math.floor(tripProgress / 10));
+                const remainingDistance = Math.max(0, (1.2 - (tripProgress / 100 * 1.2)).toFixed(1));
+                
+                tripTime.textContent = `${remainingTime} min`;
+                tripDistance.textContent = `${remainingDistance} km`;
+                
+                // Si el viaje ha terminado
+                if (tripProgress >= 100) {
+                    clearInterval(tripInterval);
+                    endTripModal.style.display = 'flex';
+                }
+            }, 500); // Actualizar cada medio segundo
+        }
+        
+        // Finalizar viaje
+        endTripButton.addEventListener('click', () => {
+            endTripModal.style.display = 'flex';
+        });
+        
+        endTripYesButton.addEventListener('click', () => {
+            endTripModal.style.display = 'none';
+            tripPanel.style.display = 'none';
+            searchPanel.style.display = 'block';
+            tripStarted = false;
+            rideConfirmed = false;
+            destination = null;
+            updateMap();
+            
+            // Mostrar mensaje de viaje completado
+            alert('¡Viaje completado! Gracias por usar Didi.');
+        });
+        
+        endTripNoButton.addEventListener('click', () => {
+            endTripModal.style.display = 'none';
+        });
+        
+        // Cancelar viaje
+        cancelRideButton.addEventListener('click', () => {
+            cancelModal.style.display = 'flex';
+        });
+        
+        cancelNoButton.addEventListener('click', () => {
+            cancelModal.style.display = 'none';
+        });
+        
+        cancelYesButton.addEventListener('click', () => {
+            cancelModal.style.display = 'none';
+            if (tripStarted) {
+                tripPanel.style.display = 'none';
+                clearInterval(tripInterval);
+            } else {
+                bookingPanel.style.display = 'none';
+            }
+            searchPanel.style.display = 'block';
+            tripStarted = false;
+            rideConfirmed = false;
+            destination = null;
+            updateMap();
+        });
+        
+        // Validar formulario cuando cambia el destino
+        destinationInput.addEventListener('input', validateForm);
+        
+        // Navegación del footer
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                
+                // En una aplicación real, aquí cambiaríamos la vista
+                if (item.querySelector('.nav-label').textContent === 'Viajar') {
+                    searchPanel.style.display = 'block';
+                    bookingPanel.style.display = 'none';
+                    tripPanel.style.display = 'none';
+                    if (tripStarted) {
+                        clearInterval(tripInterval);
+                    }
+                } else {
+                    alert('Esta funcionalidad no está implementada en esta demo');
+                }
+            });
+        });
+        
+        // Inicializar la aplicación
+        getCurrentLocation();
+        validateForm();
+    </script>
 </body>
 </html>
