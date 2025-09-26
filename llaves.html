@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Didi Clone - Servicio de Transporte</title>
+    <title>Futy</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         * {
@@ -22,6 +22,9 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: white;
         }
 
         header {
@@ -393,6 +396,7 @@
             padding: 5px 10px;
             cursor: pointer;
             color: #666;
+            text-decoration: none;
         }
 
         .nav-item.active {
@@ -461,8 +465,6 @@
 
         @media (min-width: 768px) {
             .container {
-                max-width: 400px;
-                margin: 0 auto;
                 height: 90vh;
                 margin-top: 5vh;
                 border-radius: 10px;
@@ -475,7 +477,7 @@
 <body>
     <div class="container">
         <header>
-            <div class="logo">DIDI</div>
+            <div class="logo">Futy</div>
             <div class="user-menu">
                 <span>Hola, Usuario</span>
                 <div class="user-icon">U</div>
@@ -594,22 +596,22 @@
         </main>
 
         <footer>
-            <div class="nav-item active">
+            <a href="index.html" class="nav-item active">
                 <div class="nav-icon">🚗</div>
                 <div class="nav-label">Viajar</div>
-            </div>
-            <div class="nav-item">
+            </a>
+            <a href="historial.html" class="nav-item">
                 <div class="nav-icon">📋</div>
                 <div class="nav-label">Historial</div>
-            </div>
-            <div class="nav-item">
+            </a>
+            <a href="mensajes.html" class="nav-item">
                 <div class="nav-icon">💬</div>
                 <div class="nav-label">Mensajes</div>
-            </div>
-            <div class="nav-item">
+            </a>
+            <a href="perfil.html" class="nav-item">
                 <div class="nav-icon">👤</div>
                 <div class="nav-label">Perfil</div>
-            </div>
+            </a>
         </footer>
     </div>
 
@@ -884,27 +886,6 @@
         
         // Validar formulario cuando cambia el destino
         destinationInput.addEventListener('input', validateForm);
-        
-        // Navegación del footer
-        const navItems = document.querySelectorAll('.nav-item');
-        navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                navItems.forEach(nav => nav.classList.remove('active'));
-                item.classList.add('active');
-                
-                // En una aplicación real, aquí cambiaríamos la vista
-                if (item.querySelector('.nav-label').textContent === 'Viajar') {
-                    searchPanel.style.display = 'block';
-                    bookingPanel.style.display = 'none';
-                    tripPanel.style.display = 'none';
-                    if (tripStarted) {
-                        clearInterval(tripInterval);
-                    }
-                } else {
-                    alert('Esta funcionalidad no está implementada en esta demo');
-                }
-            });
-        });
         
         // Inicializar la aplicación
         getCurrentLocation();
