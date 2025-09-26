@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Perfil - Didi</title>
+    <title>Mi Perfil - Futy</title>
     <style>
         * {
             margin: 0;
@@ -74,6 +74,12 @@
             justify-content: center;
             font-size: 36px;
             margin-right: 15px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
         }
 
         .profile-info h1 {
@@ -141,6 +147,14 @@
             padding: 15px 0;
             border-bottom: 1px solid #f0f0f0;
             cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding-left: 10px;
+            padding-right: 10px;
         }
 
         .menu-item:last-child {
@@ -184,6 +198,13 @@
             display: flex;
             align-items: center;
             margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .payment-method:hover {
+            background-color: #f9f9f9;
         }
 
         .payment-icon {
@@ -216,9 +237,15 @@
         .add-payment {
             display: flex;
             align-items: center;
-            padding: 15px 0;
+            padding: 15px 10px;
             color: #ff6600;
             cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .add-payment:hover {
+            background-color: #ffefe5;
         }
 
         .add-icon {
@@ -289,6 +316,8 @@
             border-radius: 10px;
             width: 90%;
             max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-title {
@@ -306,14 +335,30 @@
             margin-bottom: 5px;
             font-size: 14px;
             color: #666;
+            font-weight: 500;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #ff6600;
+            outline: none;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
         }
 
         .modal-buttons {
@@ -324,10 +369,13 @@
 
         .modal-button {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s;
         }
 
         .modal-button.cancel {
@@ -335,9 +383,47 @@
             color: #333;
         }
 
+        .modal-button.cancel:hover {
+            background-color: #e0e0e0;
+        }
+
         .modal-button.confirm {
             background-color: #ff6600;
             color: white;
+        }
+
+        .modal-button.confirm:hover {
+            background-color: #e55a00;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .edit-icon {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: #ff6600;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
         }
     </style>
 </head>
@@ -346,20 +432,23 @@
         <header>
             <div class="logo">DIDI</div>
             <div class="user-menu">
-                <span>Mi Perfil</span>
-                <div class="user-icon">U</div>
+                <span id="headerUserName">Mi Perfil</span>
+                <div class="user-icon" id="headerUserIcon">U</div>
             </div>
         </header>
 
         <div class="profile-header">
-            <div class="profile-avatar">👤</div>
+            <div class="avatar-container">
+                <div class="profile-avatar" id="profileAvatar">👤</div>
+                <div class="edit-icon" id="editAvatar">✏️</div>
+            </div>
             <div class="profile-info">
                 <h1 id="userName">Juan Pérez</h1>
-                <p>+57 300 123 4567</p>
-                <p>juan.perez@email.com</p>
+                <p id="userPhone">+57 300 123 4567</p>
+                <p id="userEmail">juan.perez@email.com</p>
                 <div class="profile-rating">
                     <span class="stars">★★★★★</span>
-                    <span>4.9</span>
+                    <span id="userRatingValue">4.9</span>
                 </div>
             </div>
         </div>
@@ -392,7 +481,7 @@
                     </div>
                     <div class="menu-arrow">›</div>
                 </div>
-                <div class="menu-item">
+                <div class="menu-item" id="editSecurity">
                     <div class="menu-item-content">
                         <div class="menu-icon">🔒</div>
                         <div class="menu-text">
@@ -420,7 +509,7 @@
                         <p>Pago al finalizar el viaje</p>
                     </div>
                 </div>
-                <div class="add-payment">
+                <div class="add-payment" id="addPayment">
                     <div class="add-icon">+</div>
                     <div class="menu-text">
                         <h3>Agregar método de pago</h3>
@@ -430,7 +519,7 @@
 
             <div class="section">
                 <div class="section-title">Preferencias</div>
-                <div class="menu-item">
+                <div class="menu-item" id="editNotifications">
                     <div class="menu-item-content">
                         <div class="menu-icon">🔔</div>
                         <div class="menu-text">
@@ -440,12 +529,12 @@
                     </div>
                     <div class="menu-arrow">›</div>
                 </div>
-                <div class="menu-item">
+                <div class="menu-item" id="editLanguage">
                     <div class="menu-item-content">
                         <div class="menu-icon">🌍</div>
                         <div class="menu-text">
                             <h3>Idioma</h3>
-                            <p>Español</p>
+                            <p id="currentLanguage">Español</p>
                         </div>
                     </div>
                     <div class="menu-arrow">›</div>
@@ -474,7 +563,7 @@
                     </div>
                     <div class="menu-arrow">›</div>
                 </div>
-                <div class="menu-item">
+                <div class="menu-item" id="logoutButton">
                     <div class="menu-item-content">
                         <div class="menu-icon">🚪</div>
                         <div class="menu-text">
@@ -511,6 +600,7 @@
     <div class="modal" id="editProfileModal">
         <div class="modal-content">
             <div class="modal-title">Editar perfil</div>
+            <div class="success-message" id="successMessage">¡Perfil actualizado correctamente!</div>
             <div class="form-group">
                 <label for="editName">Nombre completo</label>
                 <input type="text" id="editName" value="Juan Pérez">
@@ -525,7 +615,51 @@
             </div>
             <div class="modal-buttons">
                 <button class="modal-button cancel" id="cancelEdit">Cancelar</button>
-                <button class="modal-button confirm" id="saveProfile">Guardar</button>
+                <button class="modal-button confirm" id="saveProfile">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar seguridad -->
+    <div class="modal" id="editSecurityModal">
+        <div class="modal-content">
+            <div class="modal-title">Seguridad</div>
+            <div class="success-message" id="securitySuccessMessage">¡Contraseña actualizada correctamente!</div>
+            <div class="form-group">
+                <label for="currentPassword">Contraseña actual</label>
+                <input type="password" id="currentPassword" placeholder="Ingresa tu contraseña actual">
+            </div>
+            <div class="form-group">
+                <label for="newPassword">Nueva contraseña</label>
+                <input type="password" id="newPassword" placeholder="Ingresa tu nueva contraseña">
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar nueva contraseña</label>
+                <input type="password" id="confirmPassword" placeholder="Confirma tu nueva contraseña">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-button cancel" id="cancelSecurity">Cancelar</button>
+                <button class="modal-button confirm" id="saveSecurity">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar idioma -->
+    <div class="modal" id="editLanguageModal">
+        <div class="modal-content">
+            <div class="modal-title">Seleccionar idioma</div>
+            <div class="form-group">
+                <label for="languageSelect">Idioma de la aplicación</label>
+                <select id="languageSelect">
+                    <option value="es">Español</option>
+                    <option value="en">English</option>
+                    <option value="pt">Português</option>
+                    <option value="fr">Français</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-button cancel" id="cancelLanguage">Cancelar</button>
+                <button class="modal-button confirm" id="saveLanguage">Guardar</button>
             </div>
         </div>
     </div>
@@ -533,13 +667,33 @@
     <script>
         // Elementos de la interfaz
         const editProfileBtn = document.getElementById('editProfile');
+        const editSecurityBtn = document.getElementById('editSecurity');
+        const editLanguageBtn = document.getElementById('editLanguage');
         const editProfileModal = document.getElementById('editProfileModal');
+        const editSecurityModal = document.getElementById('editSecurityModal');
+        const editLanguageModal = document.getElementById('editLanguageModal');
         const cancelEditBtn = document.getElementById('cancelEdit');
         const saveProfileBtn = document.getElementById('saveProfile');
+        const cancelSecurityBtn = document.getElementById('cancelSecurity');
+        const saveSecurityBtn = document.getElementById('saveSecurity');
+        const cancelLanguageBtn = document.getElementById('cancelLanguage');
+        const saveLanguageBtn = document.getElementById('saveLanguage');
         const editNameInput = document.getElementById('editName');
         const editPhoneInput = document.getElementById('editPhone');
         const editEmailInput = document.getElementById('editEmail');
+        const languageSelect = document.getElementById('languageSelect');
+        const successMessage = document.getElementById('successMessage');
+        const securitySuccessMessage = document.getElementById('securitySuccessMessage');
+        
+        // Elementos del perfil
         const userNameElement = document.getElementById('userName');
+        const userPhoneElement = document.getElementById('userPhone');
+        const userEmailElement = document.getElementById('userEmail');
+        const headerUserNameElement = document.getElementById('headerUserName');
+        const headerUserIcon = document.getElementById('headerUserIcon');
+        const currentLanguageElement = document.getElementById('currentLanguage');
+        const profileAvatar = document.getElementById('profileAvatar');
+        const editAvatar = document.getElementById('editAvatar');
 
         // Datos del usuario (en una app real, esto vendría de una base de datos)
         let userData = {
@@ -548,30 +702,63 @@
             email: "juan.perez@email.com",
             totalTrips: 42,
             rating: 4.9,
-            memberSince: 2022
+            memberSince: 2022,
+            language: "es",
+            avatar: "👤"
         };
 
         // Cargar datos del usuario
         function loadUserData() {
             userNameElement.textContent = userData.name;
+            userPhoneElement.textContent = userData.phone;
+            userEmailElement.textContent = userData.email;
+            headerUserNameElement.textContent = userData.name;
+            headerUserIcon.textContent = userData.name.charAt(0);
+            profileAvatar.textContent = userData.avatar;
+            
             document.getElementById('totalTrips').textContent = userData.totalTrips;
             document.getElementById('userRating').textContent = userData.rating;
+            document.getElementById('userRatingValue').textContent = userData.rating;
             document.getElementById('memberSince').textContent = userData.memberSince;
             
             // Cargar datos en el formulario de edición
             editNameInput.value = userData.name;
             editPhoneInput.value = userData.phone;
             editEmailInput.value = userData.email;
+            
+            // Configurar idioma
+            languageSelect.value = userData.language;
+            currentLanguageElement.textContent = languageSelect.options[languageSelect.selectedIndex].text;
         }
 
-        // Abrir modal de edición
+        // Abrir modal de edición de perfil
         editProfileBtn.addEventListener('click', () => {
             editProfileModal.style.display = 'flex';
+            successMessage.style.display = 'none';
         });
 
-        // Cerrar modal de edición
+        // Abrir modal de seguridad
+        editSecurityBtn.addEventListener('click', () => {
+            editSecurityModal.style.display = 'flex';
+            securitySuccessMessage.style.display = 'none';
+        });
+
+        // Abrir modal de idioma
+        editLanguageBtn.addEventListener('click', () => {
+            editLanguageModal.style.display = 'flex';
+        });
+
+        // Cerrar modales
         cancelEditBtn.addEventListener('click', () => {
             editProfileModal.style.display = 'none';
+        });
+
+        cancelSecurityBtn.addEventListener('click', () => {
+            editSecurityModal.style.display = 'none';
+        });
+
+        cancelLanguageBtn.addEventListener('click', () => {
+            editLanguageModal.style.display = 'none';
         });
 
         // Guardar cambios del perfil
@@ -581,10 +768,63 @@
             userData.email = editEmailInput.value;
             
             loadUserData(); // Actualizar la interfaz
-            editProfileModal.style.display = 'none';
             
-            // Mostrar mensaje de confirmación
-            alert('Perfil actualizado correctamente');
+            // Mostrar mensaje de éxito
+            successMessage.style.display = 'block';
+            
+            // Ocultar el modal después de 2 segundos
+            setTimeout(() => {
+                editProfileModal.style.display = 'none';
+            }, 2000);
+        });
+
+        // Guardar cambios de seguridad
+        saveSecurityBtn.addEventListener('click', () => {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert('Por favor, completa todos los campos');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('Las contraseñas nuevas no coinciden');
+                return;
+            }
+            
+            // En una app real, aquí haríamos una verificación con el servidor
+            
+            // Mostrar mensaje de éxito
+            securitySuccessMessage.style.display = 'block';
+            
+            // Limpiar campos
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            
+            // Ocultar el modal después de 2 segundos
+            setTimeout(() => {
+                editSecurityModal.style.display = 'none';
+            }, 2000);
+        });
+
+        // Guardar cambios de idioma
+        saveLanguageBtn.addEventListener('click', () => {
+            userData.language = languageSelect.value;
+            currentLanguageElement.textContent = languageSelect.options[languageSelect.selectedIndex].text;
+            editLanguageModal.style.display = 'none';
+            alert('Idioma cambiado a ' + currentLanguageElement.textContent);
+        });
+
+        // Cambiar avatar
+        editAvatar.addEventListener('click', () => {
+            const avatars = ["👤", "👨", "👩", "🧑", "👦", "👧", "🧔", "👨‍💼", "👩‍💼"];
+            const currentIndex = avatars.indexOf(userData.avatar);
+            const nextIndex = (currentIndex + 1) % avatars.length;
+            userData.avatar = avatars[nextIndex];
+            profileAvatar.textContent = userData.avatar;
         });
 
         // Cerrar modal si se hace clic fuera del contenido
@@ -592,22 +832,24 @@
             if (event.target === editProfileModal) {
                 editProfileModal.style.display = 'none';
             }
+            if (event.target === editSecurityModal) {
+                editSecurityModal.style.display = 'none';
+            }
+            if (event.target === editLanguageModal) {
+                editLanguageModal.style.display = 'none';
+            }
         });
 
         // Simular funcionalidad de otros elementos del perfil
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const title = this.querySelector('h3').textContent;
-                
-                if (title === 'Cerrar sesión') {
-                    if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-                        alert('Sesión cerrada. Redirigiendo al inicio...');
-                        // En una app real, aquí redirigirías al login
-                    }
-                } else if (title !== 'Información personal') {
-                    alert(`Funcionalidad de "${title}" no implementada en esta demo`);
-                }
-            });
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                alert('Sesión cerrada. Redirigiendo al inicio...');
+                // En una app real, aquí redirigirías al login
+            }
+        });
+
+        document.getElementById('addPayment').addEventListener('click', function() {
+            alert('Funcionalidad de agregar método de pago no implementada en esta demo');
         });
 
         // Inicializar la página
