@@ -3,893 +3,563 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Futy</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <title>Renrize - Streamer & Creadora de Contenido</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
+        :root {
+            --primary: #9146FF;
+            --secondary: #1e1e1e;
+            --accent: #FF69B4;
+            --text: #ffffff;
+            --card-bg: rgba(30, 30, 30, 0.7);
+        }
+        
         body {
-            background-color: #f5f5f5;
-            color: #333;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: white;
-        }
-
-        header {
-            background-color: #ff6600;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-        }
-
-        .user-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: white;
-            color: #ff6600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-left: 15px;
-        }
-
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        #map {
-            flex: 1;
-            z-index: 1;
-        }
-
-        .search-panel {
-            background-color: white;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: var(--text);
+            min-height: 100vh;
             padding: 20px;
-            border-radius: 15px 15px 0 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             position: relative;
-            z-index: 2;
+            overflow-x: hidden;
         }
-
-        .search-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .input-group {
-            display: flex;
-            align-items: center;
-            background-color: #f5f5f5;
-            border-radius: 8px;
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-
-        .input-group.error {
-            border-color: #ff3333;
-        }
-
-        .input-group i {
-            margin-right: 10px;
-            color: #666;
-        }
-
-        .input-group input {
-            border: none;
-            background: transparent;
-            width: 100%;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .error-message {
-            color: #ff3333;
-            font-size: 14px;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .service-options {
-            display: flex;
-            overflow-x: auto;
-            gap: 15px;
-            padding: 10px 0;
-        }
-
-        .service-option {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 80px;
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .service-option:hover {
-            background-color: #f5f5f5;
-        }
-
-        .service-option.active {
-            background-color: #ffefe5;
-        }
-
-        .service-icon {
-            width: 40px;
-            height: 40px;
-            background-color: #ff6600;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            margin-bottom: 5px;
-        }
-
-        .service-name {
-            font-size: 12px;
-            text-align: center;
-        }
-
-        .service-price {
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        .confirm-button {
-            background-color: #ff6600;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 15px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .confirm-button:hover {
-            background-color: #e55a00;
-        }
-
-        .confirm-button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-
-        .booking-panel {
-            background-color: white;
-            padding: 20px;
-            border-radius: 15px 15px 0 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 2;
-            display: none;
-        }
-
-        .driver-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .driver-photo {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: #ddd;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: #666;
-        }
-
-        .driver-details {
-            flex: 1;
-        }
-
-        .driver-name {
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .car-info {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .rating {
-            color: #ff6600;
-            font-weight: bold;
-        }
-
-        .trip-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-        }
-
-        .trip-detail {
-            text-align: center;
-        }
-
-        .trip-value {
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .trip-label {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .trip-controls {
-            display: flex;
-            gap: 10px;
-        }
-
-        .start-button {
-            background-color: #ff6600;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            flex: 1;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .start-button:hover {
-            background-color: #e55a00;
-        }
-
-        .cancel-button {
-            background-color: #f5f5f5;
-            color: #ff6600;
-            border: 1px solid #ff6600;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            flex: 1;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .cancel-button:hover {
-            background-color: #ffefe5;
-        }
-
-        .trip-panel {
-            background-color: white;
-            padding: 20px;
-            border-radius: 15px 15px 0 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 2;
-            display: none;
-        }
-
-        .trip-progress {
-            margin-bottom: 20px;
-        }
-
-        .progress-bar {
-            height: 6px;
-            background-color: #f0f0f0;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background-color: #ff6600;
-            width: 0%;
-            transition: width 0.5s;
-        }
-
-        .progress-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .trip-details {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .trip-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .action-button {
-            background-color: #f5f5f5;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 14px;
-            flex: 1;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .action-button i {
-            font-size: 20px;
-        }
-
-        .end-trip-button {
-            background-color: #ff6600;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-
-        footer {
-            background-color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-around;
-            border-top: 1px solid #eee;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 5px 10px;
-            cursor: pointer;
-            color: #666;
-            text-decoration: none;
-        }
-
-        .nav-item.active {
-            color: #ff6600;
-        }
-
-        .nav-icon {
-            font-size: 20px;
-            margin-bottom: 5px;
-        }
-
-        .nav-label {
-            font-size: 12px;
-        }
-
-        .modal {
-            display: none;
+        
+        body::before {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(145, 70, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 105, 180, 0.15) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundShift 15s ease-in-out infinite alternate;
         }
-
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .modal-title {
-            font-size: 20px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .modal-button {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .modal-button.cancel {
-            background-color: #f5f5f5;
-            color: #333;
-        }
-
-        .modal-button.confirm {
-            background-color: #ff6600;
-            color: white;
-        }
-
-        @media (min-width: 768px) {
-            .container {
-                height: 90vh;
-                margin-top: 5vh;
-                border-radius: 10px;
-                overflow: hidden;
-                box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        
+        @keyframes backgroundShift {
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+            100% {
+                transform: translateX(-20px) translateY(10px);
             }
         }
+        
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(145, 70, 255, 0.3);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0 20px;
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .profile-pic-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .profile-pic {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary);
+            box-shadow: 0 0 30px rgba(145, 70, 255, 0.7);
+            animation: pulse 3s infinite, floatProfile 6s ease-in-out infinite;
+            transition: transform 0.5s, box-shadow 0.5s;
+        }
+        
+        .profile-pic:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(145, 70, 255, 0.9);
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(145, 70, 255, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(145, 70, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(145, 70, 255, 0);
+            }
+        }
+        
+        @keyframes floatProfile {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: textGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes textGlow {
+            from {
+                text-shadow: 0 0 5px rgba(145, 70, 255, 0.5);
+            }
+            to {
+                text-shadow: 0 0 15px rgba(145, 70, 255, 0.8), 0 0 20px rgba(255, 105, 180, 0.6);
+            }
+        }
+        
+        .tagline {
+            font-size: 1.3rem;
+            opacity: 0.8;
+            margin-bottom: 30px;
+            animation: fadeIn 1.5s ease-out 0.5s both;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 0.8;
+            }
+        }
+        
+        .contact-section, .social-section, .stream-section {
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out both;
+        }
+        
+        .social-section {
+            animation-delay: 0.3s;
+        }
+        
+        .stream-section {
+            animation-delay: 0.6s;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2 i {
+            color: var(--primary);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            animation: cardSlideIn 0.8s ease-out both;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .card:hover::before {
+            left: 100%;
+        }
+        
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: var(--primary);
+        }
+        
+        .card i {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(145, 70, 255, 0.2);
+            transition: transform 0.3s, background 0.3s;
+            z-index: 1;
+        }
+        
+        .card:hover i {
+            transform: scale(1.2) rotate(10deg);
+            background: rgba(145, 70, 255, 0.4);
+        }
+        
+        .card-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            transition: color 0.3s;
+        }
+        
+        .card:hover .card-content h3 {
+            color: var(--primary);
+        }
+        
+        .card-content p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        .social-card.instagram i {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: white;
+        }
+        
+        .social-card.twitter i {
+            background: #1DA1F2;
+            color: white;
+        }
+        
+        .social-card.tiktok i {
+            background: #000000;
+            color: white;
+        }
+        
+        .social-card.whatsapp i {
+            background: #25D366;
+            color: white;
+        }
+        
+        .social-card.youtube i {
+            background: #FF0000;
+            color: white;
+        }
+        
+        .social-card.facebook i {
+            background: #1877F2;
+            color: white;
+        }
+        
+        .social-card.discord i {
+            background: #5865F2;
+            color: white;
+        }
+        
+        .stream-card.twitch i {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .stream-card.youtube-vods i {
+            background: #FF0000;
+            color: white;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+            animation: fadeIn 1s ease-out 1s both;
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .profile-pic {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+        }
+        
+        /* Animaciones para las tarjetas individuales */
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+        .card:nth-child(6) { animation-delay: 0.6s; }
+        .card:nth-child(7) { animation-delay: 0.7s; }
+        .card:nth-child(8) { animation-delay: 0.8s; }
+        .card:nth-child(9) { animation-delay: 0.9s; }
+        .card:nth-child(10) { animation-delay: 1s; }
     </style>
 </head>
 <body>
+    <div class="floating-particles" id="particles-container"></div>
+    
     <div class="container">
         <header>
-            <div class="logo">Futy</div>
-            <div class="user-menu">
-                <span>Hola, Usuario</span>
-                <div class="user-icon">U</div>
+            <div class="profile-pic-container">
+                <img src="https://raw.githubusercontent.com/poxynext/mp3-host/main/lana.jpg" alt="Renrize" class="profile-pic">
             </div>
+            <h1>@renrize</h1>
+            <p class="tagline">Streamer - Creadora de Contenido</p>
         </header>
-
-        <main>
-            <div id="map"></div>
-            
-            <div class="search-panel" id="searchPanel">
-                <div class="search-inputs">
-                    <div class="input-group" id="originGroup">
-                        <i>📍</i>
-                        <input type="text" id="origin" placeholder="¿Dónde estás?" value="Mi ubicación actual">
+        
+        <section class="contact-section">
+            <h2><i class="fas fa-envelope"></i> Contacto</h2>
+            <div class="grid">
+                <div class="card">
+                    <i class="fab fa-whatsapp"></i>
+                    <div class="card-content">
+                        <h3>WhatsApp</h3>
+                        <p>Contáctame directamente</p>
                     </div>
-                    <div class="error-message" id="originError">Debes permitir el acceso a tu ubicación</div>
-                    
-                    <div class="input-group" id="destinationGroup">
-                        <i>🎯</i>
-                        <input type="text" id="destination" placeholder="¿A dónde vas?">
-                    </div>
-                    <div class="error-message" id="destinationError">Debes ingresar un destino</div>
-                </div>
-                
-                <div class="service-options">
-                    <div class="service-option active" data-service="economy">
-                        <div class="service-icon">E</div>
-                        <div class="service-name">Económico</div>
-                        <div class="service-price">$15.000</div>
-                    </div>
-                    <div class="service-option" data-service="comfort">
-                        <div class="service-icon">C</div>
-                        <div class="service-name">Confort</div>
-                        <div class="service-price">$20.000</div>
-                    </div>
-                    <div class="service-option" data-service="premium">
-                        <div class="service-icon">P</div>
-                        <div class="service-name">Premium</div>
-                        <div class="service-price">$30.000</div>
-                    </div>
-                </div>
-                
-                <button class="confirm-button" id="confirmRide" disabled>Confirmar Viaje</button>
-            </div>
-            
-            <div class="booking-panel" id="bookingPanel">
-                <div class="driver-info">
-                    <div class="driver-photo">👨</div>
-                    <div class="driver-details">
-                        <div class="driver-name">Carlos Martínez</div>
-                        <div class="car-info">Toyota Corolla • ABC123</div>
-                        <div class="rating">⭐ 4.8</div>
-                    </div>
-                </div>
-                
-                <div class="trip-info">
-                    <div class="trip-detail">
-                        <div class="trip-value">5 min</div>
-                        <div class="trip-label">Tiempo de llegada</div>
-                    </div>
-                    <div class="trip-detail">
-                        <div class="trip-value">1.2 km</div>
-                        <div class="trip-label">Distancia</div>
-                    </div>
-                    <div class="trip-detail">
-                        <div class="trip-value">$15.000</div>
-                        <div class="trip-label">Precio estimado</div>
-                    </div>
-                </div>
-                
-                <div class="trip-controls">
-                    <button class="start-button" id="startRide">Iniciar Viaje</button>
-                    <button class="cancel-button" id="cancelRide">Cancelar</button>
                 </div>
             </div>
-
-            <div class="trip-panel" id="tripPanel">
-                <div class="trip-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                    <div class="progress-labels">
-                        <span>Origen</span>
-                        <span>Destino</span>
-                    </div>
-                </div>
-                
-                <div class="trip-details">
-                    <div class="trip-detail">
-                        <div class="trip-value" id="tripTime">10 min</div>
-                        <div class="trip-label">Tiempo restante</div>
-                    </div>
-                    <div class="trip-detail">
-                        <div class="trip-value" id="tripDistance">1.2 km</div>
-                        <div class="trip-label">Distancia restante</div>
+        </section>
+        
+        <section class="social-section">
+            <h2><i class="fas fa-share-alt"></i> Redes Sociales</h2>
+            <div class="grid">
+                <div class="card social-card instagram">
+                    <i class="fab fa-instagram"></i>
+                    <div class="card-content">
+                        <h3>Instagram</h3>
+                        <p>@renrize</p>
                     </div>
                 </div>
                 
-                <div class="trip-actions">
-                    <button class="action-button">
-                        <i>📞</i>
-                        <span>Llamar</span>
-                    </button>
-                    <button class="action-button">
-                        <i>💬</i>
-                        <span>Mensaje</span>
-                    </button>
-                    <button class="action-button">
-                        <i>⚠️</i>
-                        <span>Emergencia</span>
-                    </button>
+                <div class="card social-card twitter">
+                    <i class="fab fa-twitter"></i>
+                    <div class="card-content">
+                        <h3>Twitter / X</h3>
+                        <p>@renrize</p>
+                    </div>
                 </div>
                 
-                <button class="end-trip-button" id="endTrip">Finalizar Viaje</button>
+                <div class="card social-card tiktok">
+                    <i class="fab fa-tiktok"></i>
+                    <div class="card-content">
+                        <h3>TikTok</h3>
+                        <p>@renrize</p>
+                    </div>
+                </div>
+                
+                <div class="card social-card youtube">
+                    <i class="fab fa-youtube"></i>
+                    <div class="card-content">
+                        <h3>YouTube</h3>
+                        <p>Renrize</p>
+                    </div>
+                </div>
+                
+                <div class="card social-card facebook">
+                    <i class="fab fa-facebook"></i>
+                    <div class="card-content">
+                        <h3>Facebook</h3>
+                        <p>Renrize</p>
+                    </div>
+                </div>
+                
+                <div class="card social-card discord">
+                    <i class="fab fa-discord"></i>
+                    <div class="card-content">
+                        <h3>Discord</h3>
+                        <p>Únete a mi comunidad</p>
+                    </div>
+                </div>
             </div>
-        </main>
-
+        </section>
+        
+        <section class="stream-section">
+            <h2><i class="fas fa-broadcast-tower"></i> Directos</h2>
+            <div class="grid">
+                <div class="card stream-card twitch">
+                    <i class="fab fa-twitch"></i>
+                    <div class="card-content">
+                        <h3>Twitch</h3>
+                        <p>En vivo ahora</p>
+                    </div>
+                </div>
+                
+                <div class="card stream-card youtube-vods">
+                    <i class="fab fa-youtube"></i>
+                    <div class="card-content">
+                        <h3>YouTube (VODs)</h3>
+                        <p>Mira mis directos anteriores</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
         <footer>
-            <a href="index.html" class="nav-item active">
-                <div class="nav-icon">🚗</div>
-                <div class="nav-label">Viajar</div>
-            </a>
-            <a href="historial.html" class="nav-item">
-                <div class="nav-icon">📋</div>
-                <div class="nav-label">Historial</div>
-            </a>
-            <a href="mensajes.html" class="nav-item">
-                <div class="nav-icon">💬</div>
-                <div class="nav-label">Mensajes</div>
-            </a>
-            <a href="perfil.html" class="nav-item">
-                <div class="nav-icon">👤</div>
-                <div class="nav-label">Perfil</div>
-            </a>
+            <p>&copy; 2023 Renrize. Todos los derechos reservados.</p>
         </footer>
     </div>
 
-    <div class="modal" id="cancelModal">
-        <div class="modal-content">
-            <div class="modal-title">¿Cancelar viaje?</div>
-            <p>Si cancelas el viaje, podrías incurrir en cargos por cancelación.</p>
-            <div class="modal-buttons">
-                <button class="modal-button cancel" id="cancelNo">No, continuar</button>
-                <button class="modal-button confirm" id="cancelYes">Sí, cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="endTripModal">
-        <div class="modal-content">
-            <div class="modal-title">¿Finalizar viaje?</div>
-            <p>El viaje ha llegado a su destino. ¿Deseas finalizarlo?</p>
-            <div class="modal-buttons">
-                <button class="modal-button cancel" id="endTripNo">Cancelar</button>
-                <button class="modal-button confirm" id="endTripYes">Sí, finalizar</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script>
-        // Inicializar el mapa
-        const map = L.map('map').setView([4.6097, -74.0817], 13); // Coordenadas de Bogotá
+<script>
+    // Crear partículas flotantes
+    function createParticles() {
+        const container = document.getElementById('particles-container');
+        const particleCount = 20;
         
-        // Añadir capa de mapa (usando OpenStreetMap)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-        
-        // Variables para los marcadores y la ruta
-        let currentLocationMarker, destinationMarker, routeLine;
-        let currentLocation = [4.6097, -74.0817]; // Ubicación por defecto (Bogotá)
-        let destination = null;
-        
-        // Elementos de la interfaz
-        const searchPanel = document.getElementById('searchPanel');
-        const bookingPanel = document.getElementById('bookingPanel');
-        const tripPanel = document.getElementById('tripPanel');
-        const confirmRideButton = document.getElementById('confirmRide');
-        const startRideButton = document.getElementById('startRide');
-        const cancelRideButton = document.getElementById('cancelRide');
-        const endTripButton = document.getElementById('endTrip');
-        const cancelModal = document.getElementById('cancelModal');
-        const endTripModal = document.getElementById('endTripModal');
-        const cancelNoButton = document.getElementById('cancelNo');
-        const cancelYesButton = document.getElementById('cancelYes');
-        const endTripNoButton = document.getElementById('endTripNo');
-        const endTripYesButton = document.getElementById('endTripYes');
-        const serviceOptions = document.querySelectorAll('.service-option');
-        const destinationInput = document.getElementById('destination');
-        const originGroup = document.getElementById('originGroup');
-        const destinationGroup = document.getElementById('destinationGroup');
-        const originError = document.getElementById('originError');
-        const destinationError = document.getElementById('destinationError');
-        const progressFill = document.getElementById('progressFill');
-        const tripTime = document.getElementById('tripTime');
-        const tripDistance = document.getElementById('tripDistance');
-        
-        // Estado de la aplicación
-        let selectedService = 'economy';
-        let rideConfirmed = false;
-        let tripStarted = false;
-        let tripProgress = 0;
-        let tripInterval;
-        
-        // Obtener ubicación actual del usuario
-        function getCurrentLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        currentLocation = [position.coords.latitude, position.coords.longitude];
-                        updateMap();
-                        validateForm();
-                    },
-                    function(error) {
-                        console.error("Error obteniendo la ubicación: ", error);
-                        originGroup.classList.add('error');
-                        originError.style.display = 'block';
-                        validateForm();
-                    }
-                );
-            } else {
-                alert("Tu navegador no soporta geolocalización");
-                originGroup.classList.add('error');
-                originError.style.display = 'block';
-                validateForm();
-            }
-        }
-        
-        // Actualizar el mapa con la ubicación actual y destino
-        function updateMap() {
-            // Limpiar marcadores existentes
-            if (currentLocationMarker) map.removeLayer(currentLocationMarker);
-            if (destinationMarker) map.removeLayer(destinationMarker);
-            if (routeLine) map.removeLayer(routeLine);
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
             
-            // Añadir marcador de ubicación actual
-            currentLocationMarker = L.marker(currentLocation).addTo(map)
-                .bindPopup('Tu ubicación actual')
-                .openPopup();
+            const size = Math.random() * 10 + 5;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
             
-            // Si hay un destino, añadir marcador y ruta
-            if (destination) {
-                destinationMarker = L.marker(destination).addTo(map)
-                    .bindPopup('Tu destino');
-                
-                // Simular una ruta (en una app real, usarías un servicio de routing)
-                routeLine = L.polyline([currentLocation, destination], {
-                    color: '#ff6600',
-                    weight: 5,
-                    opacity: 0.7
-                }).addTo(map);
-                
-                // Ajustar el mapa para mostrar ambos puntos
-                const bounds = L.latLngBounds([currentLocation, destination]);
-                map.fitBounds(bounds, { padding: [50, 50] });
-            } else {
-                // Centrar el mapa en la ubicación actual
-                map.setView(currentLocation, 15);
-            }
-        }
-        
-        // Validar el formulario
-        function validateForm() {
-            const hasLocation = currentLocation !== null;
-            const hasDestination = destinationInput.value.trim() !== '';
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.top = `${Math.random() * 100}vh`;
             
-            if (hasLocation) {
-                originGroup.classList.remove('error');
-                originError.style.display = 'none';
-            } else {
-                originGroup.classList.add('error');
-                originError.style.display = 'block';
-            }
-            
-            if (hasDestination) {
-                destinationGroup.classList.remove('error');
-                destinationError.style.display = 'none';
-            } else {
-                destinationGroup.classList.add('error');
-                destinationError.style.display = 'block';
-            }
-            
-            confirmRideButton.disabled = !(hasLocation && hasDestination);
-            
-            return hasLocation && hasDestination;
-        }
-        
-        // Establecer un destino aleatorio cerca de la ubicación actual
-        function setRandomDestination() {
-            if (!currentLocation) return;
-            
-            // Crear un destino aleatorio a unos 2-5 km de distancia
-            const latOffset = (Math.random() * 0.05) - 0.025; // Aprox. 2.8 km
-            const lngOffset = (Math.random() * 0.05) - 0.025; // Aprox. 2.8 km
-            
-            destination = [
-                currentLocation[0] + latOffset,
-                currentLocation[1] + lngOffset
+            const colors = [
+                'rgba(145, 70, 255, 0.5)',
+                'rgba(255, 105, 180, 0.5)',
+                'rgba(100, 150, 255, 0.5)'
             ];
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
             
-            updateMap();
+            const duration = Math.random() * 30 + 20;
+            const delay = Math.random() * 5;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `${delay}s`;
+            
+            container.appendChild(particle);
         }
-        
-        // Seleccionar servicio
-        serviceOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                serviceOptions.forEach(opt => opt.classList.remove('active'));
-                option.classList.add('active');
-                selectedService = option.getAttribute('data-service');
-            });
-        });
-        
-        // Confirmar viaje
-        confirmRideButton.addEventListener('click', () => {
-            if (!validateForm()) return;
-            
-            setRandomDestination(); // Establecer un destino aleatorio
-            searchPanel.style.display = 'none';
-            bookingPanel.style.display = 'block';
-            rideConfirmed = true;
-        });
-        
-        // Iniciar viaje
-        startRideButton.addEventListener('click', () => {
-            bookingPanel.style.display = 'none';
-            tripPanel.style.display = 'block';
-            tripStarted = true;
-            
-            // Iniciar simulación de progreso del viaje
-            startTripSimulation();
-        });
-        
-        // Simular el progreso del viaje
-        function startTripSimulation() {
-            tripProgress = 0;
-            progressFill.style.width = '0%';
-            tripTime.textContent = '10 min';
-            tripDistance.textContent = '1.2 km';
-            
-            clearInterval(tripInterval);
-            tripInterval = setInterval(() => {
-                tripProgress += 1;
-                progressFill.style.width = `${tripProgress}%`;
-                
-                // Actualizar tiempo y distancia restantes
-                const remainingTime = Math.max(0, 10 - Math.floor(tripProgress / 10));
-                const remainingDistance = Math.max(0, (1.2 - (tripProgress / 100 * 1.2)).toFixed(1));
-                
-                tripTime.textContent = `${remainingTime} min`;
-                tripDistance.textContent = `${remainingDistance} km`;
-                
-                // Si el viaje ha terminado
-                if (tripProgress >= 100) {
-                    clearInterval(tripInterval);
-                    endTripModal.style.display = 'flex';
-                }
-            }, 500); // Actualizar cada medio segundo
-        }
-        
-        // Finalizar viaje
-        endTripButton.addEventListener('click', () => {
-            endTripModal.style.display = 'flex';
-        });
-        
-        endTripYesButton.addEventListener('click', () => {
-            endTripModal.style.display = 'none';
-            tripPanel.style.display = 'none';
-            searchPanel.style.display = 'block';
-            tripStarted = false;
-            rideConfirmed = false;
-            destination = null;
-            updateMap();
-            
-            // Mostrar mensaje de viaje completado
-            alert('¡Viaje completado! Gracias por usar Didi.');
-        });
-        
-        endTripNoButton.addEventListener('click', () => {
-            endTripModal.style.display = 'none';
-        });
-        
-        // Cancelar viaje
-        cancelRideButton.addEventListener('click', () => {
-            cancelModal.style.display = 'flex';
-        });
-        
-        cancelNoButton.addEventListener('click', () => {
-            cancelModal.style.display = 'none';
-        });
-        
-        cancelYesButton.addEventListener('click', () => {
-            cancelModal.style.display = 'none';
-            if (tripStarted) {
-                tripPanel.style.display = 'none';
-                clearInterval(tripInterval);
-            } else {
-                bookingPanel.style.display = 'none';
+    }
+
+    // Mapear cada tarjeta a su enlace real
+    const socialLinks = {
+        'WhatsApp': 'https://wa.me/50612345678', // Reemplaza con tu número
+        'Instagram': 'https://www.instagram.com/renrize/',
+        'Twitter / X': 'https://twitter.com/renrize',
+        'TikTok': 'https://www.tiktok.com/@renrize',
+        'YouTube': 'https://www.youtube.com/@Renrize',
+        'Facebook': 'https://www.facebook.com/Renrize',
+        'Discord': 'https://discord.gg/tu-invite', // Reemplaza con tu enlace de invitación
+    };
+
+    // Hacer clic en la tarjeta abre el enlace correspondiente
+    document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', function() {
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 200);
+
+            const platform = this.querySelector('h3').textContent;
+            if (socialLinks[platform]) {
+                window.open(socialLinks[platform], '_blank');
             }
-            searchPanel.style.display = 'block';
-            tripStarted = false;
-            rideConfirmed = false;
-            destination = null;
-            updateMap();
         });
-        
-        // Validar formulario cuando cambia el destino
-        destinationInput.addEventListener('input', validateForm);
-        
-        // Inicializar la aplicación
-        getCurrentLocation();
-        validateForm();
-    </script>
+    });
+
+    window.addEventListener('load', createParticles);
+</script>
 </body>
 </html>
