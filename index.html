@@ -118,7 +118,7 @@
             margin: 0 auto 60px;
         }
 
-        /* Header */
+        /* Header - CORREGIDO DEFINITIVAMENTE */
         .header {
             position: fixed;
             top: 0;
@@ -141,11 +141,15 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            -webkit-tap-highlight-color: transparent; /* Elimina el resaltado azul en móvil */
+            user-select: none; /* Evita selección de texto */
+            pointer-events: none; /* IMPORTANTE: Desactiva todos los eventos de clic */
         }
 
         .logo-icon {
             color: var(--primary);
             font-size: 28px;
+            pointer-events: none; /* Desactiva eventos */
         }
 
         .logo-text {
@@ -155,6 +159,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            pointer-events: none; /* Desactiva eventos */
         }
 
         .nav-menu {
@@ -168,6 +173,7 @@
             transition: var(--transition);
             position: relative;
             padding: 8px 0;
+            -webkit-tap-highlight-color: rgba(86, 198, 255, 0.3); /* Resaltado personalizado */
         }
 
         .nav-link:hover {
@@ -205,6 +211,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             cursor: pointer;
             transition: var(--transition);
+            -webkit-tap-highlight-color: rgba(86, 198, 255, 0.3);
         }
 
         .user-menu:hover {
@@ -230,6 +237,7 @@
             color: var(--light);
             font-size: 24px;
             cursor: pointer;
+            -webkit-tap-highlight-color: rgba(86, 198, 255, 0.3);
         }
 
         /* Hero Section */
@@ -336,6 +344,7 @@
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
+            -webkit-tap-highlight-color: rgba(86, 198, 255, 0.3);
         }
 
         .category-btn.active,
@@ -450,6 +459,7 @@
         .footer-link {
             color: var(--gray-light);
             transition: var(--transition);
+            -webkit-tap-highlight-color: rgba(86, 198, 255, 0.3);
         }
 
         .footer-link:hover {
@@ -472,6 +482,7 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
+            -webkit-tap-highlight-color: rgba(86, 198, 255, 0.3);
         }
 
         .social-link:hover {
@@ -532,6 +543,34 @@
                 flex-direction: column;
                 align-items: center;
             }
+            
+            /* Corrección para botones en móvil */
+            .header-actions {
+                gap: 10px;
+            }
+            
+            .btn-secondary {
+                padding: 8px 12px;
+                font-size: 14px;
+                -webkit-tap-highlight-color: rgba(86, 198, 255, 0.3);
+            }
+            
+            .user-menu {
+                padding: 6px 10px;
+                -webkit-tap-highlight-color: rgba(86, 198, 255, 0.3);
+            }
+            
+            .user-menu span {
+                display: none;
+            }
+            
+            .logo-text {
+                font-size: 20px;
+            }
+            
+            .logo-icon {
+                font-size: 24px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -546,18 +585,35 @@
             .store-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .header-actions {
+                gap: 8px;
+            }
         }
 
-        /* Efectos especiales */
-        .gradient-text {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .glow {
-            text-shadow: 0 0 10px rgba(86, 198, 255, 0.5);
+        @media (max-width: 480px) {
+            .header-actions {
+                gap: 5px;
+            }
+            
+            .btn-secondary {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
+            .user-menu {
+                padding: 5px 8px;
+            }
+            
+            .user-avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+            }
+            
+            .logo-text {
+                font-size: 18px;
+            }
         }
 
         /* Animaciones */
@@ -608,9 +664,10 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
+    <!-- Header CORREGIDO DEFINITIVAMENTE -->
     <header class="header">
         <div class="container header-container">
+            <!-- LOGO NO CLICKEABLE -->
             <div class="logo">
                 <i class="fas fa-mountain logo-icon"></i>
                 <div class="logo-text">OLIMPO NETWORK</div>
@@ -623,12 +680,12 @@
             </nav>
             
             <div class="header-actions">
-                <button class="btn btn-secondary">
-                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                <button class="btn btn-secondary" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> <span class="btn-text">Iniciar Sesión</span>
                 </button>
-                <div class="user-menu">
+                <div class="user-menu" id="userMenu">
                     <div class="user-avatar">J</div>
-                    <span>Jugador</span>
+                    <span class="user-name">Jugador</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -656,10 +713,10 @@
                 <p class="hero-subtitle delay-1">El servidor de Minecraft Java definitivo. Únete a miles de jugadores en la aventura más épica.</p>
                 
                 <div class="hero-actions delay-2">
-                    <button class="btn btn-primary btn-large">
+                    <button class="btn btn-primary btn-large" id="playBtn">
                         <i class="fas fa-gamepad"></i> Jugar Ahora
                     </button>
-                    <button class="btn btn-secondary btn-large">
+                    <button class="btn btn-secondary btn-large" id="storeBtn">
                         <i class="fas fa-shopping-cart"></i> Visitar Tienda
                     </button>
                 </div>
@@ -876,7 +933,7 @@
         });
         
         // Navegación suave
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        document.querySelectorAll('.nav-link, .footer-link').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 
@@ -890,6 +947,28 @@
                         behavior: 'smooth'
                     });
                 }
+            });
+        });
+        
+        // Botones de acción
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            alert('Función de inicio de sesión - Conectar con tu sistema de autenticación aquí');
+        });
+        
+        document.getElementById('userMenu').addEventListener('click', function() {
+            alert('Menú de usuario - Aquí irían opciones como perfil, configuración, cerrar sesión, etc.');
+        });
+        
+        document.getElementById('playBtn').addEventListener('click', function() {
+            alert('Conectando al servidor Olimpo Network...');
+            // Aquí iría la lógica para conectar al servidor
+        });
+        
+        document.getElementById('storeBtn').addEventListener('click', function() {
+            const storeSection = document.getElementById('store');
+            window.scrollTo({
+                top: storeSection.offsetTop - 80,
+                behavior: 'smooth'
             });
         });
         
@@ -940,6 +1019,13 @@
             });
         }
         
+        // IMPORTANTE: Prevenir clics en el logo
+        document.querySelector('.logo').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+        
         // Inicializar
         document.addEventListener('DOMContentLoaded', function() {
             createParticles();
@@ -954,7 +1040,12 @@
                 element.style.transform = 'translateY(30px)';
                 element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
             });
+            
+            // Asegurar que el logo no sea clickeable
+            const logo = document.querySelector('.logo');
+            logo.style.pointerEvents = 'none';
+            logo.style.cursor = 'default';
         });
     </script>
 </body>
-</html>
+                    </html>
