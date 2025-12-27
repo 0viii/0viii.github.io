@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Espacio Gamer Profesional</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Variables y estilos base */
+        :root {
+            --primary-bg: #0a0a1a;
+            --secondary-bg: #0f0f2a;
+            --window-bg: #151533;
+            --accent-green: #00ff9d;
+            --accent-blue: #0088ff;
+            --accent-purple: #aa00ff;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0ff;
+            --border-color: #30305a;
+            --shadow-color: rgba(0, 255, 157, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 136, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(170, 0, 255, 0.05) 0%, transparent 20%);
+        }
+        
+        /* Contenedor principal - como un escritorio */
+        .desktop {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Barra lateral izquierda - acceso rápido */
+        .sidebar {
+            width: 80px;
+            background-color: rgba(15, 15, 42, 0.9);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .app-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background-color: var(--window-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+        }
+        
+        .app-icon:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-green);
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+        
+        .app-icon.active {
+            border-color: var(--accent-green);
+            background-color: rgba(0, 255, 157, 0.1);
+            box-shadow: 0 0 15px var(--shadow-color);
+        }
+        
+        .app-icon i {
+            font-size: 1.5rem;
+            color: var(--accent-green);
+        }
+        
+        .app-icon .tooltip {
+            position: absolute;
+            left: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--window-bg);
+            color: var(--text-primary);
+            padding: 8px 15px;
+            border-radius: 5px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            z-index: 1000;
+            font-size: 0.9rem;
+        }
+        
+        .app-icon:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Área de contenido principal */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Barra superior */
+        .top-bar {
+            background-color: rgba(21, 21, 51, 0.9);
+            border-radius: 10px;
+            padding: 15px 25px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+        
+        .system-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+        }
+        
+        .logo i {
+            font-size: 2rem;
+        }
+        
+        .time-display {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* Contenedor de ventanas */
+        .windows-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            height: calc(100vh - 150px);
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        /* Estilos de ventanas */
+        .window {
+            background-color: var(--window-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transition: var(--transition);
+            display: none;
+            height: fit-content;
+            max-height: 600px;
+            animation: windowOpen 0.5s ease forwards;
+        }
+        
+        @keyframes windowOpen {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .window.active {
+            display: block;
+        }
+        
+        .window.maximized {
+            position: fixed;
+            top: 20px;
+            left: 100px;
+            right: 20px;
+            bottom: 20px;
+            z-index: 1000;
+            max-height: none;
+            height: auto;
+        }
+        
+        .window-header {
+            background-color: rgba(15, 15, 42, 0.9);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+        }
+        
+        .window-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: var(--accent-green);
+        }
+        
+        .window-title i {
+            font-size: 1.2rem;
+        }
+        
+        .window-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .window-btn {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .close-btn {
+            background-color: #ff5f57;
+        }
+        
+        .close-btn:hover {
+            background-color: #ff3b30;
+        }
+        
+        .minimize-btn {
+            background-color: #ffbd2e;
+        }
+        
+        .minimize-btn:hover {
+            background-color: #ffa500;
+        }
+        
+        .maximize-btn {
+            background-color: #28ca42;
+        }
+        
+        .maximize-btn:hover {
+            background-color: #1ca832;
+        }
+        
+        .window-content {
+            padding: 25px;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+        
+        .minimized .window-content {
+            display: none;
+        }
+        
+        /* Contenido específico de cada ventana */
+        
+        /* PERFIL */
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border: 3px solid var(--accent-green);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+        }
+        
+        .avatar-large i {
+            font-size: 3.5rem;
+            color: white;
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(to right, var(--accent-green), var(--accent-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .profile-title {
+            font-size: 1.2rem;
+            color: var(--accent-blue);
+            margin-bottom: 20px;
+        }
+        
+        .profile-description {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        
+        /* INFORMACIÓN */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-card {
+            background-color: rgba(15, 15, 42, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid var(--accent-blue);
+            transition: var(--transition);
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .info-card h3 {
+            color: var(--accent-blue);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* PROGRAMAS */
+        .programs-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 20px;
+        }
+        
+        .program-card {
+            background-color: rgba(15, 15, 42, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        
+        .program-card:hover {
+            border-color: var(--accent-green);
+            transform: scale(1.05);
+        }
+        
+        .program-icon {
+            font-size: 2.5rem;
+            color: var(--accent-green);
+            margin-bottom: 15px;
+        }
+        
+        .program-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+        
+        .skill-bar {
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .skill-level {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-green), var(--accent-blue));
+            border-radius: 4px;
+        }
+        
+        /* PROYECTOS */
+        .project-slider {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        
+        .project-slide {
+            display: none;
+            background-color: rgba(15, 15, 42, 0.7);
+            border-radius: 10px;
+            padding: 25px;
+        }
+        
+        .project-slide.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .project-title {
+            color: var(--accent-purple);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .project-description {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tech-tag {
+            background-color: rgba(170, 0, 255, 0.2);
+            color: var(--accent-purple);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(170, 0, 255, 0.3);
+        }
+        
+        .slider-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .slider-dot.active {
+            background-color: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+        }
+        
+        /* CONTACTO */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .contact-card {
+            background-color: rgba(15, 15, 42, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        
+        .contact-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateX(10px);
+        }
+        
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .contact-info h3 {
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+        
+        .contact-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* Barra de tareas inferior */
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 80px;
+            right: 0;
+            background-color: rgba(15, 15, 42, 0.95);
+            padding: 10px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+        
+        .taskbar-apps {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .taskbar-app {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: rgba(21, 21, 51, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .taskbar-app.active {
+            background-color: rgba(0, 255, 157, 0.2);
+            border: 1px solid var(--accent-green);
+        }
+        
+        .taskbar-app i {
+            color: var(--accent-green);
+            font-size: 1.2rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .windows-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .window {
+                max-height: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+            
+            .app-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .app-icon i {
+                font-size: 1.2rem;
+            }
+            
+            .taskbar {
+                left: 60px;
+            }
+            
+            .window.maximized {
+                left: 80px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 10px;
+            }
+            
+            .top-bar {
+                padding: 10px 15px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .info-grid, .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .taskbar {
+                left: 0;
+            }
+            
+            .window.maximized {
+                left: 20px;
+                right: 20px;
+            }
+        }
+        
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 15, 42, 0.5);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--accent-green), var(--accent-blue));
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, var(--accent-blue), var(--accent-purple));
+        }
+    </style>
+</head>
+<body>
+    <!-- Escritorio principal -->
+    <div class="desktop">
+        <!-- Barra lateral de acceso rápido -->
+        <aside class="sidebar">
+            <div class="app-icon active" data-window="profile-window">
+                <i class="fas fa-user"></i>
+                <div class="tooltip">Mi Perfil</div>
+            </div>
+            <div class="app-icon" data-window="info-window">
+                <i class="fas fa-info-circle"></i>
+                <div class="tooltip">Información</div>
+            </div>
+            <div class="app-icon" data-window="programs-window">
+                <i class="fas fa-laptop-code"></i>
+                <div class="tooltip">Programas</div>
+            </div>
+            <div class="app-icon" data-window="projects-window">
+                <i class="fas fa-briefcase"></i>
+                <div class="tooltip">Proyectos</div>
+            </div>
+            <div class="app-icon" data-window="contact-window">
+                <i class="fas fa-envelope"></i>
+                <div class="tooltip">Contacto</div>
+            </div>
+        </aside>
+        
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <!-- Barra superior -->
+            <header class="top-bar">
+                <div class="system-info">
+                    <div class="logo">
+                        <i class="fas fa-gamepad"></i>
+                        <span>GAMER-PRO v2.0</span>
+                    </div>
+                    <div class="time-display" id="time-display">00:00:00</div>
+                </div>
+            </header>
+            
+            <!-- Contenedor de ventanas (TODAS en el mismo HTML) -->
+            <div class="windows-container">
+                <!-- Ventana 1: Perfil -->
+                <div class="window active" id="profile-window">
+                    <div class="window-header">
+                        <div class="window-title">
+                            <i class="fas fa-id-card"></i>
+                            <span>PERFIL DEL SISTEMA</span>
+                        </div>
+                        <div class="window-controls">
+                            <div class="window-btn minimize-btn"></div>
+                            <div class="window-btn maximize-btn"></div>
+                            <div class="window-btn close-btn"></div>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="profile-container">
+                            <div class="avatar-large">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h1 class="profile-name">ALEX RIVERA</h1>
+                            <h2 class="profile-title">DESARROLLADOR GAMER PROFESIONAL</h2>
+                            <p class="profile-description">
+                                Especialista en desarrollo de videojuegos y experiencias interactivas inmersivas. 
+                                Más de 8 años creando mundos virtuales y mecánicas de juego innovadoras. 
+                                Apasionado por la tecnología, el diseño y la narrativa interactiva.
+                            </p>
+                            <div class="profile-stats">
+                                <div class="stat">
+                                    <div class="stat-value">42</div>
+                                    <div class="stat-label">Proyectos</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8+</div>
+                                    <div class="stat-label">Años Exp.</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">28</div>
+                                    <div class="stat-label">Clientes</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">4</div>
+                                    <div class="stat-label">Premios</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ventana 2: Información -->
+                <div class="window" id="info-window">
+                    <div class="window-header">
+                        <div class="window-title">
+                            <i class="fas fa-info-circle"></i>
+                            <span>INFORMACIÓN DEL SISTEMA</span>
+                        </div>
+                        <div class="window-controls">
+                            <div class="window-btn minimize-btn"></div>
+                            <div class="window-btn maximize-btn"></div>
+                            <div class="window-btn close-btn"></div>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <h3><i class="fas fa-graduation-cap"></i> EDUCACIÓN</h3>
+                                <p>Ingeniería en Sistemas Computacionales con especialización en Desarrollo de Videojuegos. Certificaciones en Unity, Unreal Engine y Diseño UX/UI.</p>
+                            </div>
+                            
+                            <div class="info-card">
+                                <h3><i class="fas fa-bullseye"></i> ESPECIALIDAD</h3>
+                                <p>Desarrollo de videojuegos en Unity y Unreal Engine. Diseño de mecánicas de juego, interfaces de usuario y experiencias de realidad virtual.</p>
+                            </div>
+                            
+                            <div class="info-card">
+                                <h3><i class="fas fa-trophy"></i> LOGROS</h3>
+                                <p>Premio al "Mejor Juego Indie 2022". 3 juegos publicados en Steam con reseñas positivas. Colaborador en proyectos AAA como diseñador de niveles.</p>
+                            </div>
+                            
+                            <div class="info-card">
+                                <h3><i class="fas fa-cogs"></i> METODOLOGÍA</h3>
+                                <p>Trabajo bajo metodologías ágiles (Scrum). Enfoque en el jugador, iteración constante y atención a los detalles para crear experiencias memorables.</p>
+                            </div>
+                            
+                            <div class="info-card">
+                                <h3><i class="fas fa-language"></i> IDIOMAS</h3>
+                                <p>Español (nativo), Inglés (avanzado), Japonés (básico). Capacidad para trabajar en equipos internacionales y documentar proyectos en múltiples idiomas.</p>
+                            </div>
+                            
+                            <div class="info-card">
+                                <h3><i class="fas fa-users"></i> COLABORACIONES</h3>
+                                <p>He trabajado con estudios independientes y grandes empresas del sector. Experiencia en liderazgo de equipos y coordinación de proyectos multidisciplinarios.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ventana 3: Programas -->
+                <div class="window" id="programs-window">
+                    <div class="window-header">
+                        <div class="window-title">
+                            <i class="fas fa-laptop-code"></i>
+                            <span>PROGRAMAS INSTALADOS</span>
+                        </div>
+                        <div class="window-controls">
+                            <div class="window-btn minimize-btn"></div>
+                            <div class="window-btn maximize-btn"></div>
+                            <div class="window-btn close-btn"></div>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="programs-container">
+                            <div class="program-card">
+                                <div class="program-icon">
+                                    <i class="fab fa-unity"></i>
+                                </div>
+                                <div class="program-name">Unity</div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: 95%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="program-card">
+                                <div class="program-icon">
+                                    <i class="fab fa-unreal-engine"></i>
+                                </div>
+                                <div class="program-name">Unreal Engine</div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="program-card">
+                                <div class="program-icon">
+                                    <i class="fas fa-cube"></i>
+                                </div>
+                                <div class="program-name">Blender</div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="program-card">
+                                <div class="program-icon">
+                                    <i class="fab fa-adobe"></i>
+                                </div>
+                                <div class="program-name">Adobe Suite</div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: 88%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="program-card">
+                                <div class="program-icon">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <div class="program-name">Visual Studio</div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: 92%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="program-card">
+                                <div class="program-icon">
+                                    <i class="fab fa-git-alt"></i>
+                                </div>
+                                <div class="program-name">Git</div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: 87%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="program-card">
+                                <div class="program-icon">
+                                    <i class="fab fa-figma"></i>
+                                </div>
+                                <div class="program-name">Figma</div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="program-card">
+                                <div class="program-icon">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div class="program-name">MySQL</div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ventana 4: Proyectos -->
+                <div class="window" id="projects-window">
+                    <div class="window-header">
+                        <div class="window-title">
+                            <i class="fas fa-briefcase"></i>
+                            <span>PROYECTOS ACTIVOS</span>
+                        </div>
+                        <div class="window-controls">
+                            <div class="window-btn minimize-btn"></div>
+                            <div class="window-btn maximize-btn"></div>
+                            <div class="window-btn close-btn"></div>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="project-slider">
+                            <div class="project-slide active">
+                                <h2 class="project-title"><i class="fas fa-dragon"></i> DRAGON REALM</h2>
+                                <p class="project-description">
+                                    Juego de rol en mundo abierto con gráficos estilo cartoon y sistema de combate táctico por turnos. 
+                                    Desarrollado en Unity con C#. Incluye más de 40 horas de contenido, sistema de crafting y misiones secundarias.
+                                </p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">Unity</span>
+                                    <span class="tech-tag">C#</span>
+                                    <span class="tech-tag">3D</span>
+                                    <span class="tech-tag">RPG</span>
+                                    <span class="tech-tag">Multiplataforma</span>
+                                </div>
+                                <p><strong>Estado:</strong> Publicado en Steam (50,000+ descargas)</p>
+                            </div>
+                            
+                            <div class="project-slide">
+                                <h2 class="project-title"><i class="fas fa-robot"></i> CYBER DEFENDER</h2>
+                                <p class="project-description">
+                                    Juego de estrategia y tower defense con temática cyberpunk. Desarrollado en Unreal Engine con Blueprints y C++. 
+                                    Sistema de torres modulares, enemigos con IA avanzada y efectos visuales con ray tracing.
+                                </p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">Unreal Engine</span>
+                                    <span class="tech-tag">C++</span>
+                                    <span class="tech-tag">Blueprints</span>
+                                    <span class="tech-tag">Estrategia</span>
+                                    <span class="tech-tag">Cyberpunk</span>
+                                </div>
+                                <p><strong>Estado:</strong> Ganador "Mejor Juego Indie 2022"</p>
+                            </div>
+                            
+                            <div class="project-slide">
+                                <h2 class="project-title"><i class="fas fa-vr-cardboard"></i> VR SPACE STATION</h2>
+                                <p class="project-description">
+                                    Experiencia de realidad virtual para exploración espacial. Desarrollada para Oculus Quest 2 
+                                    con interacciones físicas realistas, gravedad cero simulada y efectos visuales avanzados.
+                                </p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">VR</span>
+                                    <span class="tech-tag">Unity</span>
+                                    <span class="tech-tag">Realidad Virtual</span>
+                                    <span class="tech-tag">3D Interactivo</span>
+                                    <span class="tech-tag">Física Avanzada</span>
+                                </div>
+                                <p><strong>Estado:</strong> En desarrollo (beta cerrada)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="slider-nav">
+                            <div class="slider-dot active" data-slide="0"></div>
+                            <div class="slider-dot" data-slide="1"></div>
+                            <div class="slider-dot" data-slide="2"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ventana 5: Contacto -->
+                <div class="window" id="contact-window">
+                    <div class="window-header">
+                        <div class="window-title">
+                            <i class="fas fa-envelope"></i>
+                            <span>CONTACTO DEL SISTEMA</span>
+                        </div>
+                        <div class="window-controls">
+                            <div class="window-btn minimize-btn"></div>
+                            <div class="window-btn maximize-btn"></div>
+                            <div class="window-btn close-btn"></div>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="contact-grid">
+                            <div class="contact-card">
+                                <div class="contact-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h3>Email Principal</h3>
+                                    <p>alex.rivera@gamer-pro.dev</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-card">
+                                <div class="contact-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h3>Teléfono</h3>
+                                    <p>+34 612 345 678</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-card">
+                                <div class="contact-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h3>Ubicación</h3>
+                                    <p>Madrid, España</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-card">
+                                <div class="contact-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h3>Horario</h3>
+                                    <p>Lun - Vie: 9:00 - 18:00</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-card">
+                                <div class="contact-icon">
+                                    <i class="fab fa-discord"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h3>Discord</h3>
+                                    <p>AlexRivera#1234</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-card">
+                                <div class="contact-icon">
+                                    <i class="fab fa-steam"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h3>Steam</h3>
+                                    <p>/id/AlexRiveraDev</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                            <h3 style="color: var(--accent-green); margin-bottom: 15px;"><i class="fas fa-paper-plane"></i> Envíame un mensaje</h3>
+                            <div style="display: flex; gap: 15px;">
+                                <input type="text" placeholder="Tu nombre" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: rgba(15, 15, 42, 0.7); color: white;">
+                                <input type="email" placeholder="Tu email" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: rgba(15, 15, 42, 0.7); color: white;">
+                                <button style="padding: 12px 25px; border-radius: 8px; background: linear-gradient(to right, var(--accent-green), var(--accent-blue)); border: none; color: white; font-weight: 600; cursor: pointer; transition: var(--transition);" 
+                                        onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0, 255, 157, 0.3)'"
+                                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                    Enviar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Barra de tareas inferior -->
+    <footer class="taskbar">
+        <div class="taskbar-apps">
+            <div class="taskbar-app active" data-window="profile-window">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="taskbar-app" data-window="info-window">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="taskbar-app" data-window="programs-window">
+                <i class="fas fa-laptop-code"></i>
+            </div>
+            <div class="taskbar-app" data-window="projects-window">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="taskbar-app" data-window="contact-window">
+                <i class="fas fa-envelope"></i>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // TODAS LAS VENTANAS ESTÁN EN EL MISMO HTML
+        // Sistema de navegación entre ventanas
+        const appIcons = document.querySelectorAll('.app-icon, .taskbar-app');
+        const windows = document.querySelectorAll('.window');
+        
+        function showWindow(windowId) {
+            // Ocultar todas las ventanas
+            windows.forEach(window => {
+                window.classList.remove('active');
+            });
+            
+            // Mostrar la ventana seleccionada
+            const targetWindow = document.getElementById(windowId);
+            if(targetWindow) {
+                targetWindow.classList.add('active');
+            }
+            
+            // Actualizar iconos activos
+            appIcons.forEach(icon => {
+                icon.classList.remove('active');
+                if(icon.getAttribute('data-window') === windowId) {
+                    icon.classList.add('active');
+                }
+            });
+        }
+        
+        // Configurar eventos para iconos de aplicación
+        appIcons.forEach(icon => {
+            icon.addEventListener('click', () => {
+                const windowId = icon.getAttribute('data-window');
+                showWindow(windowId);
+            });
+        });
+        
+        // Sistema de controles de ventana
+        windows.forEach(window => {
+            const minimizeBtn = window.querySelector('.minimize-btn');
+            const maximizeBtn = window.querySelector('.maximize-btn');
+            const closeBtn = window.querySelector('.close-btn');
+            
+            // Minimizar ventana
+            if(minimizeBtn) {
+                minimizeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.classList.toggle('minimized');
+                });
+            }
+            
+            // Maximizar/restaurar ventana
+            if(maximizeBtn) {
+                maximizeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.classList.toggle('maximized');
+                    
+                    // Ajustar grid cuando una ventana está maximizada
+                    if(window.classList.contains('maximized')) {
+                        document.querySelector('.windows-container').style.gridTemplateColumns = '1fr';
+                        windows.forEach(w => {
+                            if(w !== window && !w.classList.contains('maximized')) {
+                                w.style.display = 'none';
+                            }
+                        });
+                    } else {
+                        document.querySelector('.windows-container').style.gridTemplateColumns = 'repeat(auto-fill, minmax(300px, 1fr))';
+                        windows.forEach(w => {
+                            w.style.display = '';
+                        });
+                    }
+                });
+            }
+            
+            // Cerrar ventana
+            if(closeBtn) {
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.style.opacity = '0';
+                    window.style.transform = 'scale(0.8)';
+                    
+                    setTimeout(() => {
+                        window.style.display = 'none';
+                        
+                        // Mostrar la ventana de perfil si se cierra la ventana activa
+                        if(window.classList.contains('active')) {
+                            showWindow('profile-window');
+                        }
+                    }, 300);
+                });
+            }
+            
+            // Hacer ventanas arrastrables
+            const header = window.querySelector('.window-header');
+            let isDragging = false;
+            let currentX;
+            let currentY;
+            let initialX;
+            let initialY;
+            let xOffset = 0;
+            let yOffset = 0;
+            
+            if(header) {
+                header.addEventListener('mousedown', dragStart);
+                header.addEventListener('mouseup', dragEnd);
+                header.addEventListener('mousemove', drag);
+                
+                header.addEventListener('touchstart', dragStart);
+                header.addEventListener('touchend', dragEnd);
+                header.addEventListener('touchmove', drag);
+            }
+            
+            function dragStart(e) {
+                if(e.type === 'touchstart') {
+                    initialX = e.touches[0].clientX - xOffset;
+                    initialY = e.touches[0].clientY - yOffset;
+                } else {
+                    initialX = e.clientX - xOffset;
+                    initialY = e.clientY - yOffset;
+                }
+                
+                if(e.target === header || header.contains(e.target)) {
+                    isDragging = true;
+                    
+                    // Traer ventana al frente
+                    windows.forEach(w => {
+                        w.style.zIndex = '1';
+                    });
+                    window.style.zIndex = '10';
+                }
+            }
+            
+            function dragEnd(e) {
+                initialX = currentX;
+                initialY = currentY;
+                isDragging = false;
+            }
+            
+            function drag(e) {
+                if(isDragging && !window.classList.contains('maximized')) {
+                    e.preventDefault();
+                    
+                    if(e.type === 'touchmove') {
+                        currentX = e.touches[0].clientX - initialX;
+                        currentY = e.touches[0].clientY - initialY;
+                    } else {
+                        currentX = e.clientX - initialX;
+                        currentY = e.clientY - initialY;
+                    }
+                    
+                    xOffset = currentX;
+                    yOffset = currentY;
+                    
+                    // Aplicar transformación para mover la ventana
+                    window.style.transform = `translate(${currentX}px, ${currentY}px) scale(1)`;
+                }
+            }
+        });
+        
+        // Slider de proyectos
+        const sliderDots = document.querySelectorAll('.slider-dot');
+        const projectSlides = document.querySelectorAll('.project-slide');
+        let currentProjectSlide = 0;
+        
+        function showProjectSlide(index) {
+            // Validar índice
+            if(index < 0) index = projectSlides.length - 1;
+            if(index >= projectSlides.length) index = 0;
+            
+            // Ocultar todas las slides
+            projectSlides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Mostrar slide actual
+            projectSlides[index].classList.add('active');
+            
+            // Actualizar puntos del slider
+            sliderDots.forEach(dot => dot.classList.remove('active'));
+            sliderDots[index].classList.add('active');
+            
+            currentProjectSlide = index;
+        }
+        
+        // Configurar eventos para puntos del slider
+        sliderDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                showProjectSlide(index);
+            });
+        });
+        
+        // Cambio automático de slides
+        setInterval(() => {
+            showProjectSlide((currentProjectSlide + 1) % projectSlides.length);
+        }, 8000);
+        
+        // Actualizar reloj en tiempo real
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('es-ES', {hour12: false});
+            document.getElementById('time-display').textContent = timeString;
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // Efectos de teclas WASD (estilo gamer)
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            if(['w', 'a', 's', 'd', ' '].includes(key)) {
+                // Efecto visual en la ventana activa
+                const activeWindow = document.querySelector('.window.active');
+                if(activeWindow) {
+                    activeWindow.style.boxShadow = '0 0 30px rgba(0, 255, 157, 0.5)';
+                    
+                    setTimeout(() => {
+                        activeWindow.style.boxShadow = '';
+                    }, 300);
+                }
+                
+                // Sonido de tecla (simulado)
+                if(key === ' ') {
+                    // Espacio - efecto especial
+                    document.body.style.background = 'linear-gradient(45deg, #0a0a1a, #151533)';
+                    setTimeout(() => {
+                        document.body.style.background = '';
+                    }, 200);
+                }
+            }
+        });
+        
+        // Inicializar con la ventana de perfil visible
+        document.addEventListener('DOMContentLoaded', () => {
+            showWindow('profile-window');
+            
+            // Efecto de inicio
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+                                  </html>
